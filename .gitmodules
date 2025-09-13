@@ -1,0 +1,9 @@
+[submodule "packages/protocols/contracts/uniswap-v2/v2-core"]
+	path = packages/protocols/contracts/uniswap-v2/v2-core
+	url = git@github.com:Uniswap/v2-core.git
+[submodule "packages/protocols/contracts/uniswap-v2/v2-periphery"]
+	path = packages/protocols/contracts/uniswap-v2/v2-periphery
+	url = git@github.com:Uniswap/v2-periphery.git
+[submodule "packages/protocols/contracts/uniswap-v2/solidity-lib"]
+	path = packages/protocols/contracts/uniswap-v2/solidity-lib
+	url = git@github.com:Uniswap/solidity-lib.git
