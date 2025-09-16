@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "hardhat build --show-stack-traces"
+    "hardhat:clear": "hardhat clean",
+    "hardhat:build": "hardhat build --show-stack-traces",
+    "wagmi:generate": "wagmi generate",
+    "build": "npm run hardhat:clear && npm run hardhat:build && npm run wagmi:generate"
   },
   "devDependencies": {
     "@types/node": "^22.18.3",
+    "@wagmi/cli": "^2.5.1",
     "forge-std": "github:foundry-rs/forge-std#v1.9.4",
     "hardhat": "^3.0.6",
     "typescript": "~5.8.0",
