@@ -20,7 +20,7 @@ const configPerProtocolRepo = protocolAndRepoFolderNames.map(dir => {
         artifacts: './artifacts',
         project: '.',
         include: [`${dir[0]}/${dir[1]}/**/*.json`],
-        exclude: ['test/**', 'examples/**']
+        exclude: ['examples/**']
       }),
     ],
   }

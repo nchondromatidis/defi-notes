@@ -1,13 +1,44 @@
-import type { HardhatUserConfig } from "hardhat/config";
-import { configVariable } from "hardhat/config";
+import type {HardhatUserConfig} from "hardhat/config";
+import {configVariable} from "hardhat/config";
+
 
 const config: HardhatUserConfig = {
   solidity: {
     compilers: [
-      { version: "0.4.26" },
-      { version: "0.5.16" },
-      { version: "0.6.6" },
-      { version: "0.6.12" },
+      {
+        version: "0.4.26",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 100
+          }
+        }
+      },
+      {
+        version: "0.5.16",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 100
+          }
+        }
+      },
+      {
+        version: "0.6.6", settings: {
+          optimizer: {
+            enabled: true,
+            runs: 100
+          }
+        }
+      },
+      {
+        version: "0.6.12", settings: {
+          optimizer: {
+            enabled: true,
+            runs: 100
+          }
+        }
+      },
     ],
   },
   networks: {
