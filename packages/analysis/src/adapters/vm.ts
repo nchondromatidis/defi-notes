@@ -1,17 +1,22 @@
-import { createTestClient, type TestClient, type Account } from 'viem';
-import { createTevmTransport, tevmReady, type TevmTransport } from 'tevm';
+import { type Client, type Account } from 'viem';
+import {
+  createTevmTransport,
+  tevmReady,
+  createClient,
+  type TevmTransport,
+} from 'tevm';
 
-export async function buildTevmClient(nodeAccount: Account): Promise<
-  TestClient<'anvil', TevmTransport>
-> {
+export async function buildTevmClient(
+  nodeAccount: Account
+): Promise<Client<TevmTransport>> {
   const tevmTransport = createTevmTransport({
     miningConfig: { type: 'auto' },
   });
-  const client = createTestClient({
+  const client = createClient({
     account: nodeAccount,
     transport: tevmTransport,
-    mode: 'anvil',
   });
   await tevmReady(client);
+
   return client;
 }

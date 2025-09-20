@@ -1,4 +1,3 @@
-// https://github.com/cooperbrown9/hardhat-uniswap/tree/main
 import {
   type Abi,
   type Hex,
@@ -17,7 +16,6 @@ export async function deployUniswapV2(
   client: Client<TevmTransport>,
   feeToSetAddress: Address
 ) {
-
   const factoryDeployResult = await tevmDeploy(client, {
     abi: UniswapV2Factory.abi as Abi,
     bytecode: UniswapV2Factory.bytecode as Hex,
