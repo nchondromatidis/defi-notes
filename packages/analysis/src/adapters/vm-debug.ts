@@ -1,9 +1,7 @@
 import {
   type ContractFunctionName,
-  encodeFunctionData,
-  decodeFunctionResult,
-  tevmCall,
   type TevmTransport,
+  tevmContract,
 } from 'tevm';
 import type {
   Abi,
@@ -11,34 +9,25 @@ import type {
   Client,
   ContractFunctionArgs,
   AbiStateMutability,
-  ContractFunctionReturnType,
 } from 'viem';
+import type { ContractResult } from '@tevm/actions';
+import type { InterpreterStep } from '@ethereumjs/evm';
 
 export async function debugCall<
   TAbi extends Abi,
   TFunctionName extends ContractFunctionName<TAbi>,
   TArgs extends ContractFunctionArgs<TAbi, AbiStateMutability, TFunctionName>,
-  TReturn extends ContractFunctionReturnType<
-    TAbi,
-    AbiStateMutability,
-    TFunctionName
-  >,
 >(
   client: Client<TevmTransport>,
   contract: { abi: TAbi; address: Address },
   functionName: TFunctionName,
   args: TArgs
-): Promise<TReturn> {
-  // TODO: fix type casting
-  const result = await tevmCall(client, {
+): Promise<ContractResult<TAbi, TFunctionName>> {
+  return await tevmContract(client, {
+    abi: contract.abi,
     to: contract.address,
-    data: encodeFunctionData({
-      abi: contract.abi,
-      functionName,
-      args,
-    } as never),
-    // TODO: looks like types are wrong
-    // @ts-expect-error — not in typings yet
+    functionName,
+    args,
     onStep: (step: InterpreterStep, next: () => void) => {
       console.log('EVM Step:', {
         cpc: step.pc, // Program counter
@@ -49,14 +38,5 @@ export async function debugCall<
       });
       next?.();
     },
-  });
-
-  // TODO: check for errors
-
-  // TODO: fix type casting
-  return decodeFunctionResult({
-    abi: contract.abi,
-    functionName,
-    data: result.rawData,
-  } as never) as TReturn;
+  } as never);
 }
