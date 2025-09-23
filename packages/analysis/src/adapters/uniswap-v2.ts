@@ -9,8 +9,8 @@ import { tevmDeploy, type TevmTransport } from 'tevm';
 import UniswapV2Factory from '@defi-notes/protocols/artifacts/contracts/uniswap-v2/v2-core/contracts/UniswapV2Factory.sol/UniswapV2Factory.json';
 import WETH9 from '@defi-notes/protocols/artifacts/contracts/uniswap-v2/v2-periphery/contracts/test/WETH9.sol/WETH9.json';
 import UniswapV2Router02 from '@defi-notes/protocols/artifacts/contracts/uniswap-v2/v2-periphery/contracts/UniswapV2Router02.sol/UniswapV2Router02.json';
-import { iUniswapV2FactoryAbi } from '@defi-notes/protocols/artifacts/types/uniswap-v2/v2-core.ts';
-import { iUniswapV2Router02Abi } from '@defi-notes/protocols/artifacts/types/uniswap-v2/v2-periphery.ts';
+import { iUniswapV2FactoryAbi } from '@defi-notes/protocols/artifacts/types/uniswap-v2/v2-core';
+import { iUniswapV2Router02Abi } from '@defi-notes/protocols/artifacts/types/uniswap-v2/v2-periphery';
 
 export async function deployUniswapV2(
   client: Client<TevmTransport>,

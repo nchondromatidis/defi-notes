@@ -35,6 +35,7 @@ export async function debugCall<
         gasLeft: step.gasLeft, // Remaining gas
         stack: step.stack, // Stack contents
         depth: step.depth, // Call depth
+        address: step.address.toString(), // Call depth
       });
       next?.();
     },

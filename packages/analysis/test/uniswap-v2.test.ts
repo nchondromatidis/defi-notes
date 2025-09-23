@@ -3,7 +3,7 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { parseEther, tevmSetAccount } from 'tevm';
 import { buildTevmClient } from '../src/adapters/vm';
 import { deployUniswapV2 } from '../src/adapters/uniswap-v2';
-import { debugCall } from '../src/adapters/vm-debug.ts';
+import { debugCall } from '../src/adapters/vm-debug';
 
 const ETHER_1 = parseEther('1');
 
