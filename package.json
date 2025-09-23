@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deps:list": "npx syncpack@alpha list",
+    "deps:list:verbose": "npx syncpack@alpha list --show instances",
+    "deps:fix": "npx syncpack@alpha fix",
+    "deps:update:patch": "npx syncpack@alpha update --target patch",
+    "unsafe:deps:update:latest": "npx syncpack@alpha update --target latest"
   },
   "author": "",
   "license": "ISC",
