@@ -10,12 +10,12 @@
     "build": "npm run hardhat:clear && npm run hardhat:build && npm run wagmi:generate && npm run hardhat:tasks:source-maps"
   },
   "devDependencies": {
-    "@types/node": "^22.18.6",
+    "@types/node": "^24.5.2",
     "@wagmi/cli": "^2.5.1",
     "forge-std": "github:foundry-rs/forge-std#v1.9.4",
     "hardhat": "^3.0.6",
     "tsx": "^4.20.5",
-    "typescript": "~5.8.3",
+    "typescript": "~5.9.2",
     "viem": "^2.37.8"
   }
 }
