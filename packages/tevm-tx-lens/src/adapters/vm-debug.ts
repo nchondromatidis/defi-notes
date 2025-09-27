@@ -10,8 +10,10 @@ import type {
   ContractFunctionArgs,
   AbiStateMutability,
 } from 'viem';
-import type { ContractResult } from '@tevm/actions';
-import type { InterpreterStep } from '@ethereumjs/evm';
+import type { ContractResult, NewContractEvent, Message } from '@tevm/actions';
+import type { InterpreterStep, EvmResult } from '@tevm/evm';
+
+type Next = () => void;
 
 export async function debugCall<
   TAbi extends Abi,
@@ -28,16 +30,38 @@ export async function debugCall<
     to: contract.address,
     functionName,
     args,
-    onStep: (step: InterpreterStep, next: () => void) => {
+    onStep: (data: InterpreterStep, next: Next) => {
       console.log('EVM Step:', {
-        cpc: step.pc, // Program counter
-        opcode: step.opcode, // Current opcode
-        gasLeft: step.gasLeft, // Remaining gas
-        stack: step.stack, // Stack contents
-        depth: step.depth, // Call depth
-        address: step.address.toString(), // Call depth
+        cpc: data.pc, // Program counter
+        opcode: data.opcode, // Current opcode
+        gasLeft: data.gasLeft, // Remaining gas
+        stack: data.stack, // Stack contents
+        depth: data.depth, // Call depth
+        address: data.address.toString(), // Call depth
       });
       next?.();
     },
-  } as never);
+    onNewContract: (data: NewContractEvent, next?: Next) => {
+      console.log('New Contract', {
+        address: data.address,
+      });
+      next?.();
+    },
+    onBeforeMessage: (data: Message, next?: Next) => {
+      console.log('Executing message:', {
+        to: data.to?.toString(),
+        value: data.value.toString(),
+        delegatecall: data.delegatecall,
+      });
+      next?.();
+    },
+    onAfterMessage: (data: EvmResult, next?: Next) => {
+      console.log('Message result:', {
+        gasUsed: data.execResult.executionGasUsed.toString(),
+        returnValue: data.execResult.returnValue.toString(),
+        error: data.execResult.exceptionError?.error,
+      });
+      next?.();
+    },
+  } as never); // TODO: fix casting to never
 }
