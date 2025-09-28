@@ -3,5 +3,5 @@ export default {
   "singleQuote": true,
   "tabWidth": 2,
   "trailingComma": "es5",
-  "printWidth": 90
+  "printWidth": 120
 };

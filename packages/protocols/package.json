@@ -2,6 +2,11 @@
   "name": "@defi-notes/protocols",
   "version": "1.0.0",
   "type": "module",
+  "exports": {
+    "./artifacts/contracts/*": "./artifacts/contracts/*",
+    "./artifacts/types/*": "./artifacts/types/*",
+    "./contracts-map.json": "./contracts-map.json"
+  },
   "scripts": {
     "hardhat:clear": "hardhat clean",
     "hardhat:build": "hardhat build --show-stack-traces",
@@ -15,6 +20,7 @@
     "@wagmi/cli": "^2.5.1",
     "forge-std": "github:foundry-rs/forge-std#v1.9.4",
     "hardhat": "^3.0.6",
+    "minimatch": "^10.0.3",
     "tsx": "^4.20.5",
     "typescript": "~5.9.2",
     "viem": "^2.37.8"
