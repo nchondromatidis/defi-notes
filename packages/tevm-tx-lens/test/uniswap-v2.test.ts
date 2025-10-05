@@ -2,7 +2,7 @@ import { expect, test } from 'vitest';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { parseEther, tevmSetAccount } from 'tevm';
 import { deployUniswapV2 } from './utils/uniswap-v2';
-import { TevmClient } from '../src/lens/TevmClient.ts';
+import { Simulator } from '../src/lens/Simulator.ts';
 
 const ETHER_1 = parseEther('1');
 
@@ -11,7 +11,7 @@ test('interact with uniswap v2', async () => {
   const deployerAccount = privateKeyToAccount(generatePrivateKey());
   const feeToSetAccount = privateKeyToAccount(generatePrivateKey());
 
-  const tevmClient = await TevmClient.build(deployerAccount);
+  const tevmClient = await Simulator.build(deployerAccount);
   await tevmSetAccount(tevmClient.client, {
     address: deployerAccount.address,
     balance: ETHER_1,

@@ -5,6 +5,7 @@
   "type": "module",
   "description": "React component for visualising tevm transactions",
   "scripts": {
+    "check:types": "tsc --noEmit",
     "dev": "vite --config test/playground/vite.config.ts",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

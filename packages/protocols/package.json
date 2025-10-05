@@ -2,18 +2,25 @@
   "name": "@defi-notes/protocols",
   "version": "1.0.0",
   "type": "module",
+  "exports": {
+    "./artifacts/contracts/*": "./artifacts/contracts/*",
+    "./artifacts/types/*": "./artifacts/types/*",
+    "./contracts-map.json": "./contracts-map.json"
+  },
+  "types": "types/index.d.ts",
   "scripts": {
+    "check:types": "tsc --noEmit",
     "hardhat:clear": "hardhat clean",
     "hardhat:build": "hardhat build --show-stack-traces",
-    "wagmi:generate": "wagmi generate",
+    "types:barrel": "ctix build",
     "hardhat:tasks:source-maps": "tsx tasks/inject-sourcemaps.ts",
     "hardhat:tasks:filter-contracts": "tsx tasks/filter-contracts.ts",
-    "build": "npm run hardhat:clear && npm run hardhat:tasks:filter-contracts && npm run hardhat:build && npm run wagmi:generate && npm run hardhat:tasks:source-maps"
+    "build": "npm run hardhat:clear && npm run hardhat:tasks:filter-contracts && npm run hardhat:build && npm run hardhat:tasks:source-maps"
   },
   "devDependencies": {
     "@defi-notes/config": "*",
     "@types/node": "^24.5.2",
-    "@wagmi/cli": "^2.5.1",
+    "ctix": "^2.7.1",
     "forge-std": "github:foundry-rs/forge-std#v1.9.4",
     "hardhat": "^3.0.6",
     "minimatch": "^10.0.3",

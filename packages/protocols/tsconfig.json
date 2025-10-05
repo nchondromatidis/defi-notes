@@ -1,4 +1,7 @@
 {
   "extends": "@defi-notes/config/tsconfig.json",
-  "exclude": ["lib", "contracts"]
+  "compilerOptions": {
+    "rootDir": "."
+  },
+  "exclude": ["node_modules", "lib", "contracts", "artifacts/build-info"]
 }
