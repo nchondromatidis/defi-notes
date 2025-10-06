@@ -5,7 +5,8 @@
   "exports": {
     "./artifacts/contracts/*": "./artifacts/contracts/*",
     "./artifacts/types/*": "./artifacts/types/*",
-    "./contracts-map.json": "./contracts-map.json"
+    "./contracts-map.json": "./contracts-map.json",
+    "./types/*": "./types/*"
   },
   "types": "types/index.d.ts",
   "scripts": {
@@ -15,7 +16,7 @@
     "types:barrel": "ctix build",
     "hardhat:tasks:source-maps": "tsx tasks/inject-sourcemaps.ts",
     "hardhat:tasks:filter-contracts": "tsx tasks/filter-contracts.ts",
-    "build": "npm run hardhat:clear && npm run hardhat:tasks:filter-contracts && npm run hardhat:build && npm run hardhat:tasks:source-maps"
+    "build": "npm run hardhat:clear && npm run hardhat:tasks:filter-contracts && npm run hardhat:build && npm run hardhat:tasks:source-maps && npm run types:barrel"
   },
   "devDependencies": {
     "@defi-notes/config": "*",

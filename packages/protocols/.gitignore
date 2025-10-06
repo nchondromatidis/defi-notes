@@ -19,4 +19,6 @@
 # Hardhat coverage reports
 /coverage
 
-/contracts
+contracts
+
+types

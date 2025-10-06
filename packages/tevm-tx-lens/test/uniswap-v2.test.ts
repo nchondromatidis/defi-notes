@@ -11,15 +11,15 @@ test('interact with uniswap v2', async () => {
   const deployerAccount = privateKeyToAccount(generatePrivateKey());
   const feeToSetAccount = privateKeyToAccount(generatePrivateKey());
 
-  const tevmClient = await Simulator.build(deployerAccount);
-  await tevmSetAccount(tevmClient.client, {
+  const simulator = await Simulator.build(deployerAccount);
+  await tevmSetAccount(simulator.client, {
     address: deployerAccount.address,
     balance: ETHER_1,
   });
-  const { factory } = await deployUniswapV2(tevmClient, feeToSetAccount.address);
+  const { factory } = await deployUniswapV2(simulator, feeToSetAccount.address);
 
   // act
-  const result = await tevmClient.tevmContract(factory, 'feeToSetter', []);
+  const result = await simulator.tevmContract(factory, 'feeToSetter', []);
 
   // assert
   expect(result.data).toEqual(feeToSetAccount.address);

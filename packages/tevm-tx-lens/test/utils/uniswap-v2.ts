@@ -3,8 +3,7 @@ import UniswapV2Factory from '@defi-notes/protocols/artifacts/contracts/v2-core/
 import WETH9 from '@defi-notes/protocols/artifacts/contracts/v2-periphery/contracts/test/WETH9.sol/WETH9.json';
 import UniswapV2Router02 from '@defi-notes/protocols/artifacts/contracts/v2-periphery/contracts/UniswapV2Router02.sol/UniswapV2Router02.json';
 import type { Simulator } from '../../src/lens/Simulator.ts';
-import type { UniswapV2Factory$Type } from '@defi-notes/protocols/artifacts/contracts/v2-core/contracts/UniswapV2Factory.sol/artifacts.d.ts';
-import type { UniswapV2Router02$Type } from '@defi-notes/protocols/artifacts/contracts/v2-periphery/contracts/UniswapV2Router02.sol/artifacts.d.ts';
+import type { UniswapV2Factory$Type, UniswapV2Router02$Type } from '@defi-notes/protocols/types/index.d.ts';
 
 export async function deployUniswapV2(simulator: Simulator, feeToSetAddress: Address) {
   const factoryDeployResult = await simulator.tevmDeploy({

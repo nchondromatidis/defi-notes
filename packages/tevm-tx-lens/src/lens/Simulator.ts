@@ -2,14 +2,14 @@ import { createTevmTransport, tevmReady, createClient, tevmContract, tevmDeploy 
 import type { ContractFunctionName, TevmTransport } from 'tevm';
 import type { Abi, Address, Account, Client, ContractFunctionArgs, AbiStateMutability } from 'viem';
 import type { ContractResult, NewContractEvent, Message } from '@tevm/actions';
-import type { InterpreterStep, EvmResult } from '@tevm/evm';
+import type { EvmResult } from '@tevm/evm';
 
 type Next = () => void;
 
-export class TevmClient {
+export class Simulator {
   constructor(public readonly client: Client<TevmTransport>) {}
 
-  static async build(nodeAccount: Account): Promise<TevmClient> {
+  static async build(nodeAccount: Account): Promise<Simulator> {
     const tevmTransport = createTevmTransport({
       miningConfig: { type: 'auto' },
     });
@@ -19,7 +19,7 @@ export class TevmClient {
     });
     await tevmReady(client);
 
-    return new TevmClient(client);
+    return new Simulator(client);
   }
 
   async tevmDeploy(params: Parameters<typeof tevmDeploy>[1]) {
@@ -40,17 +40,6 @@ export class TevmClient {
       to: contract.address,
       functionName,
       args,
-      onStep: (_data: InterpreterStep, next: Next) => {
-        // console.log('EVM Step:', {
-        //   cpc: _data.pc, // Program counter
-        //   opcode: _data.opcode, // Current opcode
-        //   gasLeft: _data.gasLeft, // Remaining gas
-        //   stack: _data.stack, // Stack contents
-        //   depth: _data.depth, // Call depth
-        //   address: _data.address.toString(), // Call depth
-        // });
-        next?.();
-      },
       onNewContract: (data: NewContractEvent, next?: Next) => {
         console.log('New Contract', {
           address: data.address,
