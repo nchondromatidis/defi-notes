@@ -4,6 +4,7 @@ import { glob } from 'glob';
 import { fileURLToPath } from 'node:url';
 import * as url from 'node:url';
 import { minimatch } from 'minimatch';
+import { excludeFolders, includeFolders } from '../filter-contracts-config.ts';
 
 async function copySymlinkRecursive(src: string, dest: string, include: string[], exclude: string[]) {
   await fs.rm(dest, { recursive: true, force: true });
@@ -38,10 +39,6 @@ if (import.meta.url === url.pathToFileURL(process.argv[1]).href) {
 
   const sourcePath = path.join(__dirname, '..', 'lib');
   const destinationPath = path.join(__dirname, '..', 'contracts');
-
-  // glob patterns are relative to sourcePath
-  const excludeFolders = ['v2-periphery/contracts/examples/**', 'solidity-lib/contracts/test/**'];
-  const includeFolders = ['v2-periphery/contracts/**', 'v2-core/contracts/**', 'solidity-lib/contracts/**'];
 
   copySymlinkRecursive(sourcePath, destinationPath, includeFolders, excludeFolders).catch(console.error);
 }

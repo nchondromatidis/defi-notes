@@ -1,9 +1,9 @@
 [submodule "packages/protocols/lib/v2-core"]
-	path = packages/protocols/lib/v2-core
+	path = packages/protocols/lib/uniswap-v2/v2-core
 	url = https://github.com/Uniswap/v2-core
 [submodule "packages/protocols/lib/v2-periphery"]
-	path = packages/protocols/lib/v2-periphery
+	path = packages/protocols/lib/uniswap-v2/v2-periphery
 	url = https://github.com/Uniswap/v2-periphery
 [submodule "packages/protocols/lib/solidity-lib"]
-	path = packages/protocols/lib/solidity-lib
+	path = packages/protocols/lib/uniswap-v2/solidity-lib
 	url = https://github.com/Uniswap/solidity-lib
