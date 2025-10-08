@@ -1,0 +1,5 @@
+export const contractMap = {
+  'solidity-lib': 'https://github.com/Uniswap/solidity-lib',
+  'v2-core': 'https://github.com/Uniswap/v2-core',
+  'v2-periphery': 'https://github.com/Uniswap/v2-periphery',
+};

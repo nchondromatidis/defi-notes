@@ -85,6 +85,7 @@
       // @mode create, bundle
       "include": [
         "src/**/*",
+        "config/**/*",
         "artifacts/contracts/**/*"
       ],
       // A list of files to exclude when generating the artifact.ts file. If no value is set,

@@ -5,8 +5,8 @@
   "exports": {
     "./artifacts/contracts/*": "./artifacts/contracts/*",
     "./artifacts/types/*": "./artifacts/types/*",
-    "./contracts-map.json": "./contracts-map.json",
-    "./types/*": "./types/*"
+    "./config/*": "./config/*",
+    "./types": "./types/index.d.ts"
   },
   "types": "types/index.d.ts",
   "scripts": {
