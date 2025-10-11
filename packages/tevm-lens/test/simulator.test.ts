@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { test } from 'vitest';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { parseEther, tevmSetAccount } from 'tevm';
 import { deployUniswapV2 } from './utils/uniswap-v2.ts';
@@ -8,7 +8,7 @@ import { TestResourceLoader } from './utils/TestResourceLoader.ts';
 import * as path from 'node:path';
 import { LabeledContracts } from '../src/lens/LabeledContracts.ts';
 import { SupportedContracts } from '../src/lens/SupportedContracts.ts';
-import { Traces } from '../src/lens/Traces.ts';
+import { Tracer } from '../src/lens/Tracer.ts';
 
 const __dirname = import.meta.dirname;
 
@@ -26,8 +26,8 @@ test('uniswap v2', async () => {
 
   const supportedContracts = new SupportedContracts();
   const labeledContracts = new LabeledContracts();
-  const traces = new Traces(supportedContracts, labeledContracts);
-  const lensClient = new LensClient(client, supportedContracts, labeledContracts, traces);
+  const tracer = new Tracer(supportedContracts, labeledContracts);
+  const lensClient = new LensClient(client, supportedContracts, labeledContracts, tracer);
 
   const uniswapV2Artifacts = await resourceLoader.getProtocolArtifacts('uniswap-v2');
   await supportedContracts.registerArtifacts(uniswapV2Artifacts);
@@ -53,5 +53,5 @@ test('uniswap v2', async () => {
   await lensClient.contract(factory, 'createPair', [token1.createdAddress!, token2.createdAddress!]);
 
   // assert
-  console.log(traces.traced);
+  console.log(tracer.traced);
 });

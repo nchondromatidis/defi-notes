@@ -13,14 +13,14 @@ import type { ArtifactMap } from '@defi-notes/protocols/types';
 import { type Address, type ContractFQN, type Hex, type Next, randomId } from '../common/utils.ts';
 import { SupportedContracts } from './SupportedContracts.ts';
 import { LabeledContracts } from './LabeledContracts.ts';
-import { Traces } from './Traces.ts';
+import { Tracer } from './Tracer.ts';
 
 export class LensClient {
   constructor(
     public readonly client: Client<TevmTransport>,
     private readonly supportedContracts: SupportedContracts,
     private readonly labeledContracts: LabeledContracts,
-    private readonly traces: Traces
+    private readonly tracer: Tracer
   ) {}
 
   async deploy<ContractFQNT extends ContractFQN>(
@@ -57,21 +57,21 @@ export class LensClient {
       args: args,
       onNewContract: async (event: NewContractEvent, next?: Next) => {
         console.debug('onNewContract:NewContractEvent', event.address.toString());
-        await this.traces.handleNewContract(event, tempId);
+        await this.tracer.handleNewContract(event, tempId);
         next?.();
       },
       onBeforeMessage: async (event: Message, next?: Next) => {
         console.debug('onBeforeMessage:Message', event.to?.toString(), event.depth);
-        await this.traces.handleFunctionCall(event, tempId);
+        await this.tracer.handleFunctionCall(event, tempId);
         next?.();
       },
       onAfterMessage: async (event: EvmResult, next?: Next) => {
         console.log('onAfterMessage:EvmResult', event.createdAddress?.toString());
-        await this.traces.handleFunctionReturn(event, tempId);
+        await this.tracer.handleFunctionReturn(event, tempId);
         next?.();
       },
     });
-    await this.traces.handleTxFinished(deployedResult, tempId);
+    await this.tracer.handleTxFinished(deployedResult, tempId);
 
     return deployedResult;
   }

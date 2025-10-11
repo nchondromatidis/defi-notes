@@ -7,7 +7,7 @@ import type { Address } from 'tevm';
 import { bytesToHex, decodeFunctionData, toHex } from 'viem';
 import { InvariantError } from '../common/errors.ts';
 
-// TODO: discriminate types ?
+// CONSIDER: discriminate types
 type TraceMessage = Message & {
   type: 'TraceMessage';
   contractFQN?: string;
@@ -21,9 +21,9 @@ type TraceContractResult = EvmResult & { type: 'TraceContractResult' };
 type TraceEvent = TraceMessage | TraceContractResult;
 type TxTrace = Array<TraceEvent>;
 
-export class Traces {
+export class Tracer {
   public readonly traced: Map<Hex, TxTrace> = new Map();
-  public readonly currentlyTracing: Map<string, TxTrace> = new Map();
+  public readonly tracing: Map<string, TxTrace> = new Map();
 
   constructor(
     private readonly supportedContracts: SupportedContracts,
@@ -31,6 +31,7 @@ export class Traces {
   ) {}
 
   // EVENT HANDLERS
+
   public async handleFunctionCall(message: Message, tempId: string): Promise<void> {
     const traceMessage: TraceMessage = { ...message, type: 'TraceMessage' };
 
@@ -79,13 +80,18 @@ export class Traces {
   }
 
   public async handleFunctionReturn(event: EvmResult, tempId: string) {
+    // TODO: continue here
+    // error
+    // success
+    // logs
+    // events
     return;
   }
 
   async handleTxFinished(result: ContractResult, tempId: string) {
     // preconditions
     if (!result.txHash) throw new InvariantError('tx hash is empty');
-    const currentTxTrace = this.currentlyTracing.get(tempId);
+    const currentTxTrace = this.tracing.get(tempId);
     if (!currentTxTrace) throw new InvariantError('current tx trace is empty');
 
     this.traced.set(result.txHash, currentTxTrace);
@@ -94,14 +100,14 @@ export class Traces {
   // HELPER FUNCTIONS
 
   private getLastEvent(tempId: string) {
-    const txTrace = this.currentlyTracing.get(tempId);
+    const txTrace = this.tracing.get(tempId);
     if (!txTrace) return undefined;
     return txTrace[txTrace.length - 1];
   }
 
   private addToTrace(tempId: string, traceMessage: TraceMessage): void {
-    const txTrace = this.currentlyTracing.get(tempId) ?? [];
+    const txTrace = this.tracing.get(tempId) ?? [];
     txTrace.push(traceMessage);
-    this.currentlyTracing.set(tempId, txTrace);
+    this.tracing.set(tempId, txTrace);
   }
 }
