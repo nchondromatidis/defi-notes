@@ -17,6 +17,7 @@
     "@types/node": "^24.5.2",
     "ctix": "^2.7.1",
     "forge-std": "github:foundry-rs/forge-std#v1.9.4",
+    "glob": "^11.0.3",
     "hardhat": "^3.0.6",
     "minimatch": "^10.0.3",
     "quicktype": "^23.2.6",

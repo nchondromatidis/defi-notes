@@ -7,19 +7,20 @@ import {
   type ContractConstructorArgs,
   type ContractFunctionArgs,
 } from 'viem';
-import type { ContractResult, Message, NewContractEvent } from 'tevm/actions';
+import type { ContractResult, Message } from 'tevm/actions';
 import type { EvmResult } from 'tevm/evm';
 import type { ArtifactMap } from '@defi-notes/protocols/types';
 import { type Address, type ContractFQN, type Hex, type Next, randomId } from '../common/utils.ts';
 import { SupportedContracts } from './SupportedContracts.ts';
-import { LabeledContracts } from './LabeledContracts.ts';
+import { DeployedContracts } from './DeployedContracts.ts';
 import { Tracer } from './Tracer.ts';
+import { InvariantError } from '../common/errors.ts';
 
 export class LensClient {
   constructor(
     public readonly client: Client<TevmTransport>,
     private readonly supportedContracts: SupportedContracts,
-    private readonly labeledContracts: LabeledContracts,
+    private readonly deployedContracts: DeployedContracts,
     private readonly tracer: Tracer
   ) {}
 
@@ -33,8 +34,9 @@ export class LensClient {
       bytecode: artifact.bytecode as Hex,
       args: args as unknown[],
     });
-    console.debug('deploy:', deployResult.createdAddress!, contractFQN);
-    this.labeledContracts.labelAddress(deployResult.createdAddress!, contractFQN);
+    if (!deployResult.createdAddress) throw new InvariantError('createdAddress missing after deploy');
+    console.debug('deploy:', deployResult.createdAddress, contractFQN);
+    this.deployedContracts.markContractAddress(deployResult.createdAddress, contractFQN);
     return deployResult;
   }
 
@@ -55,11 +57,6 @@ export class LensClient {
       abi: contract.abi,
       functionName: functionName,
       args: args,
-      onNewContract: async (event: NewContractEvent, next?: Next) => {
-        console.debug('onNewContract:NewContractEvent', event.address.toString());
-        await this.tracer.handleNewContract(event, tempId);
-        next?.();
-      },
       onBeforeMessage: async (event: Message, next?: Next) => {
         console.debug('onBeforeMessage:Message', event.to?.toString(), event.depth);
         await this.tracer.handleFunctionCall(event, tempId);
@@ -67,7 +64,7 @@ export class LensClient {
       },
       onAfterMessage: async (event: EvmResult, next?: Next) => {
         console.log('onAfterMessage:EvmResult', event.createdAddress?.toString());
-        await this.tracer.handleFunctionReturn(event, tempId);
+        await this.tracer.handleFunctionResult(event, tempId);
         next?.();
       },
     });
