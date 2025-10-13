@@ -1,6 +1,7 @@
-import { test, beforeEach } from 'vitest';
+import { test, beforeEach, beforeAll } from 'vitest';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { parseEther, tevmSetAccount } from 'tevm';
+import { type Vm } from 'tevm/vm';
 import { deployUniswapV2 } from './utils/uniswap-v2.ts';
 import { LensClient } from '../src/lens/LensClient.ts';
 import { buildClient } from '../src/lens/client.ts';
@@ -17,12 +18,14 @@ const ETHER_1 = parseEther('1');
 
 let lensClient: LensClient;
 let factory: Awaited<ReturnType<typeof deployUniswapV2>>['factory'];
+let vm: Vm;
+let client: Awaited<ReturnType<typeof buildClient>>;
 
-beforeEach(async () => {
+beforeAll(async () => {
   const deployerAccount = privateKeyToAccount(generatePrivateKey());
   const feeToSetAccount = privateKeyToAccount(generatePrivateKey());
 
-  const client = await buildClient(deployerAccount);
+  client = await buildClient(deployerAccount);
 
   const basePath = path.join(__dirname, '..', '..', 'protocols', 'artifacts');
   const resourceLoader = new TestResourceLoader(basePath);
@@ -42,6 +45,13 @@ beforeEach(async () => {
 
   const deployment = await deployUniswapV2(lensClient, feeToSetAccount.address);
   factory = deployment.factory;
+
+  vm = await client.transport.tevm.getVm();
+  await vm.stateManager.checkpoint();
+});
+
+beforeEach(async () => {
+  await vm.stateManager.revert();
 });
 
 test('tracer deploy test', async () => {
