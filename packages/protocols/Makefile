@@ -3,7 +3,11 @@
 .PHONY: check-types contracts-clean hardhat-clean clean hardhat-build types-barrel \
         hardhat-tasks-source-maps hardhat-tasks-filter-contracts build map-protocols-contracts
 
-# Check TypeScript types without emitting files
+# not used
+hardhat-tasks-source-maps:
+	@echo "Injecting source maps..."
+	pnpm exec tsx tasks/inject-sourcemaps.ts
+
 check-types:
 	@echo "Checking TypeScript types..."
 	tsc --noEmit
@@ -19,28 +23,24 @@ hardhat-clean:
 clean: hardhat-clean contracts-clean
 	@echo "All cleaned!"
 
-hardhat-build:
-	@echo "Building with Hardhat..."
-	pnpm exec hardhat build
-
-types-barrel:
-	@echo "Generating type barrel exports..."
-	pnpm exec ctix build
-
-hardhat-tasks-source-maps:
-	@echo "Injecting source maps..."
-	pnpm exec tsx tasks/inject-sourcemaps.ts
-
 hardhat-tasks-filter-contracts:
 	@echo "Filtering contracts..."
 	pnpm exec tsx tasks/filter-contracts.ts
+
+hardhat-build:
+	@echo "Building with Hardhat..."
+	pnpm exec hardhat build
 
 map-protocols-contracts:
 	@echo "Mapping Contracts..."
 	pnpm exec tsx tasks/map-protocols-contracts.ts
 	pnpm exec quicktype --src ./artifacts/protocols-contracts-map.json --src-lang json --out ./artifacts/protocols-contracts-map.d.ts --just-types
 
+types-barrel:
+	@echo "Generating type barrel exports..."
+	pnpm exec ctix build
+
 
 # Full build pipeline
-build: clean hardhat-tasks-filter-contracts hardhat-build types-barrel map-protocols-contracts
+build: clean hardhat-tasks-filter-contracts hardhat-build map-protocols-contracts types-barrel
 	@echo "Build complete!"
