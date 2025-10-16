@@ -34,14 +34,14 @@ export class Tracer {
 
   //** Event Handlers **/
 
-  public async handleFunctionCall(event: Message, tempId: string): Promise<void> {
+  public async handleFunctionCall(callEvent: Message, tempId: string): Promise<void> {
     const tempIdTxTrace = this.getTracingTx(tempId);
-    const functionCallEvent: FunctionCallEvent = { ...event, type: 'FunctionCallEvent' };
+    const functionCallEvent: FunctionCallEvent = { type: 'FunctionCallEvent' };
 
     // new contract deployment
-    if (!event.to) {
+    if (!callEvent.to) {
       functionCallEvent.isCreate = true;
-      const hexBytecode = bytesToHex(event.data);
+      const hexBytecode = bytesToHex(callEvent.data);
       const contractFQN = await this.supportedContracts.getContractFqnFromBytecode(hexBytecode);
       if (contractFQN) {
         functionCallEvent.createdContractFQN = contractFQN;
@@ -60,13 +60,13 @@ export class Tracer {
     }
 
     // function call/send
-    if (event.to) {
-      const contractFQN = this.deployedContracts.getContractForAddress(event.to.toString());
+    if (callEvent.to) {
+      const contractFQN = this.deployedContracts.getContractForAddress(callEvent.to.toString());
       if (contractFQN) {
         const contractArtifact = await this.supportedContracts.getArtifactFrom(contractFQN);
         const decoded = decodeFunctionData({
           abi: contractArtifact.abi,
-          data: toHex(event.data),
+          data: toHex(callEvent.data),
         });
         functionCallEvent.contractFQN = contractFQN;
         functionCallEvent.functionName = decoded.functionName;
@@ -77,18 +77,18 @@ export class Tracer {
     tempIdTxTrace.addFunctionCall(functionCallEvent);
   }
 
-  public async handleFunctionResult(event: EvmResult, tempId: string) {
+  public async handleFunctionResult(resultEvent: EvmResult, tempId: string) {
     const tempIdTxTrace = this.getTracingTx(tempId);
 
-    const functionResultEvent: FunctionResultEvent = { ...event, type: 'FunctionResultEvent' };
+    const functionResultEvent: FunctionResultEvent = { type: 'FunctionResultEvent' };
 
     // new contract deployment
-    if (functionResultEvent.createdAddress) {
+    if (resultEvent.createdAddress) {
       functionResultEvent.isCreate = true;
       const createdContractFQN = tempIdTxTrace.getCurrentFunctionCallEvent().createdContractFQN;
       if (createdContractFQN) {
         functionResultEvent.createdContractFQN = createdContractFQN;
-        this.deployedContracts.markContractAddress(functionResultEvent.createdAddress.toString(), createdContractFQN);
+        this.deployedContracts.markContractAddress(resultEvent.createdAddress.toString(), createdContractFQN);
       }
     }
 
@@ -99,12 +99,12 @@ export class Tracer {
     }
 
     // function result with error
-    if (!functionResultEvent.createdAddress && functionResultEvent.execResult.exceptionError) {
+    if (!resultEvent.createdAddress && resultEvent.execResult.exceptionError) {
       // decode logs
     }
 
     // function result without error
-    if (!functionResultEvent.createdAddress && !functionResultEvent.execResult.exceptionError) {
+    if (!resultEvent.createdAddress && !resultEvent.execResult.exceptionError) {
       // TODO: continue here
       // decodeFunctionResult({
       //   abi: yourContractAbi,
@@ -115,8 +115,8 @@ export class Tracer {
     }
 
     // logs
-    if (contractAbi && functionResultEvent.execResult.logs) {
-      const lensLogs: LensLog[] = functionResultEvent.execResult.logs.map((log) => {
+    if (contractAbi && resultEvent.execResult.logs) {
+      const lensLogs: LensLog[] = resultEvent.execResult.logs.map((log) => {
         const [signature, ...args] = log[1].map((it) => bytesToHex(it));
         const decodedLog = decodeEventLog({
           abi: contractAbi,

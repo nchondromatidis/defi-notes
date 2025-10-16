@@ -5,7 +5,7 @@ import type { ContractFQN } from './artifact.ts';
 import { decodeEventLog } from 'viem';
 
 // TODO: better type safety, less optional keys, discriminant union types?
-export type FunctionCallEvent = Message & {
+export type FunctionCallEvent = {
   type: 'FunctionCallEvent';
   contractFQN?: ContractFQN;
   functionName?: string;
@@ -16,7 +16,7 @@ export type FunctionCallEvent = Message & {
   called?: Array<FunctionCallEvent>;
   result?: FunctionResultEvent;
 };
-export type FunctionResultEvent = EvmResult & {
+export type FunctionResultEvent = {
   type: 'FunctionResultEvent';
   isCreate?: boolean;
   createdContractFQN?: string;
