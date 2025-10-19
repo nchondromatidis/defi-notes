@@ -5,16 +5,16 @@ import type { EvmResult } from 'tevm/evm';
 import { type Abi, bytesToHex, decodeEventLog, decodeFunctionData, toEventSignature, toHex } from 'viem';
 import { InvariantError } from '../common/errors.ts';
 import { type FunctionCallEvent, type FunctionResultEvent, type LensLog, TxTrace } from './TxTrace.ts';
-import type { Hex } from './artifact.ts';
+import type { Hex, LensArtifactsMap } from './artifact.ts';
 import type { AbiEvent } from 'tevm';
 
-export class Tracer {
-  public readonly tracedTx: Map<Hex, TxTrace> = new Map();
-  public readonly tracingTx: Map<string, TxTrace> = new Map();
+export class Tracer<TMap extends LensArtifactsMap<TMap>> {
+  public readonly tracedTx: Map<Hex, TxTrace<TMap>> = new Map();
+  public readonly tracingTx: Map<string, TxTrace<TMap>> = new Map();
 
   constructor(
-    private readonly supportedContracts: SupportedContracts,
-    private readonly deployedContracts: DeployedContracts
+    private readonly supportedContracts: SupportedContracts<TMap>,
+    private readonly deployedContracts: DeployedContracts<TMap>
   ) {}
 
   //** Start-Stop tx-tracing **/
@@ -36,7 +36,7 @@ export class Tracer {
 
   public async handleFunctionCall(callEvent: Message, tempId: string): Promise<void> {
     const tempIdTxTrace = this.getTracingTx(tempId);
-    const functionCallEvent: FunctionCallEvent = { type: 'FunctionCallEvent' };
+    const functionCallEvent: FunctionCallEvent<TMap> = { type: 'FunctionCallEvent' };
 
     // new contract deployment
     if (!callEvent.to) {
@@ -80,7 +80,7 @@ export class Tracer {
   public async handleFunctionResult(resultEvent: EvmResult, tempId: string) {
     const tempIdTxTrace = this.getTracingTx(tempId);
 
-    const functionResultEvent: FunctionResultEvent = { type: 'FunctionResultEvent' };
+    const functionResultEvent: FunctionResultEvent<TMap> = { type: 'FunctionResultEvent' };
 
     // new contract deployment
     if (resultEvent.createdAddress) {
@@ -123,6 +123,7 @@ export class Tracer {
           topics: [signature, ...args],
           data: bytesToHex(log[2]),
         });
+        // TODO: fix this type error
         const abiEvent = this.findEventByName(contractAbi, decodedLog.eventName);
         const eventSignature = abiEvent ? toEventSignature(abiEvent) : undefined;
         return { ...decodedLog, eventSignature: eventSignature };

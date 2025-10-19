@@ -13,18 +13,18 @@ import { Tracer } from '../src/lens/Tracer.ts';
 import { inspect } from './utils/inspect.ts';
 import { getContractAddress, encodePacked, keccak256 } from 'viem';
 import type { IResourceLoader } from '../src/adapters/IResourceLoader.ts';
-
 import { safeCastToHex } from '../src/lens/artifact.ts';
+import type { TestArtifactsMap } from './utils/types.ts';
 
 const __dirname = import.meta.dirname;
 
 const ETHER_1 = parseEther('1');
 
-let lensClient: LensClient;
+let lensClient: LensClient<TestArtifactsMap>;
 let factory: Awaited<ReturnType<typeof deployUniswapV2>>['factory'];
 let vm: Vm;
 let client: Awaited<ReturnType<typeof buildClient>>;
-let resourceLoader: IResourceLoader;
+let resourceLoader: IResourceLoader<TestArtifactsMap>;
 
 beforeAll(async () => {
   const deployerAccount = privateKeyToAccount(generatePrivateKey());
@@ -33,12 +33,12 @@ beforeAll(async () => {
   client = await buildClient(deployerAccount);
 
   const basePath = path.join(__dirname, '..', '..', 'protocols', 'artifacts');
-  resourceLoader = new TestResourceLoader(basePath);
+  resourceLoader = new TestResourceLoader<TestArtifactsMap>(basePath);
 
-  const supportedContracts = new SupportedContracts();
-  const labeledContracts = new DeployedContracts();
-  const tracer = new Tracer(supportedContracts, labeledContracts);
-  lensClient = new LensClient(client, supportedContracts, labeledContracts, tracer);
+  const supportedContracts = new SupportedContracts<TestArtifactsMap>();
+  const labeledContracts = new DeployedContracts<TestArtifactsMap>();
+  const tracer = new Tracer<TestArtifactsMap>(supportedContracts, labeledContracts);
+  lensClient = new LensClient<TestArtifactsMap>(client, supportedContracts, labeledContracts, tracer);
 
   const uniswapV2Artifacts = await resourceLoader.getProtocolArtifacts('uniswap-v2');
   await supportedContracts.registerArtifacts(uniswapV2Artifacts);

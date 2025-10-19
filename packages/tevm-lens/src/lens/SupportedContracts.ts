@@ -1,15 +1,15 @@
 import { GenericError } from '../common/errors.ts';
-import type { ContractFQN, ArtifactMap, ProtocolArtifact } from './artifact.ts';
+import type { LensArtifactsMap, LensContractFQN } from './artifact.ts';
 
-export class SupportedContracts {
+export class SupportedContracts<TMap extends LensArtifactsMap<TMap>> {
   constructor() {}
 
-  protected bytecodeToContractFqnIndex: Map<string, ContractFQN> = new Map();
-  protected contractFqnToArtifactIndex: Map<ContractFQN, ProtocolArtifact> = new Map();
+  protected bytecodeToContractFqnIndex: Map<string, LensContractFQN<TMap>> = new Map();
+  protected contractFqnToArtifactIndex: Map<LensContractFQN<TMap>, TMap[LensContractFQN<TMap>]> = new Map();
 
-  public async registerArtifacts(artifacts: Array<ProtocolArtifact>) {
+  public async registerArtifacts(artifacts: Array<TMap[LensContractFQN<TMap>]>) {
     artifacts.forEach((it) => {
-      const contractFQN = (it.sourceName + ':' + it.contractName) as ContractFQN;
+      const contractFQN = (it.sourceName + ':' + it.contractName) as LensContractFQN<TMap>;
       this.bytecodeToContractFqnIndex.set(it.bytecode, contractFQN);
       this.contractFqnToArtifactIndex.set(contractFQN, it);
     });
@@ -21,19 +21,19 @@ export class SupportedContracts {
     return this.bytecodeToContractFqnIndex.get(bytecode);
   }
 
-  public async getArtifactFrom<ContractFqnT extends ContractFQN>(
+  public async getArtifactFrom<ContractFqnT extends LensContractFQN<TMap>>(
     contractFQN: ContractFqnT
-  ): Promise<ArtifactMap[ContractFqnT]> {
+  ): Promise<TMap[ContractFqnT]> {
     if (!this.contractFqnToArtifactIndex.has(contractFQN)) {
       throw new GenericError('Contract not supported', { name: contractFQN });
     }
-    return this.contractFqnToArtifactIndex.get(contractFQN)! as ArtifactMap[ContractFqnT];
+    return this.contractFqnToArtifactIndex.get(contractFQN)! as TMap[ContractFqnT];
   }
 
-  public async getArtifactPart<ContractFqnT extends ContractFQN, ArtifactPartT extends keyof ArtifactMap[ContractFqnT]>(
-    contractFQN: ContractFqnT,
-    artifactPart: ArtifactPartT
-  ): Promise<ArtifactMap[ContractFqnT][ArtifactPartT]> {
+  public async getArtifactPart<
+    ContractFqnT extends LensContractFQN<TMap>,
+    ArtifactPartT extends keyof TMap[ContractFqnT],
+  >(contractFQN: ContractFqnT, artifactPart: ArtifactPartT): Promise<TMap[ContractFqnT][ArtifactPartT]> {
     const artifact = await this.getArtifactFrom(contractFQN);
     return artifact[artifactPart];
   }

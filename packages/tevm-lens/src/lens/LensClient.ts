@@ -15,21 +15,21 @@ import { SupportedContracts } from './SupportedContracts.ts';
 import { DeployedContracts } from './DeployedContracts.ts';
 import { Tracer } from './Tracer.ts';
 import { InvariantError } from '../common/errors.ts';
-import type { Address, ContractFQN, Hex, ArtifactMap } from './artifact.ts';
+import type { Address, Hex, LensArtifactsMap, LensContractFQN } from './artifact.ts';
 
 export type Next = () => void;
 
-export class LensClient {
+export class LensClient<TMap extends LensArtifactsMap<TMap>> {
   constructor(
     public readonly client: Client<TevmTransport>,
-    public readonly supportedContracts: SupportedContracts,
-    public readonly deployedContracts: DeployedContracts,
-    public readonly tracer: Tracer
+    public readonly supportedContracts: SupportedContracts<TMap>,
+    public readonly deployedContracts: DeployedContracts<TMap>,
+    public readonly tracer: Tracer<TMap>
   ) {}
 
-  async deploy<ContractFQNT extends ContractFQN>(
+  async deploy<ContractFQNT extends LensContractFQN<TMap>>(
     contractFQN: ContractFQNT,
-    args: ContractConstructorArgs<ArtifactMap[ContractFQNT]['abi']>
+    args: ContractConstructorArgs<TMap[ContractFQNT]['abi']>
   ) {
     const artifact = await this.supportedContracts.getArtifactFrom(contractFQN);
     const deployResult = await tevmDeploy(this.client, {
@@ -77,11 +77,11 @@ export class LensClient {
     return deployedResult;
   }
 
-  async getContract<ContractFqnT extends ContractFQN>(address: Hex, contractFQN: ContractFqnT) {
+  async getContract<ContractFqnT extends LensContractFQN<TMap>>(address: Hex, contractFQN: ContractFqnT) {
     const contractArtifact = await this.supportedContracts.getArtifactFrom(contractFQN);
     return getContract({
       address: address,
-      abi: contractArtifact.abi as ArtifactMap[ContractFqnT]['abi'],
+      abi: contractArtifact.abi as TMap[ContractFqnT]['abi'],
       client: this.client,
     });
   }

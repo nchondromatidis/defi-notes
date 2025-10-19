@@ -1,34 +1,32 @@
-import type { Message } from 'tevm/actions';
-import type { EvmResult } from 'tevm/evm';
 import { InvariantError } from '../common/errors.ts';
-import type { ContractFQN } from './artifact.ts';
+import type { LensArtifactsMap, LensContractFQN } from './artifact.ts';
 import { decodeEventLog } from 'viem';
 
-// TODO: better type safety, less optional keys, discriminant union types?
-export type FunctionCallEvent = {
+// TODO: better type safety ?
+export type FunctionCallEvent<TMap extends LensArtifactsMap<TMap>> = {
   type: 'FunctionCallEvent';
-  contractFQN?: ContractFQN;
+  contractFQN?: LensContractFQN<TMap>;
   functionName?: string;
   args?: readonly unknown[];
   isCreate?: boolean;
-  createdContractFQN?: ContractFQN;
+  createdContractFQN?: LensContractFQN<TMap>;
   constructorArgs?: readonly unknown[];
-  called?: Array<FunctionCallEvent>;
-  result?: FunctionResultEvent;
+  called?: Array<FunctionCallEvent<TMap>>;
+  result?: FunctionResultEvent<TMap>;
 };
-export type FunctionResultEvent = {
+export type FunctionResultEvent<TMap extends LensArtifactsMap<TMap>> = {
   type: 'FunctionResultEvent';
   isCreate?: boolean;
-  createdContractFQN?: string;
+  createdContractFQN?: LensContractFQN<TMap>;
   logs?: LensLog[];
 };
 export type LensLog = ReturnType<typeof decodeEventLog> & { eventSignature?: string };
 
-export class TxTrace {
-  public rootFunction?: FunctionCallEvent;
-  private stack: FunctionCallEvent[] = [];
+export class TxTrace<TMap extends LensArtifactsMap<TMap>> {
+  public rootFunction?: FunctionCallEvent<TMap>;
+  private stack: FunctionCallEvent<TMap>[] = [];
 
-  public addFunctionCall(event: FunctionCallEvent) {
+  public addFunctionCall(event: FunctionCallEvent<TMap>) {
     // Ensure event shape and defaults
     event.called = event.called ?? [];
     event.result = event.result ?? undefined;
@@ -44,7 +42,7 @@ export class TxTrace {
     this.stack.push(event);
   }
 
-  public addResult(event: FunctionResultEvent) {
+  public addResult(event: FunctionResultEvent<TMap>) {
     const current = this.stack[this.stack.length - 1];
     if (!current) {
       throw new InvariantError('Result event raised without function call');
@@ -57,7 +55,7 @@ export class TxTrace {
     this.stack.pop();
   }
 
-  public getCurrentFunctionCallEvent(): FunctionCallEvent {
+  public getCurrentFunctionCallEvent(): FunctionCallEvent<TMap> {
     return this.stack[this.stack.length - 1];
   }
 }
