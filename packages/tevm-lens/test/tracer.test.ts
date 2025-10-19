@@ -2,7 +2,7 @@ import { test, beforeEach, beforeAll } from 'vitest';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { parseEther, tevmSetAccount } from 'tevm';
 import { type Vm } from 'tevm/vm';
-import { deployUniswapV2 } from './utils/uniswap-v2.ts';
+import { deployUniswapV2 } from './_fixtures/uniswap-v2.ts';
 import { LensClient } from '../src/lens/LensClient.ts';
 import { buildClient } from '../src/lens/client.ts';
 import { TestResourceLoader } from './utils/TestResourceLoader.ts';

@@ -6,18 +6,17 @@
   "description": "React component for visualising tevm transactions",
   "scripts": {
     "check:types": "tsc --noEmit",
-    "dev": "vite --config test/playground/vite.config.ts",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@defi-notes/protocols": "workspace:*",
     "tevm": "^1.0.0-next.147",
     "viem": "^2.38.0"
   },
   "devDependencies": {
     "@defi-notes/config": "workspace:*",
+    "@defi-notes/protocols": "workspace:*",
     "@eslint/js": "^9.36.0",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",

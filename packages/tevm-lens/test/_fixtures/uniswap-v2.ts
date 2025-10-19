@@ -1,12 +1,13 @@
 import { type Address, getContract } from 'viem';
 import type { LensClient } from '../../src/lens/LensClient.ts';
 import type { IResourceLoader } from '../../src/adapters/IResourceLoader.ts';
-import type { TestArtifactsMap } from './types.ts';
+import type { TestArtifactsMap } from '../utils/types.ts';
+import type { ProtocolName } from '@defi-notes/protocols/types';
 
 export async function deployUniswapV2(
   lensClient: LensClient<TestArtifactsMap>,
   feeToSetAddress: Address,
-  resourceLoader: IResourceLoader<TestArtifactsMap>
+  resourceLoader: IResourceLoader<TestArtifactsMap, ProtocolName>
 ) {
   const factoryDeployResult = await lensClient.deploy(
     'contracts/uniswap-v2/v2-core/contracts/UniswapV2Factory.sol:UniswapV2Factory',
