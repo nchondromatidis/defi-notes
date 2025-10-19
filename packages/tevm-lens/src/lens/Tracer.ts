@@ -38,6 +38,8 @@ export class Tracer<TMap extends LensArtifactsMap<TMap>> {
     const tempIdTxTrace = this.getTracingTx(tempId);
     const functionCallEvent: FunctionCallEvent<TMap> = { type: 'FunctionCallEvent' };
 
+    functionCallEvent.depth = callEvent.depth;
+
     // new contract deployment
     if (!callEvent.to) {
       functionCallEvent.isCreate = true;
@@ -116,19 +118,24 @@ export class Tracer<TMap extends LensArtifactsMap<TMap>> {
 
     // logs
     if (contractAbi && resultEvent.execResult.logs) {
-      const lensLogs: LensLog[] = resultEvent.execResult.logs.map((log) => {
+      functionResultEvent.logs = resultEvent.execResult.logs.map((log): LensLog => {
         const [signature, ...args] = log[1].map((it) => bytesToHex(it));
         const decodedLog = decodeEventLog({
           abi: contractAbi,
           topics: [signature, ...args],
           data: bytesToHex(log[2]),
         });
-        // TODO: fix this type error
-        const abiEvent = this.findEventByName(contractAbi, decodedLog.eventName);
-        const eventSignature = abiEvent ? toEventSignature(abiEvent) : undefined;
-        return { ...decodedLog, eventSignature: eventSignature };
+        let eventSignature: string | undefined = undefined;
+        if (decodedLog.eventName) {
+          const abiEvent = this.findEventByName(contractAbi, decodedLog.eventName);
+          eventSignature = abiEvent ? toEventSignature(abiEvent) : undefined;
+        }
+        return {
+          eventName: decodedLog.eventName as string,
+          args: decodedLog.args as unknown[],
+          eventSignature: eventSignature,
+        };
       });
-      functionResultEvent.logs = lensLogs;
     }
 
     tempIdTxTrace.addResult(functionResultEvent);

@@ -1,10 +1,9 @@
 import { InvariantError } from '../common/errors.ts';
 import type { LensArtifactsMap, LensContractFQN } from './artifact.ts';
-import { decodeEventLog } from 'viem';
 
-// TODO: better type safety ?
 export type FunctionCallEvent<TMap extends LensArtifactsMap<TMap>> = {
   type: 'FunctionCallEvent';
+  depth?: number;
   contractFQN?: LensContractFQN<TMap>;
   functionName?: string;
   args?: readonly unknown[];
@@ -14,13 +13,15 @@ export type FunctionCallEvent<TMap extends LensArtifactsMap<TMap>> = {
   called?: Array<FunctionCallEvent<TMap>>;
   result?: FunctionResultEvent<TMap>;
 };
+
 export type FunctionResultEvent<TMap extends LensArtifactsMap<TMap>> = {
   type: 'FunctionResultEvent';
   isCreate?: boolean;
   createdContractFQN?: LensContractFQN<TMap>;
   logs?: LensLog[];
 };
-export type LensLog = ReturnType<typeof decodeEventLog> & { eventSignature?: string };
+
+export type LensLog = { eventName: string; args: Array<unknown>; eventSignature?: string };
 
 export class TxTrace<TMap extends LensArtifactsMap<TMap>> {
   public rootFunction?: FunctionCallEvent<TMap>;
