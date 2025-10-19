@@ -1,6 +1,6 @@
-import type { LensArtifactsMap, LensContractFQN, ProtocolsContractsMapD } from '../lens/artifact.ts';
+import type { LensArtifactsMap, LensContractFQN, LensProtocolsList } from '../lens/artifact.ts';
 
-export interface IResourceLoader<TMap extends LensArtifactsMap<TMap>> {
+export interface IResourceLoader<TMap extends LensArtifactsMap<TMap>, PList extends LensProtocolsList> {
   getArtifact<LensContractFqnT extends LensContractFQN<TMap>>(
     contractFQN: LensContractFqnT
   ): Promise<TMap[LensContractFqnT]>;
@@ -11,6 +11,6 @@ export interface IResourceLoader<TMap extends LensArtifactsMap<TMap>> {
   getArtifacts<LensContractFqnT extends LensContractFQN<TMap>>(
     contractFQN: LensContractFqnT[]
   ): Promise<Array<TMap[LensContractFqnT]>>;
-  getProtocolContractsFqn(protocolName: keyof ProtocolsContractsMapD): Promise<Array<LensContractFQN<TMap>>>;
-  getProtocolArtifacts(protocolName: keyof ProtocolsContractsMapD): Promise<Array<TMap[LensContractFQN<TMap>]>>;
+  getProtocolContractsFqn(protocolName: PList): Promise<Array<LensContractFQN<TMap>>>;
+  getProtocolArtifacts(protocolName: PList): Promise<Array<TMap[LensContractFQN<TMap>]>>;
 }

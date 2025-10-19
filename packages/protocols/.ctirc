@@ -85,8 +85,7 @@
       // @mode create, bundle
       "include": [
         "src/**/*",
-        "artifacts/contracts/**/*",
-        "artifacts/protocols-contracts-map.d.ts"
+        "artifacts/contracts/**/*"
       ],
       // A list of files to exclude when generating the artifact.ts file. If no value is set,
       // the value of the exclude setting set in the tsconfig.json file is used

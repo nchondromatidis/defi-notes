@@ -1,8 +1,7 @@
 import { type Abi, isHex } from 'viem';
-export type { ProtocolsContractsMapD } from '@defi-notes/protocols/types';
-export { default as protocolsContractsMap } from '@defi-notes/protocols/artifacts/protocols-contracts-map.json' with { type: 'json' };
 
-// hex
+// hex types
+
 export type Address = `0x${string}`;
 export type Hex = `0x${string}`;
 
@@ -11,10 +10,7 @@ export function safeCastToHex(value: string): Hex {
   return value;
 }
 
-// new types
-
-// TODO: remove ProtocolsContractsMapD types dependency
-export type LensProtocolsMap = Record<string, readonly string[]>;
+// artifacts types
 
 export interface LensArtifactSchema {
   readonly contractName: string;
@@ -36,3 +32,4 @@ export type LensArtifactsMap<T extends Record<string, LensArtifactSchema>> = {
 };
 
 export type LensContractFQN<T extends Record<string, LensArtifactSchema>> = keyof LensArtifactsMap<T> & string;
+export type LensProtocolsList = string;

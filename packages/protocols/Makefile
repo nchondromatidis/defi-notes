@@ -34,7 +34,6 @@ hardhat-build:
 map-protocols-contracts:
 	@echo "Mapping Contracts..."
 	pnpm exec tsx tasks/map-protocols-contracts.ts
-	pnpm exec quicktype --src ./artifacts/protocols-contracts-map.json --src-lang json --out ./artifacts/protocols-contracts-map.d.ts --just-types
 
 types-barrel:
 	@echo "Generating type barrel exports..."

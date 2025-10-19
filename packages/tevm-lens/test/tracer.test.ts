@@ -15,6 +15,7 @@ import { getContractAddress, encodePacked, keccak256 } from 'viem';
 import type { IResourceLoader } from '../src/adapters/IResourceLoader.ts';
 import { safeCastToHex } from '../src/lens/artifact.ts';
 import type { TestArtifactsMap } from './utils/types.ts';
+import type { ProtocolName } from '@defi-notes/protocols/types';
 
 const __dirname = import.meta.dirname;
 
@@ -24,7 +25,7 @@ let lensClient: LensClient<TestArtifactsMap>;
 let factory: Awaited<ReturnType<typeof deployUniswapV2>>['factory'];
 let vm: Vm;
 let client: Awaited<ReturnType<typeof buildClient>>;
-let resourceLoader: IResourceLoader<TestArtifactsMap>;
+let resourceLoader: IResourceLoader<TestArtifactsMap, ProtocolName>;
 
 beforeAll(async () => {
   const deployerAccount = privateKeyToAccount(generatePrivateKey());
@@ -33,7 +34,7 @@ beforeAll(async () => {
   client = await buildClient(deployerAccount);
 
   const basePath = path.join(__dirname, '..', '..', 'protocols', 'artifacts');
-  resourceLoader = new TestResourceLoader<TestArtifactsMap>(basePath);
+  resourceLoader = new TestResourceLoader<TestArtifactsMap, ProtocolName>(basePath);
 
   const supportedContracts = new SupportedContracts<TestArtifactsMap>();
   const labeledContracts = new DeployedContracts<TestArtifactsMap>();
