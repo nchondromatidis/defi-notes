@@ -16,5 +16,6 @@ export const includeFolders = [
 
 export const artifactsPath = path.join(__dirname, 'artifacts');
 export const artifactsContractPath = path.join(__dirname, 'artifacts', 'contracts');
+export const artifactsBuildInfoPath = path.join(__dirname, 'artifacts', 'build-info');
 export const libPath = path.join(__dirname, 'lib');
 export const contractsPath = path.join(__dirname, 'contracts');

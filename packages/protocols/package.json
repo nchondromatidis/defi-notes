@@ -14,13 +14,21 @@
   },
   "devDependencies": {
     "@defi-notes/config": "workspace:*",
+    "@eslint/js": "^9.36.0",
     "@types/node": "^24.5.2",
     "ctix": "^2.7.1",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
     "forge-std": "github:foundry-rs/forge-std#v1.9.4",
     "glob": "^11.0.3",
     "hardhat": "^3.0.6",
     "minimatch": "^10.0.3",
-    "tsx": "^4.20.5",
-    "typescript": "~5.9.2"
+    "prettier": "3.6.2",
+    "remove": "^0.1.5",
+    "solidity-ast": "^0.4.61",
+    "tsx": "^4.19.0",
+    "typescript": "~5.9.2",
+    "vfile-location": "^5.0.3"
   }
 }

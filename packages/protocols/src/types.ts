@@ -1,6 +1,2 @@
-import type {ArtifactMap} from "hardhat/types/artifacts";
-
-export type { ArtifactMap, LinkReferences, ImmutableReferences } from 'hardhat/types/artifacts';
-
-export type ProtocolArtifact = ArtifactMap[keyof ArtifactMap];
-
+export type { ArtifactMap } from 'hardhat/types/artifacts';
+export type { SourceFunctionIndexes, FunctionIndex } from '../tasks/index-function-definitions';

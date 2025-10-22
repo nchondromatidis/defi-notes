@@ -1,4 +1,3 @@
-import './tasks/inject-sourcemaps';
 import type { HardhatUserConfig } from 'hardhat/config';
 
 const compilerVersions: string[] = ['0.4.26', '0.5.16', '0.6.6', '0.6.12'];
