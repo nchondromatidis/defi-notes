@@ -11,9 +11,8 @@ import path from 'node:path';
 export type FunctionIndex = {
   name: string;
   kind: string;
-  lineStart: string;
-  lineEnd: string;
-  source: string;
+  lineStart: number;
+  lineEnd: number;
 };
 
 export type SourceFunctionIndexes = {
@@ -92,7 +91,6 @@ function createSourceFunctionIndexes(buildInfoPairs: ReturnType<typeof getBuildI
           kind: functionDef.kind,
           lineStart: functionLineStart,
           lineEnd: functionLineEnd,
-          source: sourceNormalized,
         };
         sourceFunctionDefinitions.push(functionIndex);
       }
@@ -128,7 +126,7 @@ function assertBuildInfoOutput(file: any): asserts file is SolidityBuildInfoOutp
 }
 
 function getLineNumber(location: string) {
-  return location.split(':')[1];
+  return Number.parseInt(location.split(':')[1]);
 }
 
 // main

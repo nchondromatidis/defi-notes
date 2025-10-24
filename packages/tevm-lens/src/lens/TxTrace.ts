@@ -1,20 +1,23 @@
 import { InvariantError } from '../common/errors.ts';
 import type { LensArtifactsMap, LensContractFQN } from './artifact.ts';
 
-export type FunctionCallEvent<TMap extends LensArtifactsMap<TMap>> = {
+export type FunctionCallEvent<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> = {
   type: 'FunctionCallEvent';
   depth?: number;
-  contractFQN?: LensContractFQN<TMap>;
+  contractFQN?: LensContractFQN<ArtifactMapT>;
   functionName?: string;
   args?: readonly unknown[];
+  lineStart?: number;
+  lineEnd?: number;
+  source?: string;
   isCreate?: boolean;
-  createdContractFQN?: LensContractFQN<TMap>;
+  createdContractFQN?: LensContractFQN<ArtifactMapT>;
   constructorArgs?: readonly unknown[];
-  called?: Array<FunctionCallEvent<TMap>>;
-  result?: FunctionResultEvent<TMap>;
+  called?: Array<FunctionCallEvent<ArtifactMapT>>;
+  result?: FunctionResultEvent<ArtifactMapT>;
 };
 
-export type FunctionResultEvent<TMap extends LensArtifactsMap<TMap>> = {
+export type FunctionResultEvent<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> = {
   type: 'FunctionResultEvent';
   isError?: boolean;
   errorType?: string;
@@ -24,17 +27,17 @@ export type FunctionResultEvent<TMap extends LensArtifactsMap<TMap>> = {
   returnValueRaw?: unknown;
   returnValue?: unknown;
   isCreate?: boolean;
-  createdContractFQN?: LensContractFQN<TMap>;
+  createdContractFQN?: LensContractFQN<ArtifactMapT>;
   logs?: LensLog[];
 };
 
 export type LensLog = { eventName: string; args: Array<unknown>; eventSignature?: string };
 
-export class TxTrace<TMap extends LensArtifactsMap<TMap>> {
-  public rootFunction?: FunctionCallEvent<TMap>;
-  private stack: FunctionCallEvent<TMap>[] = [];
+export class TxTrace<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
+  public rootFunction?: FunctionCallEvent<ArtifactMapT>;
+  private stack: FunctionCallEvent<ArtifactMapT>[] = [];
 
-  public addFunctionCall(event: FunctionCallEvent<TMap>) {
+  public addFunctionCall(event: FunctionCallEvent<ArtifactMapT>) {
     // Ensure event shape and defaults
     event.called = event.called ?? [];
     event.result = event.result ?? undefined;
@@ -50,7 +53,7 @@ export class TxTrace<TMap extends LensArtifactsMap<TMap>> {
     this.stack.push(event);
   }
 
-  public addResult(event: FunctionResultEvent<TMap>) {
+  public addResult(event: FunctionResultEvent<ArtifactMapT>) {
     const current = this.stack[this.stack.length - 1];
     if (!current) {
       throw new InvariantError('Result event raised without function call');
@@ -63,7 +66,7 @@ export class TxTrace<TMap extends LensArtifactsMap<TMap>> {
     this.stack.pop();
   }
 
-  public getCurrentFunctionCallEvent(): FunctionCallEvent<TMap> {
+  public getCurrentFunctionCallEvent(): FunctionCallEvent<ArtifactMapT> {
     return this.stack[this.stack.length - 1];
   }
 }

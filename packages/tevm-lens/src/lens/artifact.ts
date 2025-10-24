@@ -33,3 +33,14 @@ export type LensArtifactsMap<T extends Record<string, LensArtifactSchema>> = {
 
 export type LensContractFQN<T extends Record<string, LensArtifactSchema>> = keyof LensArtifactsMap<T> & string;
 export type LensProtocolsList = string;
+
+export type LensSourceFunctionIndexes = {
+  [source: string]: Array<LensFunctionIndex>;
+};
+
+export type LensFunctionIndex = {
+  name: string;
+  kind: string;
+  lineStart: number;
+  lineEnd: number;
+};

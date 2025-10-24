@@ -17,13 +17,13 @@ import { type FunctionCallEvent, type FunctionResultEvent, type LensLog, TxTrace
 import type { Hex, LensArtifactsMap } from './artifact.ts';
 import type { AbiEvent } from 'tevm';
 
-export class Tracer<TMap extends LensArtifactsMap<TMap>> {
-  public readonly tracedTx: Map<Hex, TxTrace<TMap>> = new Map();
-  public readonly tracingTx: Map<string, TxTrace<TMap>> = new Map();
+export class Tracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
+  public readonly tracedTx: Map<Hex, TxTrace<ArtifactMapT>> = new Map();
+  public readonly tracingTx: Map<string, TxTrace<ArtifactMapT>> = new Map();
 
   constructor(
-    private readonly supportedContracts: SupportedContracts<TMap>,
-    private readonly deployedContracts: DeployedContracts<TMap>
+    private readonly supportedContracts: SupportedContracts<ArtifactMapT>,
+    private readonly deployedContracts: DeployedContracts<ArtifactMapT>
   ) {}
 
   //** Start-Stop tx-tracing **/
@@ -45,7 +45,7 @@ export class Tracer<TMap extends LensArtifactsMap<TMap>> {
 
   public async handleFunctionCall(callEvent: Message, tempId: string): Promise<void> {
     const tempIdTxTrace = this.getTracingTx(tempId);
-    const functionCallEvent: FunctionCallEvent<TMap> = { type: 'FunctionCallEvent' };
+    const functionCallEvent: FunctionCallEvent<ArtifactMapT> = { type: 'FunctionCallEvent' };
 
     functionCallEvent.depth = callEvent.depth;
 
@@ -53,10 +53,10 @@ export class Tracer<TMap extends LensArtifactsMap<TMap>> {
     if (!callEvent.to) {
       functionCallEvent.isCreate = true;
       const hexBytecode = bytesToHex(callEvent.data);
-      const contractFQN = await this.supportedContracts.getContractFqnFromBytecode(hexBytecode);
+      const contractFQN = this.supportedContracts.getContractFqnFromBytecode(hexBytecode);
       if (contractFQN) {
         functionCallEvent.createdContractFQN = contractFQN;
-        const contractArtifact = await this.supportedContracts.getArtifactFrom(contractFQN);
+        const contractArtifact = this.supportedContracts.getArtifactFrom(contractFQN);
         const constructorCode = contractArtifact.bytecode.slice(hexBytecode.length) as Hex;
         if (constructorCode.length === 0) {
           functionCallEvent.constructorArgs = [];
@@ -72,16 +72,20 @@ export class Tracer<TMap extends LensArtifactsMap<TMap>> {
 
     // function call/send
     if (callEvent.to) {
-      const contractFQN = this.deployedContracts.getContractForAddress(callEvent.to.toString());
+      const contractFQN = this.deployedContracts.getContractFqnForAddress(callEvent.to.toString());
       if (contractFQN) {
-        const contractArtifact = await this.supportedContracts.getArtifactFrom(contractFQN);
+        const contractArtifact = this.supportedContracts.getArtifactFrom(contractFQN);
         const decoded = decodeFunctionData({
           abi: contractArtifact.abi,
           data: toHex(callEvent.data),
         });
+        const sourceLocation = this.supportedContracts.getFunctionLocation(contractFQN, decoded.functionName);
         functionCallEvent.contractFQN = contractFQN;
         functionCallEvent.functionName = decoded.functionName;
         functionCallEvent.args = decoded.args ?? [];
+        functionCallEvent.lineStart = sourceLocation?.lineStart;
+        functionCallEvent.lineEnd = sourceLocation?.lineEnd;
+        functionCallEvent.source = sourceLocation?.source;
       }
     }
 
@@ -91,7 +95,7 @@ export class Tracer<TMap extends LensArtifactsMap<TMap>> {
   public async handleFunctionResult(resultEvent: EvmResult, tempId: string) {
     const tempIdTxTrace = this.getTracingTx(tempId);
 
-    const functionResultEvent: FunctionResultEvent<TMap> = { type: 'FunctionResultEvent' };
+    const functionResultEvent: FunctionResultEvent<ArtifactMapT> = { type: 'FunctionResultEvent' };
 
     // new contract deployment
     if (resultEvent.createdAddress) {
@@ -106,7 +110,7 @@ export class Tracer<TMap extends LensArtifactsMap<TMap>> {
     const functionCallEvent = tempIdTxTrace.getCurrentFunctionCallEvent();
     let contractAbi = undefined;
     if (functionCallEvent.contractFQN) {
-      contractAbi = await this.supportedContracts.getArtifactPart(functionCallEvent.contractFQN, 'abi');
+      contractAbi = this.supportedContracts.getArtifactPart(functionCallEvent.contractFQN, 'abi');
     }
     const returnValueHex = bytesToHex(resultEvent.execResult.returnValue);
 

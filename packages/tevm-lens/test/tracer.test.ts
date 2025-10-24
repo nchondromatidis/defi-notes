@@ -6,7 +6,6 @@ import { deployUniswapV2 } from './_fixtures/uniswap-v2.ts';
 import { LensClient } from '../src/lens/LensClient.ts';
 import { buildClient } from '../src/lens/client.ts';
 import { TestResourceLoader } from './utils/TestResourceLoader.ts';
-import * as path from 'node:path';
 import { DeployedContracts } from '../src/lens/DeployedContracts.ts';
 import { SupportedContracts } from '../src/lens/SupportedContracts.ts';
 import { Tracer } from '../src/lens/Tracer.ts';
@@ -16,8 +15,6 @@ import type { IResourceLoader } from '../src/adapters/IResourceLoader.ts';
 import { safeCastToHex } from '../src/lens/artifact.ts';
 import type { TestArtifactsMap } from './_fixtures/types.ts';
 import type { ProtocolName } from '@defi-notes/protocols/types';
-
-const __dirname = import.meta.dirname;
 
 const ETHER_1 = parseEther('1');
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -34,8 +31,7 @@ beforeAll(async () => {
 
   client = await buildClient(deployerAccount);
 
-  const basePath = path.join(__dirname, '..', '..', 'protocols', 'artifacts');
-  resourceLoader = new TestResourceLoader<TestArtifactsMap, ProtocolName>(basePath);
+  resourceLoader = new TestResourceLoader<TestArtifactsMap, ProtocolName>();
 
   const supportedContracts = new SupportedContracts<TestArtifactsMap>();
   const labeledContracts = new DeployedContracts<TestArtifactsMap>();
@@ -44,6 +40,9 @@ beforeAll(async () => {
 
   const uniswapV2Artifacts = await resourceLoader.getProtocolArtifacts('uniswap-v2');
   await supportedContracts.registerArtifacts(uniswapV2Artifacts);
+
+  const uniswapFunctionIndexes = await resourceLoader.getFunctionIndexes('uniswap-v2');
+  await supportedContracts.registerFunctionIndexes(uniswapFunctionIndexes);
 
   await tevmSetAccount(lensClient.client, {
     address: deployerAccount.address,

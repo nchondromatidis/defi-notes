@@ -19,19 +19,19 @@ import type { Address, Hex, LensArtifactsMap, LensContractFQN } from './artifact
 
 export type Next = () => void;
 
-export class LensClient<TMap extends LensArtifactsMap<TMap>> {
+export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
   constructor(
     public readonly client: Client<TevmTransport>,
-    public readonly supportedContracts: SupportedContracts<TMap>,
-    public readonly deployedContracts: DeployedContracts<TMap>,
-    public readonly tracer: Tracer<TMap>
+    public readonly supportedContracts: SupportedContracts<ArtifactMapT>,
+    public readonly deployedContracts: DeployedContracts<ArtifactMapT>,
+    public readonly tracer: Tracer<ArtifactMapT>
   ) {}
 
-  async deploy<ContractFQNT extends LensContractFQN<TMap>>(
+  async deploy<ContractFQNT extends LensContractFQN<ArtifactMapT>>(
     contractFQN: ContractFQNT,
-    args: ContractConstructorArgs<TMap[ContractFQNT]['abi']>
+    args: ContractConstructorArgs<ArtifactMapT[ContractFQNT]['abi']>
   ) {
-    const artifact = await this.supportedContracts.getArtifactFrom(contractFQN);
+    const artifact = this.supportedContracts.getArtifactFrom(contractFQN);
     const deployResult = await tevmDeploy(this.client, {
       abi: artifact.abi,
       bytecode: artifact.bytecode,
@@ -76,11 +76,11 @@ export class LensClient<TMap extends LensArtifactsMap<TMap>> {
     return deployedResult;
   }
 
-  async getContract<ContractFqnT extends LensContractFQN<TMap>>(address: Hex, contractFQN: ContractFqnT) {
-    const contractArtifact = await this.supportedContracts.getArtifactFrom(contractFQN);
+  async getContract<ContractFqnT extends LensContractFQN<ArtifactMapT>>(address: Hex, contractFQN: ContractFqnT) {
+    const contractArtifact = this.supportedContracts.getArtifactFrom(contractFQN);
     return getContract({
       address: address,
-      abi: contractArtifact.abi as TMap[ContractFqnT]['abi'],
+      abi: contractArtifact.abi as ArtifactMapT[ContractFqnT]['abi'],
       client: this.client,
     });
   }
