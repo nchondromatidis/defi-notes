@@ -211,7 +211,7 @@ importers:
   packages/tevm-lens:
     dependencies:
       tevm:
-        specifier: ^1.0.0-next.147
+        specifier: ^1.0.0-next.149
         version: 1.0.0-next.149(@tevm/ts-plugin@1.0.0-next.148(typescript@5.9.3))(@types/debug@4.1.12)(@types/node@24.9.1)(@types/react@19.2.2)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(viem@2.38.0(typescript@5.9.3)(zod@4.1.12))(webpack@5.102.1)(yaml@2.8.1)(zod@4.1.12)
       viem:
         specifier: ^2.38.0

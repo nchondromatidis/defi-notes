@@ -8,7 +8,7 @@ import { buildClient } from '../src/lens/client.ts';
 import { TestResourceLoader } from './utils/TestResourceLoader.ts';
 import { DeployedContracts } from '../src/lens/indexes/DeployedContracts.ts';
 import { SupportedContracts } from '../src/lens/indexes/SupportedContracts.ts';
-import { FunctionTracer } from '../src/lens/tracers/function/FunctionTracer.ts';
+import { LensCallTracer } from '../src/lens/tracers/callTracer/LensCallTracer.ts';
 import { inspect } from './utils/inspect.ts';
 import { getContractAddress, encodePacked, keccak256 } from 'viem';
 import type { IResourceLoader } from '../src/adapters/IResourceLoader.ts';
@@ -35,7 +35,7 @@ beforeAll(async () => {
 
   const supportedContracts = new SupportedContracts<TestArtifactsMap>();
   const labeledContracts = new DeployedContracts<TestArtifactsMap>();
-  const tracer = new FunctionTracer<TestArtifactsMap>(supportedContracts, labeledContracts);
+  const tracer = new LensCallTracer<TestArtifactsMap>(supportedContracts, labeledContracts);
   lensClient = new LensClient<TestArtifactsMap>(client, supportedContracts, labeledContracts, tracer);
 
   const uniswapV2Artifacts = await resourceLoader.getProtocolArtifacts('uniswap-v2');
@@ -76,7 +76,7 @@ test('tracer: send success with deployment', async () => {
   await lensClient.contract(factory, 'createPair', [token1.createdAddress!, token2.createdAddress!]);
 
   // assert
-  inspect(lensClient.functionTracer.tracedTxs);
+  inspect(lensClient.callDecodeTracer.tracedTxs);
 });
 
 test('tracer: call success', async () => {
@@ -117,7 +117,7 @@ test('tracer: call success', async () => {
   await lensClient.contract(pairContract, 'getReserves', []);
 
   // assert
-  inspect(lensClient.functionTracer.tracedTxs);
+  inspect(lensClient.callDecodeTracer.tracedTxs);
 });
 
 test('tracer: call error', async () => {
@@ -131,5 +131,5 @@ test('tracer: call error', async () => {
   await lensClient.contract(factory, 'createPair', [ZERO_ADDRESS, token2.createdAddress!]);
 
   // assert
-  inspect(lensClient.functionTracer.tracedTxs);
+  inspect(lensClient.callDecodeTracer.tracedTxs);
 });

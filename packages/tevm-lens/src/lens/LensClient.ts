@@ -13,7 +13,7 @@ import type { EvmResult } from 'tevm/evm';
 import { randomId } from '../common/utils.ts';
 import { SupportedContracts } from './indexes/SupportedContracts.ts';
 import { DeployedContracts } from './indexes/DeployedContracts.ts';
-import { FunctionTracer } from './tracers/function/FunctionTracer.ts';
+import { LensCallTracer } from './tracers/callTracer/LensCallTracer.ts';
 import { InvariantError } from '../common/errors.ts';
 import type { Address, Hex, LensArtifactsMap, LensContractFQN } from './types/artifact.ts';
 import type { InterpreterStep } from 'tevm/evm';
@@ -25,7 +25,7 @@ export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
     public readonly client: Client<TevmTransport>,
     public readonly supportedContracts: SupportedContracts<ArtifactMapT>,
     public readonly deployedContracts: DeployedContracts<ArtifactMapT>,
-    public readonly functionTracer: FunctionTracer<ArtifactMapT>
+    public readonly callDecodeTracer: LensCallTracer<ArtifactMapT>
   ) {}
 
   async deploy<ContractFQNT extends LensContractFQN<ArtifactMapT>>(
@@ -54,7 +54,7 @@ export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
     traceTx = true
   ): Promise<ContractResult<TAbi, TFunctionName>> {
     const tempId = randomId();
-    if (traceTx) this.functionTracer.startTrace(tempId);
+    if (traceTx) this.callDecodeTracer.startTracing(tempId);
     const deployedResult = await tevmContract(this.client, {
       to: contract.address,
       code: undefined,
@@ -63,23 +63,19 @@ export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
       functionName: functionName,
       args: args,
       throwOnFail: false,
-      onStep: async (event: InterpreterStep, next?: Next) => {
-        if (event.opcode.name == 'SSTORE') {
-          console.log(event);
-        }
-
+      onStep: async (_: InterpreterStep, next?: Next) => {
         next?.();
       },
       onBeforeMessage: async (event: Message, next?: Next) => {
-        if (traceTx) await this.functionTracer.handleFunctionCall(event, tempId);
+        if (traceTx) await this.callDecodeTracer.handleFunctionCall(event, tempId);
         next?.();
       },
       onAfterMessage: async (event: EvmResult, next?: Next) => {
-        if (traceTx) await this.functionTracer.handleFunctionResult(event, tempId);
+        if (traceTx) await this.callDecodeTracer.handleFunctionResult(event, tempId);
         next?.();
       },
     });
-    if (traceTx) this.functionTracer.stopTrace(deployedResult.txHash, tempId);
+    if (traceTx) this.callDecodeTracer.stopTracing(deployedResult.txHash, tempId);
 
     return deployedResult;
   }
