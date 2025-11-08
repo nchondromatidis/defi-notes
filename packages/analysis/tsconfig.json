@@ -1,4 +1,0 @@
-{
-  "extends": "@defi-notes/config/tsconfig.json",
-  "include": ["src"]
-}
