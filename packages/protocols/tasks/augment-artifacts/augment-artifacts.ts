@@ -9,7 +9,6 @@ import { IndentationText, Project } from 'ts-morph';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function augmentContractTypes(artifactTypePath: string, contractName: string): void {
-  console.log(contractName);
   const project = new Project({
     manipulationSettings: {
       indentationText: IndentationText.TwoSpaces,

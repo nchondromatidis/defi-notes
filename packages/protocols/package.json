@@ -9,7 +9,9 @@
   "types": "types/index.d.ts",
   "scripts": {
     "check:types": "tsc --noEmit",
-    "build": "make build"
+    "build": "make build",
+    "list-protocols-contract": "tsx tasks/list-protocols-contracts.ts",
+    "index-function-definitions": "tsx tasks/index-function-definitions.ts"
   },
   "devDependencies": {
     "@defi-notes/config": "workspace:*",

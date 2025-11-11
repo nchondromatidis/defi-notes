@@ -1,7 +1,5 @@
-import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import hre from 'hardhat';
 
 // glob patterns are relative to sourcePath
 export const excludeFolders = [
@@ -14,8 +12,9 @@ export const includeFolders = [
   'uniswap-v2/solidity-lib/contracts/**',
 ];
 
-export const artifactsPath = path.join(__dirname, 'artifacts');
-export const artifactsContractPath = path.join(__dirname, 'artifacts', 'contracts');
-export const artifactsBuildInfoPath = path.join(__dirname, 'artifacts', 'build-info');
-export const libPath = path.join(__dirname, 'lib');
-export const contractsPath = path.join(__dirname, 'contracts');
+export const rootPath = hre.config.paths.root;
+export const artifactsPath = hre.config.paths.artifacts;
+export const artifactsContractPath = path.join(artifactsPath, 'contracts');
+export const artifactsBuildInfoPath = path.join(artifactsPath, 'build-info');
+export const libPath = path.join(rootPath, 'lib');
+export const sourceContractsPath = path.join(rootPath, 'contracts');

@@ -1,25 +1,15 @@
 import fs from 'fs';
-import { glob } from 'glob';
+import hre from 'hardhat';
 import path from 'path';
-import { artifactsContractPath } from '../tasks-config.ts';
 import url from 'node:url';
 import { Project } from 'ts-morph';
+import { artifactsContractPath } from '../tasks-config.ts';
 
-async function listJsonFiles(dir: string): Promise<string[]> {
-  const files = await glob('**/*.json', { cwd: dir, posix: true });
-
-  return files.map((filePath) => {
-    const lastSlashIndex = filePath.lastIndexOf('/');
-    const filePathColon = filePath.slice(0, lastSlashIndex) + ':' + filePath.slice(lastSlashIndex + 1);
-    return filePathColon.replace('.json', '');
-  });
-}
-
-function groupByFirstFolder(files: string[]): Record<string, string[]> {
+function groupByFolder(files: string[], folderNumber: number): Record<string, string[]> {
   return files.reduce<Record<string, string[]>>((acc, filePath) => {
-    const secondFolder = filePath.split('/')[0];
-    if (!acc[secondFolder]) acc[secondFolder] = [];
-    acc[secondFolder].push(filePath);
+    const groupFolder = filePath.split('/')[folderNumber];
+    if (!acc[groupFolder]) acc[groupFolder] = [];
+    acc[groupFolder].push(filePath);
 
     return acc;
   }, {});
@@ -45,13 +35,14 @@ function createProtocolsType(values: string[]) {
 }
 
 if (import.meta.url === url.pathToFileURL(process.argv[1]).href) {
-  const fileList = await listJsonFiles(artifactsContractPath);
-  const groupedBySecondFolder = groupByFirstFolder(fileList);
+  const fileList = Array.from(await hre.artifacts.getAllFullyQualifiedNames());
+  const groupedByProtocol = groupByFolder(fileList, 1);
 
-  for (const [group, files] of Object.entries(groupedBySecondFolder)) {
+  for (const [group, files] of Object.entries(groupedByProtocol)) {
     const protocolContractsListPath = path.join(artifactsContractPath, group, 'contract-fqn-list.json');
+
     fs.writeFileSync(protocolContractsListPath, JSON.stringify(files, null, 2));
   }
-  const protocolList = Object.keys(groupedBySecondFolder);
+  const protocolList = Object.keys(groupedByProtocol);
   createProtocolsType(protocolList);
 }

@@ -1,10 +1,11 @@
 import url from 'node:url';
-import { artifactsBuildInfoPath, artifactsContractPath } from '../tasks-config.ts';
-import { glob } from 'glob';
+import { artifactsContractPath } from '../tasks-config.ts';
 import fs from 'fs';
 import type { SolidityBuildInfoOutput, SolidityBuildInfo } from 'hardhat/types/solidity';
 import { findAll, srcDecoder } from 'solidity-ast/utils.js'; // force common.js resolution
 import path from 'node:path';
+import hre from 'hardhat';
+import type { HardhatRuntimeEnvironment } from 'hardhat/types/hre';
 
 // types
 
@@ -23,45 +24,21 @@ export type ProtocolFunctionIndexes = {
   [protocol: string]: SourceFunctionIndexes;
 };
 
-// index creation
-
-function getBuildInfoPairs() {
-  const allFiles = glob.sync('**/*.json', {
-    cwd: artifactsBuildInfoPath,
-    dot: true,
-    absolute: true,
-  });
-
-  const fileMap = new Map<string, { input?: string; output?: string }>();
-
-  for (const file of allFiles) {
-    const fileName = path.basename(file);
-
-    if (fileName.endsWith('.output.json')) {
-      // Output file
-      const baseName = fileName.replace('.output.json', '');
-      const entry = fileMap.get(baseName) || {};
-      entry.output = file;
-      fileMap.set(baseName, entry);
-    } else {
-      // Input file
-      const baseName = fileName.replace('.json', '');
-      const entry = fileMap.get(baseName) || {};
-      entry.input = file;
-      fileMap.set(baseName, entry);
-    }
+async function getBuildInfoPairs(hre: HardhatRuntimeEnvironment) {
+  const buildInfoIds = await hre.artifacts.getAllBuildInfoIds();
+  const pairs: { readonly input: string; readonly output: string }[] = [];
+  for (const buildInfoId of buildInfoIds) {
+    pairs.push({
+      input: (await hre.artifacts.getBuildInfoPath(buildInfoId))!,
+      output: (await hre.artifacts.getBuildInfoOutputPath(buildInfoId))!,
+    });
   }
-
-  // Convert map to an array of pairs
-  const pairs: Array<{ input: string; output: string }> = [];
-  for (const { input, output } of fileMap.values()) {
-    if (input && output) pairs.push({ input, output });
-  }
-
   return pairs;
 }
 
-function createSourceFunctionIndexes(buildInfoPairs: ReturnType<typeof getBuildInfoPairs>): SourceFunctionIndexes {
+function createSourceFunctionIndexes(
+  buildInfoPairs: Awaited<ReturnType<typeof getBuildInfoPairs>>
+): SourceFunctionIndexes {
   const sourceFunctionIndex: SourceFunctionIndexes = {};
 
   for (const { input, output } of buildInfoPairs) {
@@ -132,7 +109,7 @@ function getLineNumber(location: string) {
 // main
 
 if (import.meta.url === url.pathToFileURL(process.argv[1]).href) {
-  const buildInfoPairs = getBuildInfoPairs();
+  const buildInfoPairs = await getBuildInfoPairs(hre);
   const sourceFunctionIndexes = createSourceFunctionIndexes(buildInfoPairs);
   const protocolFunctionIndexes = createProtocolFunctionIndexes(sourceFunctionIndexes);
 

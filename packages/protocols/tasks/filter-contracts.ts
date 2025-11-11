@@ -3,7 +3,7 @@ import path from 'path';
 import { glob } from 'glob';
 import * as url from 'node:url';
 import { minimatch } from 'minimatch';
-import { contractsPath, excludeFolders, includeFolders, libPath } from '../tasks-config.ts';
+import { sourceContractsPath, excludeFolders, includeFolders, libPath } from '../tasks-config.ts';
 
 async function copySymlinkRecursive(src: string, dest: string, include: string[], exclude: string[]) {
   await fs.rm(dest, { recursive: true, force: true });
@@ -34,5 +34,5 @@ async function copySymlinkRecursive(src: string, dest: string, include: string[]
 }
 
 if (import.meta.url === url.pathToFileURL(process.argv[1]).href) {
-  copySymlinkRecursive(libPath, contractsPath, includeFolders, excludeFolders).catch(console.error);
+  copySymlinkRecursive(libPath, sourceContractsPath, includeFolders, excludeFolders).catch(console.error);
 }
