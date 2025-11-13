@@ -35,7 +35,7 @@ function augmentContractTypes(artifactTypePath: string, contractName: string, st
     if (!contractTypeInterface.getProperty('bytecodeSourceMap')) {
       contractTypeInterface.addProperty({
         name: 'bytecodeSourceMap',
-        type: 'String',
+        type: 'string',
         isReadonly: true,
       });
       debug('Added bytecodeSourceMap types:', artifactTypePath);
@@ -43,7 +43,7 @@ function augmentContractTypes(artifactTypePath: string, contractName: string, st
     if (!contractTypeInterface.getProperty('deployedBytecodeSourceMap')) {
       contractTypeInterface.addProperty({
         name: 'deployedBytecodeSourceMap',
-        type: 'String',
+        type: 'string',
         isReadonly: true,
       });
       debug('Added deployedBytecodeSourceMap types:', artifactTypePath);
