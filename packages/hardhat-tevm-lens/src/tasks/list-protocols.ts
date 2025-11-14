@@ -27,9 +27,15 @@ function createProtocolsType(values: string[], protocolsTypeFilePath: string) {
 }
 
 export default async function (_taskArgs: Record<string, any>, hre: HardhatRuntimeEnvironment) {
-  const artifactsContractPath = path.join(hre.config.paths.artifacts, hre.config.artifactsAugment.contracts.path);
+  debug('List protocols task started');
+
+  const artifactsContractPath = hre.config.artifactsAugment.artifactContractsPath;
 
   const protocolList = await glob('*/', { cwd: artifactsContractPath });
   const protocolsTypeFilePath = path.join(artifactsContractPath, 'protocols-list.d.ts');
+  debug('Paths:', { protocolsTypeFilePath });
+
   createProtocolsType(protocolList, protocolsTypeFilePath);
+
+  debug('List protocols task ended');
 }

@@ -15,6 +15,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "build": "rm -rf dist && tsc",
+    "build:watch": "tsc --watch",
     "postinstall": "pnpm run build"
   },
   "devDependencies": {

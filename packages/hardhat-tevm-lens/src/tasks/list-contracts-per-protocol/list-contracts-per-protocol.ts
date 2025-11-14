@@ -23,7 +23,9 @@ function groupByFolder(files: string[], folderNumber: number): Record<string, st
 }
 
 export default async function (_taskArgs: Record<string, any>, hre: HardhatRuntimeEnvironment) {
-  const artifactsContractPath = path.join(hre.config.paths.artifacts, hre.config.artifactsAugment.contracts.path);
+  debug('List contracts per protocol task started');
+
+  const artifactsContractPath = hre.config.artifactsAugment.artifactContractsPath;
 
   const fileList = await getAllFullyQualifiedNames(hre);
   const groupedByProtocol = groupByFolder(fileList, 1);
@@ -31,7 +33,9 @@ export default async function (_taskArgs: Record<string, any>, hre: HardhatRunti
   for (const [group, files] of Object.entries(groupedByProtocol)) {
     const protocolContractsListPath = path.join(artifactsContractPath, group, 'contract-fqn-list.json');
 
+    debug('Paths:', { protocolContractsListPath });
     fs.writeFileSync(protocolContractsListPath, JSON.stringify(files, null, 2));
-    debug('Created contracts list for folder:', group);
   }
+
+  debug('List contracts per protocol task ended');
 }

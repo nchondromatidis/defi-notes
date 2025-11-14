@@ -57,7 +57,6 @@ function createSourceFunctionIndexes(
           lineEnd: functionLineEnd,
         };
         sourceFunctionDefinitions.push(functionIndex);
-        debug('Created function indexes:', { sourceName, functionName: functionDef.name });
       }
       sourceFunctionIndex[sourceNormalized] = sourceFunctionDefinitions;
     }
@@ -83,11 +82,12 @@ function copyFunctionIndexesTypes(functionIndexesTypesPath: string) {
   fs.writeFileSync(functionIndexesTypesPath, functionIndexesTypes, {
     encoding: 'utf8',
   });
-  debug('Created function index types', functionIndexesTypesPath);
 }
 
 export default async function (_taskArgs: Record<string, any>, hre: HardhatRuntimeEnvironment) {
-  const artifactsContractPath = path.join(hre.config.paths.artifacts, hre.config.artifactsAugment.contracts.path);
+  debug('Index functions task started');
+
+  const artifactsContractPath = hre.config.artifactsAugment.artifactContractsPath;
 
   const buildInfoPairs = await getBuildInfoPairs(hre);
   const sourceFunctionIndexes = createSourceFunctionIndexes(buildInfoPairs);
@@ -95,10 +95,15 @@ export default async function (_taskArgs: Record<string, any>, hre: HardhatRunti
 
   for (const [protocol, sourceFunctionIndexes] of Object.entries(protocolFunctionIndexes)) {
     const protocolSourceFunctionIndexesPath = path.join(artifactsContractPath, protocol, 'function-indexes.json');
+    debug('Paths:', { protocolSourceFunctionIndexesPath });
     fs.writeFileSync(protocolSourceFunctionIndexesPath, JSON.stringify(sourceFunctionIndexes, null, 2), 'utf-8');
   }
   const functionIndexesTypesPath = path.join(artifactsContractPath, 'function-indexes.d.ts');
+  debug('Paths:', { functionIndexesTypesPath });
+
   copyFunctionIndexesTypes(functionIndexesTypesPath);
+
+  debug('Index functions task ended');
 }
 
 // helpers

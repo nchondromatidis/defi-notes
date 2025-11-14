@@ -3,9 +3,7 @@ import { z } from 'zod';
 // The user's Hardhat configuration, as exported in their config file.
 export const ArtifactsAugmentUserConfigSchema = z.object({
   runOnBuild: z.boolean().optional(),
-  contracts: z.object({
-    path: z.string(),
-  }),
+  artifactContractsPath: z.string(),
   typeBarrel: z.object({
     includeFolders: z.array(z.string()),
     excludeFolders: z.array(z.string()),

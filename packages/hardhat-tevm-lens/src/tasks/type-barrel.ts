@@ -140,11 +140,14 @@ export async function createBarrel(
 }
 
 export default async function (_taskArgs: Record<string, any>, hre: HardhatRuntimeEnvironment) {
-  debug('TypeBarrel:');
+  debug('Type barrel task started');
 
   const includeFolders = hre.config.artifactsAugment.typeBarrel.includeFolders;
   const excludeFolders = hre.config.artifactsAugment.typeBarrel.excludeFolders;
   const destinationFile = path.join(hre.config.paths.artifacts, 'index.d.ts');
+  debug('Paths:', { destinationFile });
 
   await generateBarrel({ includeFolders, excludeFolders, destinationFile });
+
+  debug('Type barrel task ended');
 }

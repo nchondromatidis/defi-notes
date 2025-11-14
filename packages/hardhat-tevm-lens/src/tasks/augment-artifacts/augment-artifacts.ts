@@ -30,7 +30,6 @@ function augmentContractTypes(artifactTypePath: string, contractName: string, st
         type: 'StorageLayout',
         isReadonly: true,
       });
-      debug('Added storage layout types:', artifactTypePath);
     }
     if (!contractTypeInterface.getProperty('bytecodeSourceMap')) {
       contractTypeInterface.addProperty({
@@ -38,7 +37,6 @@ function augmentContractTypes(artifactTypePath: string, contractName: string, st
         type: 'string',
         isReadonly: true,
       });
-      debug('Added bytecodeSourceMap types:', artifactTypePath);
     }
     if (!contractTypeInterface.getProperty('deployedBytecodeSourceMap')) {
       contractTypeInterface.addProperty({
@@ -46,10 +44,8 @@ function augmentContractTypes(artifactTypePath: string, contractName: string, st
         type: 'string',
         isReadonly: true,
       });
-      debug('Added deployedBytecodeSourceMap types:', artifactTypePath);
     }
     sourceFile.saveSync();
-    debug('Added types', artifactTypePath);
   }
 }
 
@@ -75,13 +71,8 @@ export function augmentArtifacts(artifactsPath: string, artifactsBuildInfoPath: 
         const artifact = JSON.parse(fs.readFileSync(artifactPath, 'utf-8'));
 
         artifact.bytecodeSourceMap = contractData.evm.bytecode.sourceMap ?? {};
-        debug('Added bytecodeSourceMap values:', artifactPath);
-
         artifact.deployedBytecodeSourceMap = contractData.evm.deployedBytecode.sourceMap ?? {};
-        debug('Added deployedBytecodeSourceMap values:', artifactPath);
-
         artifact.storageLayout = contractData.storageLayout ?? {};
-        debug('Added storage layout values:', artifactPath);
 
         fs.writeFileSync(artifactPath, JSON.stringify(artifact, null, 2));
 
@@ -95,7 +86,13 @@ export function augmentArtifacts(artifactsPath: string, artifactsBuildInfoPath: 
 }
 
 export default async function (_: Record<string, any>, hre: HardhatRuntimeEnvironment) {
+  debug('Augment artifacts task started');
+
   const artifactsPath = hre.config.paths.artifacts;
   const artifactsBuildInfoPath = path.join(artifactsPath, 'build-info');
+  debug('Paths:', { artifactsPath, artifactsBuildInfoPath });
+
   augmentArtifacts(artifactsPath, artifactsBuildInfoPath);
+
+  debug('Augment artifacts task ended');
 }
