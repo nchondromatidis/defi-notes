@@ -30,10 +30,6 @@ const config: HardhatUserConfig = {
   artifactsAugment: {
     runOnBuild: true,
     artifactContractsPath: './artifacts/contracts',
-    typeBarrel: {
-      includeFolders: ['artifacts'],
-      excludeFolders: ['lib', 'contracts', 'node_modules'],
-    },
   },
 };
 

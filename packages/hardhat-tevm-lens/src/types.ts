@@ -4,10 +4,6 @@ import { z } from 'zod';
 export const ArtifactsAugmentUserConfigSchema = z.object({
   runOnBuild: z.boolean().optional(),
   artifactContractsPath: z.string(),
-  typeBarrel: z.object({
-    includeFolders: z.array(z.string()),
-    excludeFolders: z.array(z.string()),
-  }),
 });
 
 export type ArtifactsAugmentUserConfig = z.infer<typeof ArtifactsAugmentUserConfigSchema>;

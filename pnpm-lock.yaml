@@ -189,9 +189,6 @@ importers:
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
-      vfile-location:
-        specifier: ^5.0.3
-        version: 5.0.3
 
   packages/tevm-lens:
     dependencies:
@@ -205,6 +202,9 @@ importers:
       '@defi-notes/config':
         specifier: workspace:*
         version: link:../config
+      '@defi-notes/hardhat-tevm-lens':
+        specifier: workspace:*
+        version: link:../hardhat-tevm-lens
       '@defi-notes/protocols':
         specifier: workspace:*
         version: link:../protocols
