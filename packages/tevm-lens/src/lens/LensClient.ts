@@ -7,6 +7,8 @@ import {
   type ContractConstructorArgs,
   type ContractFunctionArgs,
   getContract,
+  keccak256,
+  toHex,
 } from 'viem';
 import type { ContractResult, Message } from 'tevm/actions';
 import type { EvmResult } from 'tevm/evm';
@@ -14,7 +16,7 @@ import { randomId } from '../common/utils.ts';
 import { SupportedContracts } from './indexes/SupportedContracts.ts';
 import { DeployedContracts } from './indexes/DeployedContracts.ts';
 import { LensCallTracer } from './tracers/callTracer/LensCallTracer.ts';
-import { InvariantError } from '../common/errors.ts';
+import { InvalidArgument, InvariantError } from '../common/errors.ts';
 import type { Address, Hex, LensArtifactsMap, LensContractFQN } from './types/artifact.ts';
 import type { InterpreterStep } from 'tevm/evm';
 
@@ -28,14 +30,36 @@ export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
     public readonly callDecodeTracer: LensCallTracer<ArtifactMapT>
   ) {}
 
+  linkHardhatBytecode<ContractFQNT extends LensContractFQN<ArtifactMapT>>(
+    bytecode: Hex,
+    libraryFqn: ContractFQNT,
+    libraryAddress: Address
+  ) {
+    const hash = keccak256(toHex('project/' + libraryFqn));
+    const tagContent = hash.slice(2, 2 + 34);
+    const tag = `__$${tagContent}$__`;
+
+    const libraryAddressNoPrefix = libraryAddress.toLowerCase().slice(2);
+    if (!bytecode.includes(tag)) {
+      throw new InvalidArgument(`Library tag not found in bytecode.`, { externalLibraryFqn: libraryFqn });
+    }
+
+    return bytecode.replaceAll(tag, libraryAddressNoPrefix) as Hex;
+  }
+
   async deploy<ContractFQNT extends LensContractFQN<ArtifactMapT>>(
     contractFQN: ContractFQNT,
-    args: ContractConstructorArgs<ArtifactMapT[ContractFQNT]['abi']>
+    args: ContractConstructorArgs<ArtifactMapT[ContractFQNT]['abi']>,
+    librariesToLink: Array<{ libFQN: ContractFQNT; address: Address }> = []
   ) {
     const artifact = this.supportedContracts.getArtifactFrom(contractFQN);
+    let bytecode = artifact.bytecode;
+    for (const lib of librariesToLink) {
+      bytecode = this.linkHardhatBytecode(bytecode, lib.libFQN, lib.address);
+    }
     const deployResult = await tevmDeploy(this.client, {
       abi: artifact.abi,
-      bytecode: artifact.bytecode,
+      bytecode: bytecode,
       args: args as unknown[],
     });
     if (!deployResult.createdAddress) throw new InvariantError('createdAddress missing after deploy');

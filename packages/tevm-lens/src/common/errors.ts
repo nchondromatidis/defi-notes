@@ -26,4 +26,5 @@ export abstract class BaseError extends Error {
 }
 
 export class GenericError extends BaseError {}
+export class InvalidArgument extends BaseError {}
 export class InvariantError extends BaseError {}

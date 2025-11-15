@@ -1,7 +1,6 @@
 import { type Abi, isHex } from 'viem';
 
 // hex types
-
 export type Address = `0x${string}`;
 export type Hex = `0x${string}`;
 
@@ -10,8 +9,7 @@ export function safeCastToHex(value: string): Hex {
   return value;
 }
 
-// artifacts types
-
+// artifact schema
 export interface LensArtifactSchema {
   readonly contractName: string;
   readonly sourceName: string;
@@ -21,8 +19,8 @@ export interface LensArtifactSchema {
 }
 
 // T object must be:
-// - compatible with LensArtifact
-// - each key must be named `LensArtifact['sourceName']:LensArtifact['contractName']`
+// - key formated as `LensArtifact['sourceName']:LensArtifact['contractName']`
+// - values satisfy LensArtifact type
 export type LensArtifactsMap<T extends Record<string, LensArtifactSchema>> = {
   [K in keyof T]: T[K] extends LensArtifactSchema
     ? K extends `${T[K]['sourceName']}:${T[K]['contractName']}`
@@ -34,13 +32,14 @@ export type LensArtifactsMap<T extends Record<string, LensArtifactSchema>> = {
 export type LensContractFQN<T extends Record<string, LensArtifactSchema>> = keyof LensArtifactsMap<T> & string;
 export type LensProtocolsList = string;
 
-export type LensSourceFunctionIndexes = {
-  [source: string]: Array<LensFunctionIndex>;
-};
-
+// function index schema
 export type LensFunctionIndex = {
   name: string;
   kind: string;
   lineStart: number;
   lineEnd: number;
+};
+
+export type LensSourceFunctionIndexes = {
+  [source: string]: Array<LensFunctionIndex>;
 };

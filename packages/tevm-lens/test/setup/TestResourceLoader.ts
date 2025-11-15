@@ -13,9 +13,12 @@ export class TestResourceLoader<
   ProtocolsListT extends LensProtocolsList,
 > implements IResourceLoader<ArtifactMapT, ProtocolsListT>
 {
-  artifactsPath = path.join(__dirname, '..', '..', '..', 'protocols', 'artifacts');
-  contractFqnListFileName = 'contract-fqn-list.json';
-  sourceFunctionIndexFileName = 'function-indexes.json';
+  constructor(
+    private readonly artifactsPath: string,
+    private readonly artifactsContractsPath: string,
+    private readonly contractFqnListFileName = 'contract-fqn-list.json',
+    private readonly sourceFunctionIndexFileName = 'function-indexes.json'
+  ) {}
 
   async getArtifact<LensContractFqnT extends LensContractFQN<ArtifactMapT>>(
     contractFQN: LensContractFqnT
@@ -45,7 +48,7 @@ export class TestResourceLoader<
   }
 
   async getProtocolContractsFqn(protocolName: ProtocolsListT): Promise<Array<LensContractFQN<ArtifactMapT>>> {
-    const protocolListPath = path.join(this.artifactsPath, 'contracts', protocolName, this.contractFqnListFileName);
+    const protocolListPath = path.join(this.artifactsContractsPath, protocolName, this.contractFqnListFileName);
     const protocolListJson = await fs.readFile(protocolListPath, 'utf-8');
     return JSON.parse(protocolListJson) as LensContractFQN<ArtifactMapT>[];
   }
@@ -59,8 +62,7 @@ export class TestResourceLoader<
 
   async getFunctionIndexes(protocolName: LensProtocolsList): Promise<LensSourceFunctionIndexes> {
     const sourceFunctionIndexFilePath = path.join(
-      this.artifactsPath,
-      'contracts',
+      this.artifactsContractsPath,
       protocolName,
       this.sourceFunctionIndexFileName
     );
