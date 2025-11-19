@@ -84,7 +84,7 @@ test('state', async () => {
 test('deployContract', async () => {
   await lensClient.contract(callerContract, 'deployContract', []);
   inspect(lensClient.callDecodeTracer.tracedTxs);
-}, 999999999999);
+});
 
 test('create2Contract', async () => {
   const hex32Pattern = ('0x' + '11'.repeat(32)) as Hex;

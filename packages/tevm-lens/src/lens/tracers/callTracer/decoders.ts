@@ -2,8 +2,8 @@ import {
   type Abi,
   AbiFunctionSignatureNotFoundError,
   decodeFunctionData,
-  type DecodeFunctionResultParameters,
-  decodeFunctionResult,
+  type DecodeFunctionResultParameters as DecodeFunctionResultParametersViem,
+  decodeFunctionResult as decodeFunctionResultViem,
   AbiFunctionNotFoundError,
   decodeAbiParameters,
 } from 'viem';
@@ -11,7 +11,7 @@ import { InvariantError } from '../../../common/errors.js';
 import type { FunctionCallTypes, Hex } from '../../types/artifact.js';
 import { trySync } from '../../../common/utils.js';
 
-// Function Data
+// ##############################  Decode Function Call ##############################/
 
 type DecodeFunctionCallParameters<AbiT extends Abi> = {
   abi: AbiT;
@@ -50,7 +50,7 @@ export function decodeFunctionCall<const AbiT extends Abi>(
     return {
       functionName: decodeFunctionDataResult.value.functionName,
       type: 'function',
-      args: decodeFunctionDataResult.value.args,
+      args: decodeFunctionDataResult.value.args ?? [],
     };
   }
   if (!decodeFunctionDataResult.ok && !(decodeFunctionDataResult.error instanceof AbiFunctionSignatureNotFoundError)) {
@@ -67,18 +67,18 @@ export function decodeFunctionCall<const AbiT extends Abi>(
   const hasFallbackPayable = fallback !== undefined && fallback.stateMutability === 'payable';
   const hasFallbackNonPayable = fallback !== undefined && fallback.stateMutability === 'nonpayable';
 
-  const calledFunction = getCalledFunction(hasData, hasValue, hasFallbackPayable, hasFallbackNonPayable, hasReceive);
-  if (calledFunction === 'fallback' && fallback !== undefined) {
+  const functionHandler = getFallbackHandler(hasData, hasValue, hasFallbackPayable, hasFallbackNonPayable, hasReceive);
+  if (functionHandler === 'fallback' && fallback !== undefined) {
     return { functionName: '', type: 'fallback', args: [] };
   }
-  if (calledFunction === 'receive' && receive !== undefined) {
+  if (functionHandler === 'receive' && receive !== undefined) {
     return { functionName: '', type: 'receive', args: [] };
   }
 
   return undefined;
 }
 
-function getCalledFunction(
+function getFallbackHandler(
   hasData: boolean,
   hasValue: boolean,
   hasFallbackPayable: boolean,
@@ -97,17 +97,19 @@ function getCalledFunction(
   return 'revert';
 }
 
-// Result Data
+// ##############################  Decode Function Result ##############################/
 
 // TODO: change to decode all kinds
 export function decodeFunctionResultComplete(
-  parameters: Parameters<typeof decodeFunctionResult>[0]
-): ReturnType<typeof decodeFunctionResult> | undefined {
+  parameters: Parameters<typeof decodeFunctionResultViem>[0]
+): ReturnType<typeof decodeFunctionResultViem> | undefined {
   try {
-    return decodeFunctionResult(parameters);
+    const a = decodeFunctionResultViem(parameters);
+    console.log(a);
+    return a;
   } catch (error: unknown) {
     if (error instanceof AbiFunctionNotFoundError) {
-      const { functionName } = parameters as DecodeFunctionResultParameters;
+      const { functionName } = parameters as DecodeFunctionResultParametersViem;
       if (functionName === 'revert') return undefined;
       if (functionName === 'fallback') return undefined;
     }
