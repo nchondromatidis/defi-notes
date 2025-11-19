@@ -56,7 +56,8 @@ describe('function traces', () => {
   });
 
   test('state', async () => {
-    await lensClient.contract(callerContract, 'callExternalFunction', []);
+    const calldata = '0x20';
+    await lensClient.contract(callerContract, 'callDelegateCall', [calldata]);
     const txHash = lensClient.callDecodeTracer.succeededTxs.keys().next().value;
     const callTraceResult = await client.transport.tevm.request({
       method: 'debug_traceTransaction',

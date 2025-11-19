@@ -6,19 +6,19 @@ contract CalleeContract {
         uint256 id;
         string name;
     }
-    event Log(string message, uint256 value);
+    event Log(address indexed, string message, uint256 value);
 
     constructor() {
-        emit Log("CalleeContract deployed", 0);
+        emit Log(address(msg.sender), "CalleeContract deployed", 0);
     }
 
     function publicFunction() public returns (DummyStruct memory) {
-        emit Log("publicFunction called", 0);
+        emit Log(address(msg.sender),"publicFunction called", 0);
         return DummyStruct(1, "dummy");
     }
 
     function externalFunction() external returns (string memory) {
-        emit Log("externalFunction called", 0);
+        emit Log(address(msg.sender), "externalFunction called", 0);
         return "externalFunction called";
     }
 
@@ -27,11 +27,11 @@ contract CalleeContract {
     }
 
     receive() external payable {
-        emit Log("Receive function called", msg.value);
+        emit Log(address(msg.sender), "Receive function called", msg.value);
     }
 
     fallback(bytes calldata input) external payable returns (bytes memory output){
-        emit Log("Fallback function called", msg.value);
+        emit Log(address(msg.sender),"Fallback function called", msg.value);
         return input;
     }
 }

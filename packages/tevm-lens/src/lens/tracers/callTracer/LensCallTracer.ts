@@ -5,7 +5,7 @@ import type { EvmResult } from 'tevm/evm';
 import { bytesToHex } from 'viem';
 import { InvariantError } from '../../../common/errors.ts';
 import { type FunctionCallEvent, type FunctionResultEvent, LensCallTracerResult } from './LensCallTracerResult.ts';
-import type { Hex, LensArtifactsMap } from '../../types/artifact.ts';
+import { type Hex, type LensArtifactsMap } from '../../types/artifact.ts';
 import { decodeFunctionCall, decodeFunctionResult, decodeLog } from './decoders.js';
 
 export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
@@ -44,7 +44,10 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
 
   public async handleFunctionCall(callEvent: Message, tempId: string): Promise<void> {
     const tempIdTxTrace = this.getTracingTx(tempId);
-    const functionCallEvent: FunctionCallEvent<ArtifactMapT> = { type: 'FunctionCallEvent' };
+    const functionCallEvent: FunctionCallEvent<ArtifactMapT> = {
+      type: 'FunctionCallEvent',
+      to: callEvent?.to?.toString(),
+    };
 
     functionCallEvent.depth = callEvent.depth;
     const callData = bytesToHex(callEvent.data);
@@ -107,6 +110,7 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
     // new contract deployment
     if (resultEvent.createdAddress) {
       functionResultEvent.isCreate = true;
+      functionResultEvent.createdAddress = resultEvent.createdAddress.toString();
       const createdContractFQN = tempIdTxTrace.getCurrentFunctionCallEvent().createdContractFQN;
       if (createdContractFQN) {
         functionResultEvent.createdContractFQN = createdContractFQN;
@@ -135,12 +139,22 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       if (decodedResult && decodedResult.isSuccess) {
         functionResultEvent.returnValue = decodedResult.functionResult;
       }
-      // constructor/fallback/receive: do not need decoding
     }
+
+    // constructor/fallback/receive: do not need decoding
 
     // logs
     if (abi && resultEvent.execResult.logs) {
-      functionResultEvent.logs = resultEvent.execResult.logs.map((log) => decodeLog(log, abi));
+      const logAbis = resultEvent.execResult.logs.map((it) => {
+        const logContractAddress = bytesToHex(it[0]);
+        const contractFQN = this.deployedContracts.getContractFqnForAddress(logContractAddress);
+        const abi = contractFQN && this.supportedContracts.getArtifactPart(contractFQN, 'abi');
+        return {
+          log: it,
+          abi: abi,
+        };
+      });
+      functionResultEvent.logs = logAbis.map((it) => decodeLog(it.log, it.abi));
     }
 
     tempIdTxTrace.addResult(functionResultEvent);

@@ -1,8 +1,9 @@
 import { InvariantError } from '../../../common/errors.ts';
-import type { LensArtifactsMap, LensContractFQN } from '../../types/artifact.ts';
+import type { Address, LensArtifactsMap, LensContractFQN } from '../../types/artifact.ts';
 
 export type FunctionCallEvent<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> = {
   type: 'FunctionCallEvent';
+  to: Address | undefined;
   depth?: number;
   contractFQN?: LensContractFQN<ArtifactMapT>;
   functionName?: string;
@@ -28,11 +29,12 @@ export type FunctionResultEvent<ArtifactMapT extends LensArtifactsMap<ArtifactMa
   returnValueRaw?: unknown;
   returnValue?: unknown;
   isCreate?: boolean;
+  createdAddress?: Address;
   createdContractFQN?: LensContractFQN<ArtifactMapT>;
-  logs?: (LensLog | undefined)[];
+  logs?: Array<LensLog>;
 };
 
-export type LensLog = { raw: unknown; eventName: string; args: Array<unknown>; eventSignature?: string };
+export type LensLog = { raw: unknown; eventName?: string; args?: unknown; eventSignature?: string };
 
 export class LensCallTracerResult<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
   public rootFunction?: FunctionCallEvent<ArtifactMapT>;

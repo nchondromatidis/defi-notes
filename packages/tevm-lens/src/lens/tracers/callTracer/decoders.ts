@@ -9,6 +9,7 @@ import {
   bytesToHex,
   decodeEventLog,
   toEventSignature,
+  AbiEventSignatureNotFoundError,
 } from 'viem';
 import { InvariantError } from '../../../common/errors.js';
 import type { FunctionCallTypes, Hex } from '../../types/artifact.js';
@@ -77,7 +78,7 @@ export function decodeFunctionCall(parameters: DecodeFunctionCallParameters): De
     return { functionName: '', type: 'receive', args: [] };
   }
   if (functionHandler === 'revert') {
-    throw new InvariantError('Transaction should have reverted');
+    throw new InvariantError('FallbackHandler decoding error: Transaction should have reverted');
   }
 
   return undefined;
@@ -149,34 +150,49 @@ export function decodeFunctionResult(parameters: DecodeFunctionResultParameters)
     }
   }
 
-  // constructor/fallback/receive: nothing decode
+  // constructor/fallback/receive: nothing to decode
   return undefined;
 }
 
 // ############################## Decode Logs ##############################/
+
 export type Log = [address: Uint8Array, topics: Uint8Array[], data: Uint8Array];
-export type LensLog = { raw: Log; eventName: string; args: Array<unknown>; eventSignature?: string };
+export type LensLog = { raw: Log; eventName?: string; args?: unknown; eventSignature?: string };
 
-export function decodeLog(log: Log, abi: Abi): LensLog | undefined {
-  const [signature, ...args] = log[1].map((it) => bytesToHex(it));
-  const decodedLog = decodeEventLog({
-    abi: abi,
-    topics: [signature, ...args],
-    data: bytesToHex(log[2]),
-  });
-  let eventSignature: string | undefined = undefined;
-  if (decodedLog.eventName) {
-    const abiEvent = findEventByName(abi, decodedLog.eventName);
-    eventSignature = abiEvent ? toEventSignature(abiEvent) : undefined;
+export function decodeLog(log: Log, abi: Abi | undefined): LensLog {
+  const topics = log[1].map((it) => bytesToHex(it));
+  const [signature, ...nonSignatureTopics] = topics;
 
-    return {
-      raw: log,
-      eventName: decodedLog.eventName as string,
-      args: decodedLog.args as unknown[],
-      eventSignature: eventSignature,
-    };
+  const result: LensLog = {
+    raw: log,
+  };
+  if (!abi) return result;
+
+  const decodedLogResult = trySync(() =>
+    decodeEventLog({
+      abi: abi,
+      topics: [signature, ...nonSignatureTopics],
+      data: bytesToHex(log[2]),
+    })
+  );
+
+  if (decodedLogResult.ok) {
+    let eventSignature: string | undefined = undefined;
+    const decodedLog = decodedLogResult.value;
+    if (decodedLog.eventName) {
+      const abiEvent = findEventByName(abi, decodedLog.eventName);
+      eventSignature = abiEvent ? toEventSignature(abiEvent) : undefined;
+
+      result.eventName = decodedLog.eventName;
+      result.args = decodedLog.args;
+      result.eventSignature = eventSignature;
+    }
   }
-  return undefined;
+  if (!decodedLogResult.ok && !(decodedLogResult.error instanceof AbiEventSignatureNotFoundError)) {
+    throw decodedLogResult.error;
+  }
+
+  return result;
 }
 
 function findEventByName(abi: Abi, name: string): AbiEvent {
