@@ -2,7 +2,7 @@ import { SupportedContracts } from '../../indexes/SupportedContracts.ts';
 import { DeployedContracts } from '../../indexes/DeployedContracts.ts';
 import type { Message } from 'tevm/actions';
 import type { EvmResult } from 'tevm/evm';
-import { type Abi, bytesToHex, decodeErrorResult, decodeEventLog, toEventSignature } from 'viem';
+import { type Abi, bytesToHex, decodeEventLog, toEventSignature } from 'viem';
 import { InvariantError } from '../../../common/errors.ts';
 import {
   type FunctionCallEvent,
@@ -12,7 +12,7 @@ import {
 } from './LensCallTracerResult.ts';
 import type { Hex, LensArtifactsMap } from '../../types/artifact.ts';
 import type { AbiEvent } from 'tevm';
-import { decodeFunctionCall, decodeFunctionResultComplete } from './decoders.js';
+import { decodeFunctionCall, decodeFunctionResult } from './decoders.js';
 
 export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
   public readonly tracedTxs: Map<Hex, LensCallTracerResult<ArtifactMapT>> = new Map();
@@ -61,6 +61,7 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
     }
     if (callEvent.to) {
       contractFQN = this.deployedContracts.getContractFqnForAddress(callEvent.to.toString());
+      functionCallEvent.contractFQN = contractFQN;
     }
 
     if (contractFQN) {
@@ -115,16 +116,28 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       }
     }
 
-    // function result without error
-    if (!resultEvent.createdAddress && !resultEvent.execResult.exceptionError) {
-      functionResultEvent.returnValueRaw = returnValueHex;
-      if (contractAbi && functionCallEvent.functionName) {
-        functionResultEvent.returnValue = decodeFunctionResultComplete({
-          abi: contractAbi as Abi,
-          functionName: functionCallEvent.functionName,
-          data: returnValueHex,
-        });
+    // function result
+    functionResultEvent.isError = false;
+    if (!resultEvent.createdAddress && resultEvent.execResult.exceptionError) {
+      functionResultEvent.isError = true;
+      functionResultEvent.errorType = resultEvent.execResult.exceptionError.error;
+    }
+
+    if (contractAbi && functionCallEvent.functionName) {
+      const decodedResult = decodeFunctionResult({
+        abi: contractAbi,
+        data: returnValueHex,
+        isError: functionResultEvent.isError,
+      });
+      if (decodedResult && !decodedResult.isSuccess) {
+        functionResultEvent.errorName = decodedResult.error.errorName;
+        functionResultEvent.errorArgs = decodedResult.error.args;
+        functionResultEvent.errorAbiItem = decodedResult.error.abiItem;
       }
+      if (decodedResult && decodedResult.isSuccess) {
+        functionResultEvent.returnValue = decodedResult.functionResult;
+      }
+      // constructor/fallback/receive: do not need decoding
     }
 
     // logs
@@ -148,24 +161,6 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
         };
       });
     }
-
-    // function result with error
-    if (!resultEvent.createdAddress && resultEvent.execResult.exceptionError) {
-      functionResultEvent.isError = true;
-      functionResultEvent.errorType = resultEvent.execResult.exceptionError.error;
-
-      if (contractAbi && functionCallEvent.functionName) {
-        const decodedError = decodeErrorResult({
-          abi: contractAbi,
-          data: returnValueHex,
-        });
-        functionResultEvent.errorName = decodedError.errorName;
-        functionResultEvent.errorArgs = decodedError.args;
-        functionResultEvent.errorAbiItem = decodedError.abiItem;
-      }
-    }
-
-    // fallback/receive
 
     tempIdTxTrace.addResult(functionResultEvent);
   }

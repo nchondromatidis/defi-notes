@@ -2,15 +2,19 @@
 pragma solidity ^0.8.0;
 
 contract CalleeContract {
+    struct DummyStruct {
+        uint256 id;
+        string name;
+    }
     event Log(string message, uint256 value);
 
     constructor() {
         emit Log("CalleeContract deployed", 0);
     }
 
-    function publicFunction() public returns (string memory) {
+    function publicFunction() public returns (DummyStruct memory) {
         emit Log("publicFunction called", 0);
-        return "publicFunction called";
+        return DummyStruct(1, "dummy");
     }
 
     function externalFunction() external returns (string memory) {

@@ -2,33 +2,31 @@ import {
   type Abi,
   AbiFunctionSignatureNotFoundError,
   decodeFunctionData,
-  type DecodeFunctionResultParameters as DecodeFunctionResultParametersViem,
   decodeFunctionResult as decodeFunctionResultViem,
   AbiFunctionNotFoundError,
   decodeAbiParameters,
+  decodeErrorResult as decodeErrorResultViem,
 } from 'viem';
 import { InvariantError } from '../../../common/errors.js';
 import type { FunctionCallTypes, Hex } from '../../types/artifact.js';
 import { trySync } from '../../../common/utils.js';
 
-// ##############################  Decode Function Call ##############################/
+// ############################## Decode Function Calls ##############################/
 
-type DecodeFunctionCallParameters<AbiT extends Abi> = {
-  abi: AbiT;
+type DecodeFunctionCallParameters = {
+  abi: Abi;
   data: Hex;
   value?: bigint;
   createdBytecode?: Hex;
 };
 
-type DecodedFunctionResult = {
+type DecodedFunctionCall = {
   functionName: string;
   type: FunctionCallTypes;
   args: unknown;
 };
 
-export function decodeFunctionCall<const AbiT extends Abi>(
-  parameters: DecodeFunctionCallParameters<AbiT>
-): DecodedFunctionResult | undefined {
+export function decodeFunctionCall(parameters: DecodeFunctionCallParameters): DecodedFunctionCall | undefined {
   const { abi, data, value, createdBytecode } = parameters;
   // constructor: data = contract bytecode + encoded constructor args
   if (createdBytecode) {
@@ -74,6 +72,9 @@ export function decodeFunctionCall<const AbiT extends Abi>(
   if (functionHandler === 'receive' && receive !== undefined) {
     return { functionName: '', type: 'receive', args: [] };
   }
+  if (functionHandler === 'revert') {
+    throw new InvariantError('Transaction should have reverted');
+  }
 
   return undefined;
 }
@@ -97,22 +98,55 @@ function getFallbackHandler(
   return 'revert';
 }
 
-// ##############################  Decode Function Result ##############################/
+// ############################## Decode Function Results ##############################/
 
-// TODO: change to decode all kinds
-export function decodeFunctionResultComplete(
-  parameters: Parameters<typeof decodeFunctionResultViem>[0]
-): ReturnType<typeof decodeFunctionResultViem> | undefined {
-  try {
-    const a = decodeFunctionResultViem(parameters);
-    console.log(a);
-    return a;
-  } catch (error: unknown) {
-    if (error instanceof AbiFunctionNotFoundError) {
-      const { functionName } = parameters as DecodeFunctionResultParametersViem;
-      if (functionName === 'revert') return undefined;
-      if (functionName === 'fallback') return undefined;
+type DecodeFunctionResultParameters =
+  | {
+      abi: Abi;
+      data: Hex;
+      functionName: string;
     }
-    throw new InvariantError('Error: decodeFunctionResult:', { parameters, error });
+  | {
+      abi: Abi;
+      data: Hex;
+      isError: boolean;
+    }
+  | {
+      abi: Abi;
+      data: Hex;
+      isCreate: boolean;
+    };
+
+type DecodedFunctionResults =
+  | {
+      isSuccess: false;
+      error: ReturnType<typeof decodeErrorResultViem<Abi>>;
+    }
+  | {
+      isSuccess: true;
+      functionResult: unknown;
+    };
+
+export function decodeFunctionResult(parameters: DecodeFunctionResultParameters): DecodedFunctionResults | undefined {
+  const { abi, data } = parameters;
+  // error: nothing decode
+  if ('isError' in parameters && parameters.isError) {
+    const decodedError = decodeErrorResultViem({ abi, data });
+    return { isSuccess: false, error: decodedError };
   }
+
+  // function
+  if ('functionName' in parameters) {
+    const { functionName } = parameters;
+    const decodedFunctionResult = trySync(() => decodeFunctionResultViem({ abi, data, functionName }));
+    if (decodedFunctionResult.ok) return { isSuccess: true, functionResult: decodedFunctionResult };
+    if (!decodedFunctionResult.ok && !(decodedFunctionResult.error instanceof AbiFunctionNotFoundError)) {
+      throw decodedFunctionResult.error;
+    }
+  }
+
+  // constructor/fallback/receive: nothing decode
+  return undefined;
 }
+
+// ############################## Decode Logs ##############################/

@@ -28,7 +28,7 @@ contract CallerContract {
 
     //  function calls to another contract
 
-    function callPublicFunction() public returns (string memory) {
+    function callPublicFunction() public returns (CalleeContract.DummyStruct memory) {
         return callee.publicFunction();
     }
 
