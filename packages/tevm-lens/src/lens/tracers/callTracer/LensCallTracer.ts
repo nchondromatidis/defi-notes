@@ -2,17 +2,11 @@ import { SupportedContracts } from '../../indexes/SupportedContracts.ts';
 import { DeployedContracts } from '../../indexes/DeployedContracts.ts';
 import type { Message } from 'tevm/actions';
 import type { EvmResult } from 'tevm/evm';
-import { type Abi, bytesToHex, decodeEventLog, toEventSignature } from 'viem';
+import { bytesToHex } from 'viem';
 import { InvariantError } from '../../../common/errors.ts';
-import {
-  type FunctionCallEvent,
-  type FunctionResultEvent,
-  type LensLog,
-  LensCallTracerResult,
-} from './LensCallTracerResult.ts';
+import { type FunctionCallEvent, type FunctionResultEvent, LensCallTracerResult } from './LensCallTracerResult.ts';
 import type { Hex, LensArtifactsMap } from '../../types/artifact.ts';
-import type { AbiEvent } from 'tevm';
-import { decodeFunctionCall, decodeFunctionResult } from './decoders.js';
+import { decodeFunctionCall, decodeFunctionResult, decodeLog } from './decoders.js';
 
 export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
   public readonly tracedTxs: Map<Hex, LensCallTracerResult<ArtifactMapT>> = new Map();
@@ -99,9 +93,9 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
     };
 
     const functionCallEvent = tempIdTxTrace.getCurrentFunctionCallEvent();
-    let contractAbi = undefined;
+    let abi = undefined;
     if (functionCallEvent.contractFQN) {
-      contractAbi = this.supportedContracts.getArtifactPart(functionCallEvent.contractFQN, 'abi');
+      abi = this.supportedContracts.getArtifactPart(functionCallEvent.contractFQN, 'abi');
     }
     const returnValueHex = bytesToHex(resultEvent.execResult.returnValue);
     functionResultEvent.returnValueRaw = returnValueHex;
@@ -123,9 +117,9 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       functionResultEvent.errorType = resultEvent.execResult.exceptionError.error;
     }
 
-    if (contractAbi && functionCallEvent.functionName) {
+    if (abi && functionCallEvent.functionName) {
       const decodedResult = decodeFunctionResult({
-        abi: contractAbi,
+        abi: abi,
         data: returnValueHex,
         isError: functionResultEvent.isError,
       });
@@ -141,25 +135,8 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
     }
 
     // logs
-    if (contractAbi && resultEvent.execResult.logs) {
-      functionResultEvent.logs = resultEvent.execResult.logs.map((log): LensLog => {
-        const [signature, ...args] = log[1].map((it) => bytesToHex(it));
-        const decodedLog = decodeEventLog({
-          abi: contractAbi,
-          topics: [signature, ...args],
-          data: bytesToHex(log[2]),
-        });
-        let eventSignature: string | undefined = undefined;
-        if (decodedLog.eventName) {
-          const abiEvent = this.findEventByName(contractAbi, decodedLog.eventName);
-          eventSignature = abiEvent ? toEventSignature(abiEvent) : undefined;
-        }
-        return {
-          eventName: decodedLog.eventName as string,
-          args: decodedLog.args as unknown[],
-          eventSignature: eventSignature,
-        };
-      });
+    if (abi && resultEvent.execResult.logs) {
+      functionResultEvent.logs = resultEvent.execResult.logs.map((log) => decodeLog(log, abi));
     }
 
     tempIdTxTrace.addResult(functionResultEvent);
@@ -172,11 +149,5 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       throw new InvariantError('getTracingTx called without startTxTrace');
     }
     return this.tracingTxs.get(tempId)!;
-  }
-
-  private findEventByName<A extends Abi>(abi: A, name: string): AbiEvent {
-    const ev = abi.find((i): i is AbiEvent => i.type === 'event' && i.name === name);
-    if (!ev) throw new Error('Event not found');
-    return ev;
   }
 }

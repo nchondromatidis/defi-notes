@@ -29,10 +29,10 @@ export type FunctionResultEvent<ArtifactMapT extends LensArtifactsMap<ArtifactMa
   returnValue?: unknown;
   isCreate?: boolean;
   createdContractFQN?: LensContractFQN<ArtifactMapT>;
-  logs?: LensLog[];
+  logs?: (LensLog | undefined)[];
 };
 
-export type LensLog = { eventName: string; args: Array<unknown>; eventSignature?: string };
+export type LensLog = { raw: unknown; eventName: string; args: Array<unknown>; eventSignature?: string };
 
 export class LensCallTracerResult<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
   public rootFunction?: FunctionCallEvent<ArtifactMapT>;

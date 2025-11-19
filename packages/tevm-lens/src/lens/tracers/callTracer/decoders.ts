@@ -6,10 +6,14 @@ import {
   AbiFunctionNotFoundError,
   decodeAbiParameters,
   decodeErrorResult as decodeErrorResultViem,
+  bytesToHex,
+  decodeEventLog,
+  toEventSignature,
 } from 'viem';
 import { InvariantError } from '../../../common/errors.js';
 import type { FunctionCallTypes, Hex } from '../../types/artifact.js';
 import { trySync } from '../../../common/utils.js';
+import type { AbiEvent } from 'tevm';
 
 // ############################## Decode Function Calls ##############################/
 
@@ -150,3 +154,33 @@ export function decodeFunctionResult(parameters: DecodeFunctionResultParameters)
 }
 
 // ############################## Decode Logs ##############################/
+export type Log = [address: Uint8Array, topics: Uint8Array[], data: Uint8Array];
+export type LensLog = { raw: Log; eventName: string; args: Array<unknown>; eventSignature?: string };
+
+export function decodeLog(log: Log, abi: Abi): LensLog | undefined {
+  const [signature, ...args] = log[1].map((it) => bytesToHex(it));
+  const decodedLog = decodeEventLog({
+    abi: abi,
+    topics: [signature, ...args],
+    data: bytesToHex(log[2]),
+  });
+  let eventSignature: string | undefined = undefined;
+  if (decodedLog.eventName) {
+    const abiEvent = findEventByName(abi, decodedLog.eventName);
+    eventSignature = abiEvent ? toEventSignature(abiEvent) : undefined;
+
+    return {
+      raw: log,
+      eventName: decodedLog.eventName as string,
+      args: decodedLog.args as unknown[],
+      eventSignature: eventSignature,
+    };
+  }
+  return undefined;
+}
+
+function findEventByName(abi: Abi, name: string): AbiEvent {
+  const ev = abi.find((i): i is AbiEvent => i.type === 'event' && i.name === name);
+  if (!ev) throw new Error('Event not found');
+  return ev;
+}
