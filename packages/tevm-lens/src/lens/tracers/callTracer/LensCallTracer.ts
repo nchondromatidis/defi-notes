@@ -74,13 +74,13 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       });
 
       if (decodedFunctionCall) {
-        functionCallEvent.functionName = decodedFunctionCall.functionName;
+        functionCallEvent.functionName = decodedFunctionCall.decodedFunctionName;
         functionCallEvent.functionType = decodedFunctionCall.type;
-        functionCallEvent.constructorArgs = decodedFunctionCall.args;
+        functionCallEvent.constructorArgs = decodedFunctionCall.decodedArgs;
 
         const sourceLocation = this.supportedContracts.getFunctionCallLocation(
           contractFQN,
-          decodedFunctionCall.functionName,
+          decodedFunctionCall.decodedFunctionName,
           decodedFunctionCall.type
         );
         functionCallEvent.lineStart = sourceLocation?.lineStart;
@@ -132,12 +132,12 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
         isError: functionResultEvent.isError,
       });
       if (decodedResult && !decodedResult.isSuccess) {
-        functionResultEvent.errorName = decodedResult.error.errorName;
-        functionResultEvent.errorArgs = decodedResult.error.args;
-        functionResultEvent.errorAbiItem = decodedResult.error.abiItem;
+        functionResultEvent.errorName = decodedResult.decodedError.errorName;
+        functionResultEvent.errorArgs = decodedResult.decodedError.args;
+        functionResultEvent.errorAbiItem = decodedResult.decodedError.abiItem;
       }
       if (decodedResult && decodedResult.isSuccess) {
-        functionResultEvent.returnValue = decodedResult.functionResult;
+        functionResultEvent.returnValue = decodedResult.decodedFunctionResult;
       }
     }
 

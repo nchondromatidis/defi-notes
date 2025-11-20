@@ -26,9 +26,9 @@ type DecodeFunctionCallParameters = {
 };
 
 type DecodedFunctionCall = {
-  functionName: string;
   type: FunctionCallTypes;
-  args: unknown;
+  decodedFunctionName: string;
+  decodedArgs: unknown;
 };
 
 export function decodeFunctionCall(parameters: DecodeFunctionCallParameters): DecodedFunctionCall | undefined {
@@ -39,9 +39,9 @@ export function decodeFunctionCall(parameters: DecodeFunctionCallParameters): De
     const description = abi.find((x) => x.type === 'constructor');
     if (!description) throw new InvariantError('constructor not found', { parameters });
     return {
-      functionName: '',
       type: 'constructor',
-      args: ('inputs' in description && description.inputs && description.inputs.length > 0
+      decodedFunctionName: '',
+      decodedArgs: ('inputs' in description && description.inputs && description.inputs.length > 0
         ? decodeAbiParameters(description.inputs, constructorArgsEncoded)
         : undefined) as readonly unknown[] | undefined,
     };
@@ -51,9 +51,9 @@ export function decodeFunctionCall(parameters: DecodeFunctionCallParameters): De
   const decodeFunctionDataResult = trySync(() => decodeFunctionData(parameters));
   if (decodeFunctionDataResult.ok) {
     return {
-      functionName: decodeFunctionDataResult.value.functionName,
       type: 'function',
-      args: decodeFunctionDataResult.value.args ?? [],
+      decodedFunctionName: decodeFunctionDataResult.value.functionName,
+      decodedArgs: decodeFunctionDataResult.value.args ?? [],
     };
   }
   if (!decodeFunctionDataResult.ok && !(decodeFunctionDataResult.error instanceof AbiFunctionSignatureNotFoundError)) {
@@ -72,10 +72,10 @@ export function decodeFunctionCall(parameters: DecodeFunctionCallParameters): De
 
   const functionHandler = getFallbackHandler(hasData, hasValue, hasFallbackPayable, hasFallbackNonPayable, hasReceive);
   if (functionHandler === 'fallback' && fallback !== undefined) {
-    return { functionName: '', type: 'fallback', args: [] };
+    return { decodedFunctionName: '', type: 'fallback', decodedArgs: [] };
   }
   if (functionHandler === 'receive' && receive !== undefined) {
-    return { functionName: '', type: 'receive', args: [] };
+    return { decodedFunctionName: '', type: 'receive', decodedArgs: [] };
   }
   if (functionHandler === 'revert') {
     throw new InvariantError('FallbackHandler decoding error: Transaction should have reverted');
@@ -125,26 +125,31 @@ type DecodeFunctionResultParameters =
 type DecodedFunctionResults =
   | {
       isSuccess: false;
-      error: ReturnType<typeof decodeErrorResultViem<Abi>>;
+      rawData: Hex;
+      decodedError: ReturnType<typeof decodeErrorResultViem<Abi>>;
     }
   | {
       isSuccess: true;
-      functionResult: unknown;
+      rawData: Hex;
+      decodedFunctionResult: unknown;
     };
 
 export function decodeFunctionResult(parameters: DecodeFunctionResultParameters): DecodedFunctionResults | undefined {
   const { abi, data } = parameters;
-  // error: nothing decode
+  // error
   if ('isError' in parameters && parameters.isError) {
     const decodedError = decodeErrorResultViem({ abi, data });
-    return { isSuccess: false, error: decodedError };
+    return { isSuccess: false, decodedError: decodedError, rawData: data };
   }
 
   // function
   if ('functionName' in parameters) {
     const { functionName } = parameters;
     const decodedFunctionResult = trySync(() => decodeFunctionResultViem({ abi, data, functionName }));
-    if (decodedFunctionResult.ok) return { isSuccess: true, functionResult: decodedFunctionResult };
+
+    if (decodedFunctionResult.ok) {
+      return { isSuccess: true, decodedFunctionResult: decodedFunctionResult, rawData: data };
+    }
     if (!decodedFunctionResult.ok && !(decodedFunctionResult.error instanceof AbiFunctionNotFoundError)) {
       throw decodedFunctionResult.error;
     }
@@ -157,15 +162,21 @@ export function decodeFunctionResult(parameters: DecodeFunctionResultParameters)
 // ############################## Decode Logs ##############################/
 
 export type Log = [address: Uint8Array, topics: Uint8Array[], data: Uint8Array];
-export type LensLog = { raw: Log; eventName?: string; args?: unknown; eventSignature?: string };
+export type LensLog = {
+  rawData: Log;
+  decodedEventName?: string;
+  decodedArgs?: unknown;
+  decodedEventSignature?: string;
+};
 
 export function decodeLog(log: Log, abi: Abi | undefined): LensLog {
   const topics = log[1].map((it) => bytesToHex(it));
   const [signature, ...nonSignatureTopics] = topics;
 
   const result: LensLog = {
-    raw: log,
+    rawData: log,
   };
+
   if (!abi) return result;
 
   const decodedLogResult = trySync(() =>
@@ -183,9 +194,9 @@ export function decodeLog(log: Log, abi: Abi | undefined): LensLog {
       const abiEvent = findEventByName(abi, decodedLog.eventName);
       eventSignature = abiEvent ? toEventSignature(abiEvent) : undefined;
 
-      result.eventName = decodedLog.eventName;
-      result.args = decodedLog.args;
-      result.eventSignature = eventSignature;
+      result.decodedEventName = decodedLog.eventName;
+      result.decodedArgs = decodedLog.args;
+      result.decodedEventSignature = eventSignature;
     }
   }
   if (!decodedLogResult.ok && !(decodedLogResult.error instanceof AbiEventSignatureNotFoundError)) {

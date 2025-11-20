@@ -34,7 +34,7 @@ export type FunctionResultEvent<ArtifactMapT extends LensArtifactsMap<ArtifactMa
   logs?: Array<LensLog>;
 };
 
-export type LensLog = { raw: unknown; eventName?: string; args?: unknown; eventSignature?: string };
+export type LensLog = { rawData: unknown; eventName?: string; args?: unknown; eventSignature?: string };
 
 export class LensCallTracerResult<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
   public rootFunction?: FunctionCallEvent<ArtifactMapT>;
