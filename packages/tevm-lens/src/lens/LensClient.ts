@@ -25,8 +25,8 @@ export type Next = () => void;
 export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
   constructor(
     public readonly client: Client<TevmTransport>,
-    public readonly supportedContracts: SupportedContracts<ArtifactMapT>,
-    public readonly deployedContracts: DeployedContracts<ArtifactMapT>,
+    public readonly supportedContracts: SupportedContracts,
+    public readonly deployedContracts: DeployedContracts,
     public readonly callDecodeTracer: LensCallTracer<ArtifactMapT>
   ) {}
 
@@ -54,6 +54,8 @@ export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
     librariesToLink: Array<{ libFQN: ContractFQNT; address: Address }> = []
   ) {
     const artifact = this.supportedContracts.getArtifactFrom(contractFQN);
+    if (!artifact) throw new InvalidArgument(`Artifact for ${contractFQN} not found.`);
+
     let bytecode = artifact.bytecode;
     for (const lib of librariesToLink) {
       bytecode = this.linkHardhatBytecode(bytecode, lib.libFQN, lib.address);
@@ -115,10 +117,12 @@ export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
   }
 
   async getContract<ContractFqnT extends LensContractFQN<ArtifactMapT>>(address: Hex, contractFQN: ContractFqnT) {
-    const contractArtifact = this.supportedContracts.getArtifactFrom(contractFQN);
+    const contractAbi = this.supportedContracts.getArtifactPart(contractFQN, 'abi');
+    if (!contractAbi) throw new InvalidArgument(`Artifact for ${contractFQN} not found.`);
+
     return getContract({
       address: address,
-      abi: contractArtifact.abi as ArtifactMapT[ContractFqnT]['abi'],
+      abi: contractAbi,
       client: this.client,
     });
   }

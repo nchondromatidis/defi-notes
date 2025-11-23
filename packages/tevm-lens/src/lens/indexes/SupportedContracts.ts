@@ -1,23 +1,15 @@
 import { GenericError } from '../../common/errors.js';
-import type {
-  FunctionCallTypes,
-  Hex,
-  LensArtifactsMap,
-  LensContractFQN,
-  LensSourceFunctionIndexes,
-} from '../types/artifact.js';
+import type { FunctionCallTypes, Hex, LensArtifact, LensSourceFunctionIndexes } from '../types/artifact.js';
 
 type Bytecode = Hex;
+type ContractFQN = string;
 type FunctionName = string;
 type Source = string;
 type Location = { lineStart: number; lineEnd: number; source: string };
 
-export class SupportedContracts<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
-  protected bytecodeToContractFqnIndex: Map<Bytecode, LensContractFQN<ArtifactMapT>> = new Map();
-  protected contractFqnToArtifactIndex: Map<
-    LensContractFQN<ArtifactMapT>,
-    ArtifactMapT[LensContractFQN<ArtifactMapT>]
-  > = new Map();
+export class SupportedContracts {
+  protected bytecodeToContractFqnIndex: Map<Bytecode, ContractFQN> = new Map();
+  protected contractFqnToArtifactIndex: Map<ContractFQN, LensArtifact> = new Map();
 
   protected sourceFunctionNameFunctionIndexes: Map<
     Source,
@@ -27,9 +19,9 @@ export class SupportedContracts<ArtifactMapT extends LensArtifactsMap<ArtifactMa
 
   // create indexes
 
-  public async registerArtifacts(artifacts: Array<ArtifactMapT[LensContractFQN<ArtifactMapT>]>) {
+  public async registerArtifacts(artifacts: Array<LensArtifact>) {
     artifacts.forEach((it) => {
-      const contractFQN = (it.sourceName + ':' + it.contractName) as LensContractFQN<ArtifactMapT>;
+      const contractFQN = it.sourceName + ':' + it.contractName;
       this.bytecodeToContractFqnIndex.set(it.bytecode, contractFQN);
       this.contractFqnToArtifactIndex.set(contractFQN, it);
     });
@@ -55,43 +47,38 @@ export class SupportedContracts<ArtifactMapT extends LensArtifactsMap<ArtifactMa
     return { bytecode: undefined, contractFQN: undefined };
   }
 
-  public getArtifactFrom<ContractFqnT extends LensContractFQN<ArtifactMapT>>(
-    contractFQN: ContractFqnT
-  ): ArtifactMapT[ContractFqnT] {
+  public getArtifactFrom(contractFQN: ContractFQN): LensArtifact | undefined {
     if (!this.contractFqnToArtifactIndex.has(contractFQN)) {
       throw new GenericError('Contract not supported', { name: contractFQN });
     }
-    return this.contractFqnToArtifactIndex.get(contractFQN)! as ArtifactMapT[ContractFqnT];
+    return this.contractFqnToArtifactIndex.get(contractFQN);
   }
 
-  public getArtifactPart<
-    ContractFqnT extends LensContractFQN<ArtifactMapT>,
-    ArtifactPartT extends keyof ArtifactMapT[ContractFqnT],
-  >(contractFQN: ContractFqnT, artifactPart: ArtifactPartT): ArtifactMapT[ContractFqnT][ArtifactPartT] {
+  public getArtifactPart<ArtifactPartT extends keyof LensArtifact>(
+    contractFQN: ContractFQN,
+    artifactPart: ArtifactPartT
+  ): LensArtifact[ArtifactPartT] | undefined {
     const artifact = this.getArtifactFrom(contractFQN);
-    return artifact[artifactPart];
+    return artifact?.[artifactPart];
   }
 
   public getFunctionCallLocation(
-    contractFQN: LensContractFQN<ArtifactMapT>,
+    contractFQN: ContractFQN,
     functionName: string,
     type: FunctionCallTypes
-  ) {
+  ): Location | undefined {
     if (functionName !== '') return this.getAbiFunctionNameLocation(contractFQN, functionName);
     if (functionName === '') return this.getAbiTypeLocation(contractFQN, type);
     return undefined;
   }
 
-  public getAbiFunctionNameLocation(
-    contractFQN: LensContractFQN<ArtifactMapT>,
-    functionName: string
-  ): Location | undefined {
+  public getAbiFunctionNameLocation(contractFQN: ContractFQN, functionName: string): Location | undefined {
     const source = contractFQN.split(':')[0];
     const { lineStart, lineEnd } = this.sourceFunctionNameFunctionIndexes.get(source)?.get(functionName) ?? {};
     return lineStart !== undefined && lineEnd !== undefined ? { lineStart, lineEnd, source } : undefined;
   }
 
-  public getAbiTypeLocation(contractFQN: LensContractFQN<ArtifactMapT>, type: FunctionCallTypes): Location | undefined {
+  public getAbiTypeLocation(contractFQN: ContractFQN, type: FunctionCallTypes): Location | undefined {
     const source = contractFQN.split(':')[0];
     const sourceFunctionIndexes = this.sourceFunctionIndexes.get(source) ?? [];
     const functionIndex = sourceFunctionIndexes.find((it) => it.kind === type);

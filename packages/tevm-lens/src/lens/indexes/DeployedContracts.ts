@@ -1,14 +1,14 @@
-import type { Address, LensArtifactsMap, LensContractFQN } from '../types/artifact.ts';
+import type { Address } from '../types/artifact.ts';
 
-type DeployedContract<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> = {
-  name: LensContractFQN<ArtifactMapT>;
+type DeployedContract = {
+  name: string;
   isDeployedByCA: boolean;
 };
 
-export class DeployedContracts<TMap extends LensArtifactsMap<TMap>> {
-  public readonly addressLabel: Map<Address, DeployedContract<TMap>> = new Map();
+export class DeployedContracts {
+  public readonly addressLabel: Map<Address, DeployedContract> = new Map();
 
-  public markContractAddress(address: Address, contractFQN: LensContractFQN<TMap>, isDeployedByCA = false): void {
+  public markContractAddress(address: Address, contractFQN: string, isDeployedByCA = false): void {
     this.addressLabel.set(this.toLowerCase(address), { name: contractFQN, isDeployedByCA });
   }
 

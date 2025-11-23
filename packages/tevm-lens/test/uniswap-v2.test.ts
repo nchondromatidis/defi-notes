@@ -36,8 +36,8 @@ describe('uniswap-v2', () => {
     const artifactsContractsPath = path.join(__dirname, '..', '..', 'protocols', 'artifacts', 'contracts');
     resourceLoader = new TestResourceLoader<UniswapV2ArtifactsMap, ProtocolName>(artifactsPath, artifactsContractsPath);
 
-    const supportedContracts = new SupportedContracts<UniswapV2ArtifactsMap>();
-    const labeledContracts = new DeployedContracts<UniswapV2ArtifactsMap>();
+    const supportedContracts = new SupportedContracts();
+    const labeledContracts = new DeployedContracts();
     const tracer = new LensCallTracer<UniswapV2ArtifactsMap>(supportedContracts, labeledContracts);
     lensClient = new LensClient<UniswapV2ArtifactsMap>(client, supportedContracts, labeledContracts, tracer);
 

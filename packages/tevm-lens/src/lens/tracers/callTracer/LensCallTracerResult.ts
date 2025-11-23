@@ -1,16 +1,16 @@
 import { InvariantError } from '../../../common/errors.ts';
-import type { Address, Hex, LensArtifactsMap, LensContractFQN } from '../../types/artifact.ts';
+import type { Address, Hex } from '../../types/artifact.ts';
 
-export type FunctionCallEvent<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> = {
+export type FunctionCallEvent = {
   type: 'FunctionCallEvent';
   to: Address | undefined;
   value?: bigint;
   data?: Hex;
   depth?: number;
   isDelegateCall?: boolean;
-  proxyContractFQN?: LensContractFQN<ArtifactMapT>;
+  proxyContractFQN?: string;
   proxyAddress?: Address;
-  contractFQN?: LensContractFQN<ArtifactMapT>;
+  contractFQN?: string;
   functionName?: string;
   functionType?: string;
   args?: unknown;
@@ -19,12 +19,12 @@ export type FunctionCallEvent<ArtifactMapT extends LensArtifactsMap<ArtifactMapT
   source?: string;
   isCreate?: boolean;
   create2Salt?: Hex;
-  createdContractFQN?: LensContractFQN<ArtifactMapT>;
-  called?: Array<FunctionCallEvent<ArtifactMapT>>;
-  result?: FunctionResultEvent<ArtifactMapT>;
+  createdContractFQN?: string;
+  called?: Array<FunctionCallEvent>;
+  result?: FunctionResultEvent;
 };
 
-export type FunctionResultEvent<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> = {
+export type FunctionResultEvent = {
   type: 'FunctionResultEvent';
   isError?: boolean;
   rawError?: unknown;
@@ -35,7 +35,7 @@ export type FunctionResultEvent<ArtifactMapT extends LensArtifactsMap<ArtifactMa
   returnValue?: unknown;
   isCreate?: boolean;
   createdAddress?: Address;
-  createdContractFQN?: LensContractFQN<ArtifactMapT>;
+  createdContractFQN?: string;
   logs?: Array<LensLog>;
 };
 
@@ -48,11 +48,11 @@ export type LensLog = {
   functionName?: string;
 };
 
-export class LensCallTracerResult<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
-  public rootFunction?: FunctionCallEvent<ArtifactMapT>;
-  private stack: FunctionCallEvent<ArtifactMapT>[] = [];
+export class LensCallTracerResult {
+  public rootFunction?: FunctionCallEvent;
+  private stack: FunctionCallEvent[] = [];
 
-  public addFunctionCall(event: FunctionCallEvent<ArtifactMapT>) {
+  public addFunctionCall(event: FunctionCallEvent) {
     // Ensure event shape and defaults
     event.called = event.called ?? [];
     event.result = event.result ?? undefined;
@@ -68,7 +68,7 @@ export class LensCallTracerResult<ArtifactMapT extends LensArtifactsMap<Artifact
     this.stack.push(event);
   }
 
-  public addResult(event: FunctionResultEvent<ArtifactMapT>) {
+  public addResult(event: FunctionResultEvent) {
     const current = this.stack[this.stack.length - 1];
     if (!current) {
       throw new InvariantError('Result event raised without function call');
@@ -81,7 +81,7 @@ export class LensCallTracerResult<ArtifactMapT extends LensArtifactsMap<Artifact
     this.stack.pop();
   }
 
-  public getCurrentFunctionCallEvent(): FunctionCallEvent<ArtifactMapT> {
+  public getCurrentFunctionCallEvent(): FunctionCallEvent {
     return this.stack[this.stack.length - 1];
   }
 }

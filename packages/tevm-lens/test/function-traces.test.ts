@@ -35,8 +35,8 @@ describe('function traces', () => {
       artifactsContractsPath
     );
 
-    const supportedContracts = new SupportedContracts<FunctionTracesArtifactsMap>();
-    const labeledContracts = new DeployedContracts<FunctionTracesArtifactsMap>();
+    const supportedContracts = new SupportedContracts();
+    const labeledContracts = new DeployedContracts();
     const tracer = new LensCallTracer<FunctionTracesArtifactsMap>(supportedContracts, labeledContracts);
     lensClient = new LensClient<FunctionTracesArtifactsMap>(client, supportedContracts, labeledContracts, tracer);
 

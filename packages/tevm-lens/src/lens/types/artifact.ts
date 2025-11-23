@@ -10,26 +10,27 @@ export function safeCastToHex(value: string): Hex {
 }
 
 // artifact schema
-export interface LensArtifactSchema {
+export type LensArtifact = {
   readonly contractName: string;
   readonly sourceName: string;
   readonly abi: Abi;
   readonly bytecode: Hex;
   readonly deployedBytecode: Hex;
-}
+  readonly linkReferences: Record<string, unknown>;
+};
 
 // T object must be:
 // - key formated as `LensArtifact['sourceName']:LensArtifact['contractName']`
 // - values satisfy LensArtifact type
-export type LensArtifactsMap<T extends Record<string, LensArtifactSchema>> = {
-  [K in keyof T]: T[K] extends LensArtifactSchema
+export type LensArtifactsMap<T extends Record<string, LensArtifact>> = {
+  [K in keyof T]: T[K] extends LensArtifact
     ? K extends `${T[K]['sourceName']}:${T[K]['contractName']}`
       ? T[K]
       : never
     : never;
 };
 
-export type LensContractFQN<T extends Record<string, LensArtifactSchema>> = keyof LensArtifactsMap<T> & string;
+export type LensContractFQN<T extends Record<string, LensArtifact>> = keyof LensArtifactsMap<T> & string;
 export type LensProtocolsList = string;
 
 export type FunctionCallTypes = 'function' | 'constructor' | 'fallback' | 'receive';
