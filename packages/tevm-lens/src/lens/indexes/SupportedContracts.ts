@@ -1,5 +1,5 @@
-import { GenericError } from '../../common/errors.js';
-import type { FunctionCallTypes, Hex, LensArtifact, LensSourceFunctionIndexes } from '../types/artifact.js';
+import { GenericError } from '../../common/errors.ts';
+import type { FunctionCallTypes, Hex, LensArtifact, LensSourceFunctionIndexes } from '../types/artifact.ts';
 
 type Bytecode = Hex;
 type ContractFQN = string;

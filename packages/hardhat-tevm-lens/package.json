@@ -11,12 +11,12 @@
     }
   },
   "scripts": {
+    "postinstall": "pnpm run build",
     "check:types": "tsc --noEmit",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
     "build": "rm -rf dist && tsc",
     "build:watch": "tsc --watch",
-    "postinstall": "pnpm run build"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
     "@defi-notes/config": "workspace:*",

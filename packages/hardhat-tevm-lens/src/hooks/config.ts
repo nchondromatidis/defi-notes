@@ -1,8 +1,8 @@
 import type { ConfigHooks, HardhatUserConfigValidationError } from 'hardhat/types/hooks';
 import type { HardhatConfig } from 'hardhat/types/config';
-import { ArtifactsAugmentUserConfigSchema } from '../types.js';
+import { ArtifactsAugmentUserConfigSchema } from '../types.ts';
 import createDebug from 'debug';
-import { DEBUG_PREFIX } from '../debug.js';
+import { DEBUG_PREFIX } from '../debug.ts';
 
 const debug = createDebug(`${DEBUG_PREFIX}:config-hooks`);
 

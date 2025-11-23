@@ -13,9 +13,8 @@ import { getContractAddress, encodePacked, keccak256 } from 'viem';
 import type { IResourceLoader } from '../src/adapters/IResourceLoader.ts';
 import { safeCastToHex } from '../src/lens/types/artifact.ts';
 import type { ProtocolName } from '@defi-notes/protocols/*';
-
 import path from 'node:path';
-import type { UniswapV2ArtifactsMap } from './setup/uniswap-v2/types.js';
+import type { UniswapV2ArtifactsMap } from './setup/uniswap-v2/types.ts';
 
 const ETHER_1 = parseEther('1');
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';

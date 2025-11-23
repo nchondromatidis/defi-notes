@@ -1,5 +1,5 @@
 import 'hardhat/types/config';
-import type { ArtifactsAugmentConfig, ArtifactsAugmentUserConfig } from './types.js';
+import type { ArtifactsAugmentConfig, ArtifactsAugmentUserConfig } from './types.ts';
 
 declare module 'hardhat/types/config' {
   interface HardhatUserConfig {

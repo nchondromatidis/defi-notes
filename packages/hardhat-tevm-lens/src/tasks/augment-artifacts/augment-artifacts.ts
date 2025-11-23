@@ -5,7 +5,7 @@ import { glob } from 'glob';
 import { IndentationText, Project } from 'ts-morph';
 import type { HardhatRuntimeEnvironment } from 'hardhat/types/hre';
 import createDebug from 'debug';
-import { DEBUG_PREFIX } from '../../debug.js';
+import { DEBUG_PREFIX } from '../../debug.ts';
 
 const debug = createDebug(`${DEBUG_PREFIX}:augment-artifacts`);
 

@@ -4,8 +4,8 @@ import { findAll, srcDecoder } from 'solidity-ast/utils.js'; // force common.js 
 import path from 'node:path';
 import type { HardhatRuntimeEnvironment } from 'hardhat/types/hre';
 import createDebug from 'debug';
-import { DEBUG_PREFIX } from '../../debug.js';
-import type { FunctionIndex, ProtocolFunctionIndexes, SourceFunctionIndexes } from './types.js';
+import { DEBUG_PREFIX } from '../../debug.ts';
+import type { FunctionIndex, ProtocolFunctionIndexes, SourceFunctionIndexes } from './types.ts';
 import { fileURLToPath } from 'node:url';
 
 const debug = createDebug(`${DEBUG_PREFIX}:index-functions`);

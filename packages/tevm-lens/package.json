@@ -6,7 +6,7 @@
   "description": "React component for visualising tevm transactions",
   "scripts": {
     "check:types": "tsc --noEmit",
-    "build": "tsc -b",
+    "build": "tsc",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test:contracts:build": "pnpm exec hardhat build --force",

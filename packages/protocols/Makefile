@@ -17,7 +17,7 @@ hardhat-tasks-filter-contracts:
 
 hardhat-build:
 	@echo "Building with Hardhat..."
-	pnpm exec hardhat build
+	pnpm exec hardhat build --show-stack-traces
 
 build: clean hardhat-tasks-filter-contracts hardhat-build
 	@echo "Build complete!"

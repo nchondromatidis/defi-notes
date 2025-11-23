@@ -10,11 +10,11 @@ import { LensCallTracer } from '../src/lens/tracers/callTracer/LensCallTracer.ts
 import { inspect } from './setup/_utils/debug.ts';
 import type { IResourceLoader } from '../src/adapters/IResourceLoader.ts';
 import path from 'node:path';
-import { ETHER_1 } from './setup/_utils/constants.js';
-import type { FunctionTracesArtifactsMap } from './setup/function-traces/types.js';
-import type { ProtocolName } from './setup/artifacts/index.js';
-import { deployFunctionTracesContracts } from './setup/function-traces/deploy.js';
-import type { Hex } from '../src/lens/types/artifact.js';
+import { ETHER_1 } from './setup/_utils/constants.ts';
+import type { FunctionTracesArtifactsMap } from './setup/function-traces/types.ts';
+import type { ProtocolName } from './setup/artifacts';
+import { deployFunctionTracesContracts } from './setup/function-traces/deploy.ts';
+import type { Hex } from '../src/lens/types/artifact';
 
 describe('function traces', () => {
   let lensClient: LensClient<FunctionTracesArtifactsMap>;

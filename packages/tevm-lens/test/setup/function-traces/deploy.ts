@@ -1,8 +1,8 @@
-import type { LensClient } from '../../../src/lens/LensClient.js';
-import type { IResourceLoader } from '../../../src/adapters/IResourceLoader.js';
-import type { FunctionTracesArtifactsMap } from './types.js';
+import type { LensClient } from '../../../src/lens/LensClient.ts';
+import type { IResourceLoader } from '../../../src/adapters/IResourceLoader.ts';
+import type { FunctionTracesArtifactsMap } from './types.ts';
 import { getContract } from 'viem';
-import type { ProtocolName } from '../artifacts/index.js';
+import type { ProtocolName } from '../artifacts';
 
 export async function deployFunctionTracesContracts(
   lensClient: LensClient<FunctionTracesArtifactsMap>,

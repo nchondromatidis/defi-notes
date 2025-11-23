@@ -11,9 +11,9 @@ import {
   toEventSignature,
   AbiEventSignatureNotFoundError,
 } from 'viem';
-import { InvariantError } from '../../../common/errors.js';
-import type { FunctionCallTypes, Hex } from '../../types/artifact.js';
-import { trySync } from '../../../common/utils.js';
+import { InvariantError } from '../../../common/errors.ts';
+import type { FunctionCallTypes, Hex } from '../../types/artifact.ts';
+import { trySync } from '../../../common/utils.ts';
 import type { AbiEvent } from 'tevm';
 
 // ############################## Decode Function Calls ##############################/

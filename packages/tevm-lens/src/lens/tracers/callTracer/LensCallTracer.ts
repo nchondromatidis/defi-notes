@@ -6,7 +6,7 @@ import { bytesToHex } from 'viem';
 import { InvariantError } from '../../../common/errors.ts';
 import { type FunctionCallEvent, type FunctionResultEvent, LensCallTracerResult } from './LensCallTracerResult.ts';
 import { type Address, type Hex, type LensArtifactsMap } from '../../types/artifact.ts';
-import { decodeFunctionCall, decodeFunctionResult, decodeLog } from './decoders.js';
+import { decodeFunctionCall, decodeFunctionResult, decodeLog } from './decoders.ts';
 
 export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
   public readonly tracingTxs: Map<string, LensCallTracerResult> = new Map();
