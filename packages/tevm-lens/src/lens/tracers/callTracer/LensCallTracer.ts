@@ -56,6 +56,8 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       rawData: callData,
       value: callEvent.value,
       isDelegateCall: callEvent.delegatecall,
+      callType: 'UNKNOWN',
+      precompile: callEvent.isCompiled,
     };
 
     let bytecode = undefined;
@@ -63,7 +65,8 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
 
     // new contract
     if (!callEvent.to) {
-      functionCallEvent.isCreate = true;
+      functionCallEvent.callType = 'CREATE';
+      if (callEvent.salt) functionCallEvent.callType = 'CREATE2';
       functionCallEvent.create2Salt = callEvent.salt ? bytesToHex(callEvent.salt) : undefined;
       const result = this.supportedContracts.getContractFqnFromCallData(callData);
       bytecode = result.bytecode;
@@ -72,6 +75,8 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
 
     // function call
     if (callEvent.to) {
+      functionCallEvent.callType = 'CALL';
+      if (callEvent.isStatic) functionCallEvent.callType = 'STATICCALL';
       const contractFQN = this.deployedContracts.getContractFqnForAddress(callEvent.to.toString());
       functionCallEvent.contractFQN = contractFQN;
       const { contractAbi, linkLibraries } = this.supportedContracts.getAllAbisRelatedTo(contractFQN);
@@ -85,6 +90,7 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
 
     // function delegate call
     if (callEvent.to && callEvent.delegatecall) {
+      functionCallEvent.callType = 'DELEGATECALL';
       // callEvent type missing _codeAddress, but implementation has it
       const codeAddress = (callEvent as any)['_codeAddress'].toString() as Address;
       if (!codeAddress) throw new InvariantError('codeAddress is empty', { callEvent, functionCallEvent });
@@ -102,8 +108,9 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
     const decodedFunctionCall = decodeFunctionCallMultipleAbis({
       contractsAndAbis: abisRelatedToCalledContract,
       data: callData,
-      createdBytecode: bytecode,
+      precompile: functionCallEvent.precompile,
       value: callEvent.value,
+      createdBytecode: bytecode,
     });
 
     if (decodedFunctionCall) {

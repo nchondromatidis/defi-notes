@@ -74,7 +74,7 @@ describe('function traces', () => {
   });
 
   test('deployContract', async () => {
-    await lensClient.contract(callerContract, 'deployContract', []);
+    await lensClient.contract(callerContract, 'callPublicFunction', []);
     inspect(lensClient.callDecodeTracer.succeededTxs);
   });
 
@@ -115,6 +115,7 @@ describe('function traces', () => {
     await lensClient.contract(callerContract, 'testExternalLibCall', []);
     inspect(lensClient.callDecodeTracer.succeededTxs);
   });
+
   test('callDelegateCall', async () => {
     const calldata = '0x'; // Example calldata, adjust as needed
     await lensClient.contract(callerContract, 'callDelegateCall', [calldata]);
@@ -135,4 +136,6 @@ describe('function traces', () => {
     await lensClient.contract(callerContract, 'callInternalAndPrivate', []);
     inspect(lensClient.callDecodeTracer.succeededTxs);
   });
+
+  test('precompile', async () => {});
 });

@@ -1,6 +1,8 @@
 import { InvariantError } from '../../../common/errors.ts';
 import type { Address, Hex } from '../../types/artifact.ts';
 
+type Unknown = 'UNKNOWN';
+type CallTypes = 'CALL' | 'DELEGATECALL' | 'STATICCALL' | 'CREATE' | 'CREATE2';
 export type FunctionCallEvent = {
   type: 'FunctionCallEvent';
   to: Address | undefined;
@@ -8,6 +10,8 @@ export type FunctionCallEvent = {
   depth: number;
   rawData: Hex;
   value: bigint;
+  callType: Unknown | CallTypes;
+  precompile: boolean;
   isDelegateCall: boolean;
   implContractFQN?: string;
   implAddress?: Address;
@@ -18,7 +22,6 @@ export type FunctionCallEvent = {
   lineStart?: number;
   lineEnd?: number;
   source?: string;
-  isCreate?: boolean;
   create2Salt?: Hex;
   createdContractFQN?: string;
   called?: Array<FunctionCallEvent>;

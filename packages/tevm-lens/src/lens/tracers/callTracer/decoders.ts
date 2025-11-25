@@ -23,6 +23,7 @@ import type { AbiEvent } from 'tevm';
 type decodeFunctionCallMultipleAbisParams = {
   contractsAndAbis: Array<{ contractFQN: string | undefined; abi: Abi | undefined }>;
   data: Hex;
+  precompile: boolean;
   value?: bigint;
   createdBytecode?: Hex;
 };
@@ -37,10 +38,10 @@ type DecodeFunctionCallMultipleAbisReturn = {
 export function decodeFunctionCallMultipleAbis(
   params: decodeFunctionCallMultipleAbisParams
 ): DecodeFunctionCallMultipleAbisReturn | undefined {
-  const { data, value, createdBytecode } = params;
+  const { data, precompile, value, createdBytecode } = params;
   for (const { contractFQN, abi } of params.contractsAndAbis) {
     if (!contractFQN || !abi) continue;
-    const decodeResult = decodeFunctionCallOneAbi({ abi, data, value, createdBytecode });
+    const decodeResult = decodeFunctionCallOneAbi({ abi, data, precompile, value, createdBytecode });
     if (decodeResult) {
       return {
         contractFQN,
@@ -56,6 +57,7 @@ export function decodeFunctionCallMultipleAbis(
 type DecodeFunctionCallOneAbiParams = {
   abi: Abi;
   data: Hex;
+  precompile: boolean;
   value?: bigint;
   createdBytecode?: Hex;
 };
@@ -69,7 +71,12 @@ type DecodedFunctionCallOneAbiReturn = {
 export function decodeFunctionCallOneAbi(
   params: DecodeFunctionCallOneAbiParams
 ): DecodedFunctionCallOneAbiReturn | undefined {
-  const { abi, data, value, createdBytecode } = params;
+  const { abi, data, precompile, value, createdBytecode } = params;
+
+  // precompiler
+  if (precompile) {
+    // TODO: handle
+  }
 
   // constructor: data = contract bytecode + encoded constructor args
   if (createdBytecode) {

@@ -73,10 +73,8 @@ export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
       functionName: functionName,
       args: args,
       throwOnFail: false,
-      onStep: async (event: InterpreterStep, next?: Next) => {
-        if (event.opcode.name == 'SSTORE') {
-          // console.log(event);
-        }
+      onStep: async (_event: InterpreterStep, next?: Next) => {
+        // console.log(event.opcode.name, event.stack);
         next?.();
       },
       onBeforeMessage: async (event: Message, next?: Next) => {
