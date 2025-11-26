@@ -6,7 +6,7 @@ import { buildClient } from '../src/lens/client.ts';
 import { TestResourceLoader } from './setup/TestResourceLoader.ts';
 import { DeployedContracts } from '../src/lens/indexes/DeployedContracts.ts';
 import { SupportedContracts } from '../src/lens/indexes/SupportedContracts.ts';
-import { LensCallTracer } from '../src/lens/tracers/callTracer/LensCallTracer.ts';
+import { LensCallTracer } from '../src/lens/callTracer/LensCallTracer.ts';
 import { inspect } from './setup/_utils/debug.ts';
 import type { IResourceLoader } from '../src/adapters/IResourceLoader.ts';
 import path from 'node:path';
@@ -55,24 +55,6 @@ describe('function traces', () => {
     callerContract = deployment.callerContract;
   });
 
-  test('state', async () => {
-    const calldata = '0x20';
-    await lensClient.contract(callerContract, 'callDelegateCall', [calldata]);
-    const txHash = lensClient.callDecodeTracer.succeededTxs.keys().next().value;
-    const callTraceResult = await client.transport.tevm.request({
-      method: 'debug_traceTransaction',
-      params: [
-        {
-          transactionHash: txHash,
-          tracer: 'callTracer',
-          tracerConfig: { onlyTopCall: false },
-        },
-      ],
-    });
-
-    console.log(callTraceResult);
-  });
-
   test('deployContract', async () => {
     await lensClient.contract(callerContract, 'callPublicFunction', []);
     inspect(lensClient.callDecodeTracer.succeededTxs);
@@ -103,7 +85,7 @@ describe('function traces', () => {
   test('callExternalFunction', async () => {
     await lensClient.contract(callerContract, 'callExternalFunction', []);
     inspect(lensClient.callDecodeTracer.succeededTxs);
-  }, 600_000);
+  });
 
   test('callStaticCallViewFunction', async () => {
     await lensClient.contract(callerContract, 'callStaticCallViewFunction', []);
@@ -114,6 +96,8 @@ describe('function traces', () => {
   test('testExternalLibCall', async () => {
     await lensClient.contract(callerContract, 'testExternalLibCall', []);
     inspect(lensClient.callDecodeTracer.succeededTxs);
+    // TODO: fails to decode external library call with argument typed storage
+    // https://docs.soliditylang.org/en/latest/contracts.html#function-signatures-and-selectors-in-libraries
   });
 
   test('callDelegateCall', async () => {
@@ -138,4 +122,6 @@ describe('function traces', () => {
   });
 
   test('precompile', async () => {});
+
+  test('emitted different log with same log signature from different contracts', async () => {});
 });

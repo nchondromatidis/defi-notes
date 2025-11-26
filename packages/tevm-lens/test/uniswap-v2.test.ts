@@ -7,7 +7,7 @@ import { buildClient } from '../src/lens/client.ts';
 import { TestResourceLoader } from './setup/TestResourceLoader.ts';
 import { DeployedContracts } from '../src/lens/indexes/DeployedContracts.ts';
 import { SupportedContracts } from '../src/lens/indexes/SupportedContracts.ts';
-import { LensCallTracer } from '../src/lens/tracers/callTracer/LensCallTracer.ts';
+import { LensCallTracer } from '../src/lens/callTracer/LensCallTracer.ts';
 import { inspect } from './setup/_utils/debug.ts';
 import { getContractAddress, encodePacked, keccak256 } from 'viem';
 import type { IResourceLoader } from '../src/adapters/IResourceLoader.ts';

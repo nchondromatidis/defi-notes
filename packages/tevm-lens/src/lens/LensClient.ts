@@ -13,7 +13,7 @@ import type { EvmResult } from 'tevm/evm';
 import { randomId } from '../common/utils.ts';
 import { SupportedContracts } from './indexes/SupportedContracts.ts';
 import { DeployedContracts } from './indexes/DeployedContracts.ts';
-import { LensCallTracer } from './tracers/callTracer/LensCallTracer.ts';
+import { LensCallTracer } from './callTracer/LensCallTracer.ts';
 import { InvalidArgument, InvariantError } from '../common/errors.ts';
 import type { Address, Hex, LensArtifactsMap, LensContractFQN } from './types/artifact.ts';
 import type { InterpreterStep } from 'tevm/evm';

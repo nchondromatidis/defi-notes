@@ -64,11 +64,11 @@ contract CallerContract {
     // function calls to external library
 
     using ExternalLib for uint[];
-    uint[] public externalLibData;
+    uint[] public storageData1;
 
 
     function testExternalLibCall() public {
-        externalLibData.externalModifyStorage(0);
+        storageData1.externalModifyStorage(0);
         uint[] memory mem = new uint[](1);
         mem.externalOperateOnMemory(0);
     }

@@ -1,8 +1,9 @@
-import { InvariantError } from '../../../common/errors.ts';
-import type { Address, Hex } from '../../types/artifact.ts';
+import { InvariantError } from '../../common/errors.ts';
+import type { Address, Hex } from '../types/artifact.ts';
 
 type Unknown = 'UNKNOWN';
 type CallTypes = 'CALL' | 'DELEGATECALL' | 'STATICCALL' | 'CREATE' | 'CREATE2';
+// TODO: conditional types: eg FunctionCallEvent.to is only undefined when callType=='CREATE' | 'CREATE2'
 export type FunctionCallEvent = {
   type: 'FunctionCallEvent';
   to: Address | undefined;
@@ -12,7 +13,6 @@ export type FunctionCallEvent = {
   value: bigint;
   callType: Unknown | CallTypes;
   precompile: boolean;
-  isDelegateCall: boolean;
   implContractFQN?: string;
   implAddress?: Address;
   contractFQN?: string;
@@ -30,17 +30,17 @@ export type FunctionCallEvent = {
 
 export type FunctionResultEvent = {
   type: 'FunctionResultEvent';
-  isError?: boolean;
+  isError: boolean;
+  returnValueRaw: unknown;
+  isCreate: boolean;
   rawError?: unknown;
   errorName?: string;
   errorAbiItem?: unknown;
   errorArgs?: unknown;
-  returnValueRaw?: unknown;
   returnValue?: unknown;
-  isCreate?: boolean;
   createdAddress?: Address;
   createdContractFQN?: string;
-  logs?: Array<LensLog>;
+  logs?: Array<LensLog | undefined>;
 };
 
 export type LensLog = {
