@@ -8,13 +8,13 @@ import type { ContractAndAbi } from './types.ts';
 
 type DecodeFunctionCallParams<T extends ContractAndAbi | Array<ContractAndAbi>> = Readonly<{
   decodeData: T;
-  data: Hex;
+  rawData: Hex;
   precompile: boolean;
   value?: bigint;
   createdBytecode?: Hex;
 }>;
 
-type DecodeFunctionCallReturn = {
+type DecodedFunctionCall = {
   type: FunctionCallTypes;
   contractFQN: string;
   decodedFunctionName: string;
@@ -24,12 +24,12 @@ type DecodeFunctionCallReturn = {
 // decode using multiple abis
 export function decodeFunctionCallMultipleAbis(
   params: DecodeFunctionCallParams<Array<ContractAndAbi>>
-): DecodeFunctionCallReturn | undefined {
-  const { data, precompile, value, createdBytecode } = params;
+): DecodedFunctionCall | undefined {
+  const { rawData, precompile, value, createdBytecode } = params;
   for (const contractAndAbi of params.decodeData) {
     const decodeResult = decodeFunctionCallOneAbi({
       decodeData: contractAndAbi,
-      data,
+      rawData,
       precompile,
       value,
       createdBytecode,
@@ -42,10 +42,10 @@ export function decodeFunctionCallMultipleAbis(
 // decode using one abi
 export function decodeFunctionCallOneAbi(
   params: DecodeFunctionCallParams<ContractAndAbi>
-): DecodeFunctionCallReturn | undefined {
+): DecodedFunctionCall | undefined {
   const {
     decodeData: { contractFQN, abi },
-    data,
+    rawData,
     precompile,
     value,
     createdBytecode,
@@ -60,7 +60,7 @@ export function decodeFunctionCallOneAbi(
 
   // constructor: data = contract bytecode + encoded constructor args
   if (createdBytecode) {
-    const constructorArgsEncoded = ('0x' + data.slice(createdBytecode.length)) as Hex;
+    const constructorArgsEncoded = ('0x' + rawData.slice(createdBytecode.length)) as Hex;
     const description = abi.find((x) => x.type === 'constructor');
     if (!description) throw new InvariantError('constructor not found', { parameters: params });
     return {
@@ -74,7 +74,7 @@ export function decodeFunctionCallOneAbi(
   }
 
   // function: : function selector + encoded function args
-  const decodeFunctionDataResult = trySync(() => decodeFunctionData({ abi, data }));
+  const decodeFunctionDataResult = trySync(() => decodeFunctionData({ abi, data: rawData }));
   if (decodeFunctionDataResult.ok) {
     return {
       type: 'function',
@@ -93,7 +93,7 @@ export function decodeFunctionCallOneAbi(
   const receive = abi.find((x) => x.type === 'receive');
   const fallback = abi.find((x) => x.type === 'fallback');
 
-  const hasData = data !== '0x';
+  const hasData = rawData !== '0x';
   const hasValue = value !== undefined;
   const hasReceive = receive !== undefined;
   const hasFallbackPayable = fallback !== undefined && fallback.stateMutability === 'payable';

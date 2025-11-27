@@ -16,8 +16,7 @@ export type DecodeLogParams<T extends ContractLogDecodingData | Array<ContractLo
   log: Log;
 }>;
 
-export type DecodeLogReturn = {
-  rawData: Log;
+export type DecodedLog = {
   contractFQN: string;
   decodedEventName?: string;
   decodedArgs?: unknown;
@@ -25,19 +24,17 @@ export type DecodeLogReturn = {
 };
 
 // decode log using multiple abis
-export function decodeLogMultipleAbis(
-  params: DecodeLogParams<Array<ContractLogDecodingData>>
-): DecodeLogReturn | undefined {
+export function decodeLogMultipleAbis(params: DecodeLogParams<Array<ContractLogDecodingData>>): DecodedLog | undefined {
   const { log } = params;
   for (const contractAndAbi of params.decodeData) {
-    const decodeResult = decodeLogOneAbi({ decodeData: contractAndAbi, log });
-    if (decodeResult) return decodeResult;
+    const decodedLog = decodeLogOneAbi({ decodeData: contractAndAbi, log });
+    if (decodedLog) return decodedLog;
   }
   return undefined;
 }
 
 // decode log using one abi
-export function decodeLogOneAbi(params: DecodeLogParams<ContractLogDecodingData>): DecodeLogReturn | undefined {
+export function decodeLogOneAbi(params: DecodeLogParams<ContractLogDecodingData>): DecodedLog | undefined {
   const {
     decodeData: { contractFQN, abi },
     log,
@@ -56,8 +53,7 @@ export function decodeLogOneAbi(params: DecodeLogParams<ContractLogDecodingData>
     })
   );
 
-  const result: DecodeLogReturn = {
-    rawData: log,
+  const result: DecodedLog = {
     contractFQN,
   };
 

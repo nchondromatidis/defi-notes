@@ -33,6 +33,7 @@ export type FunctionResultEvent = {
   isError: boolean;
   returnValueRaw: unknown;
   isCreate: boolean;
+  logs: Array<LensLog>;
   rawError?: unknown;
   errorName?: string;
   errorAbiItem?: unknown;
@@ -40,7 +41,6 @@ export type FunctionResultEvent = {
   returnValue?: unknown;
   createdAddress?: Address;
   createdContractFQN?: string;
-  logs?: Array<LensLog | undefined>;
 };
 
 export type LensLog = {
@@ -50,6 +50,7 @@ export type LensLog = {
   eventSignature?: string;
   contractFQN?: string;
   functionName?: string;
+  functionType?: string;
 };
 
 export class LensCallTracerResult {

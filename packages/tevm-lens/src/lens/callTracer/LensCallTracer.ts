@@ -4,17 +4,28 @@ import type { Message } from 'tevm/actions';
 import type { EvmResult } from 'tevm/evm';
 import { type Abi, bytesToHex } from 'viem';
 import { InvariantError } from '../../common/errors.ts';
-import { type FunctionCallEvent, type FunctionResultEvent, LensCallTracerResult } from './LensCallTracerResult.ts';
+import {
+  type FunctionCallEvent,
+  type FunctionResultEvent,
+  LensCallTracerResult,
+  type LensLog,
+} from './LensCallTracerResult.ts';
 import { type Address, type Hex, type LensArtifactsMap } from '../types/artifact.ts';
 import { decodeFunctionCallMultipleAbis } from '../decoders/functionCallDecoder.ts';
 import { decodeFunctionResultMultipleAbis } from '../decoders/functionResultDecoder.ts';
-import { type ContractLogDecodingData, decodeLogMultipleAbis } from '../decoders/logDecoder.ts';
+import { type ContractLogDecodingData } from '../decoders/logDecoder.ts';
+import { getOrCreate } from '../../common/utils.ts';
+import { DecodedLogsCache, decodeLogMultipleAbisWithCache } from '../decoders/logDecoderCache.ts';
+
+type TempTxId = string;
+type TxId = Hex;
 
 export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
   public readonly tracingTxs: Map<string, LensCallTracerResult> = new Map();
+  public readonly logDecodingCache: Map<TempTxId, DecodedLogsCache> = new Map();
 
-  public readonly succeededTxs: Map<Hex, LensCallTracerResult> = new Map();
-  public readonly failedTxs: Map<string, LensCallTracerResult> = new Map();
+  public readonly succeededTxs: Map<TxId, LensCallTracerResult> = new Map();
+  public readonly failedTxs: Map<TempTxId, LensCallTracerResult> = new Map();
 
   constructor(
     private readonly supportedContracts: SupportedContracts,
@@ -34,6 +45,8 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
     if (!currentTxTrace) throw new InvariantError('current tx trace is empty');
 
     this.succeededTxs.set(txHash, currentTxTrace);
+    this.tracingTxs.delete(tempId);
+    this.logDecodingCache.delete(tempId);
   }
 
   public stopTracingFailed(txHash: string, tempId: string) {
@@ -41,6 +54,8 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
     if (!currentTxTrace) throw new InvariantError('current tx trace is empty');
 
     this.failedTxs.set(txHash, currentTxTrace);
+    this.tracingTxs.delete(tempId);
+    this.logDecodingCache.delete(tempId);
   }
 
   //** Event Handlers **/
@@ -109,7 +124,7 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
     // decode called function: name, type, args
     const decodedFunctionCall = decodeFunctionCallMultipleAbis({
       decodeData: decodingData,
-      data: callData,
+      rawData: callData,
       precompile: functionCallEvent.precompile,
       value: callEvent.value,
       createdBytecode: bytecode,
@@ -138,7 +153,6 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
 
     // function call that led to this result
     const functionCallEvent = tempIdTxTrace.getCurrentFunctionCallEvent();
-    const contractFQN = functionCallEvent.contractFQN;
 
     // base function result object
     const returnValueHex = bytesToHex(resultEvent.execResult.returnValue);
@@ -147,6 +161,7 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       returnValueRaw: returnValueHex,
       isError: !!resultEvent.execResult.exceptionError,
       isCreate: !!resultEvent.createdAddress,
+      logs: [],
     };
     if (functionResultEvent.isError) functionResultEvent.rawError = resultEvent.execResult.exceptionError;
 
@@ -181,6 +196,7 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       functionCallEvent.to &&
       (functionCallEvent.callType === 'CALL' || functionCallEvent.callType === 'STATICCALL')
     ) {
+      const contractFQN = functionCallEvent.contractFQN;
       const contractAbi = this.supportedContracts.getArtifactAbi(contractFQN);
       decodeData.push({
         contractAddress: functionCallEvent.to,
@@ -197,6 +213,7 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       functionCallEvent.implContractFQN &&
       functionCallEvent.callType === 'DELEGATECALL'
     ) {
+      const contractFQN = functionCallEvent.contractFQN;
       const contractAbi = this.supportedContracts.getArtifactAbi(contractFQN);
       decodeData.push({
         contractAddress: functionCallEvent.to,
@@ -232,9 +249,22 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
 
     // decoding logs
     if (resultEvent.execResult.logs) {
-      functionResultEvent.logs = resultEvent.execResult.logs.map((it) =>
-        decodeLogMultipleAbis({ decodeData, log: it })
-      );
+      for (const log of resultEvent.execResult.logs) {
+        const tracingLogCache = getOrCreate(this.logDecodingCache, tempId, () => new DecodedLogsCache());
+        const decodedLog = await decodeLogMultipleAbisWithCache({ decodeData, log }, tracingLogCache);
+
+        const lensLog: LensLog = {
+          rawData: log,
+          functionName: functionCallEvent.functionName,
+          functionType: functionCallEvent.functionType,
+          contractFQN: decodedLog?.contractFQN,
+          args: decodedLog?.decodedArgs,
+          eventName: decodedLog?.decodedEventName,
+          eventSignature: decodedLog?.decodedEventSignature,
+        };
+
+        functionResultEvent.logs.push(lensLog);
+      }
     }
 
     tempIdTxTrace.addResult(functionResultEvent);

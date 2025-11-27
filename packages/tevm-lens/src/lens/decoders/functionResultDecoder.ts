@@ -17,7 +17,7 @@ type DecodeFunctionResulParams<T extends ContractAndAbi | Array<ContractAndAbi>>
   | { decodeData: T; data: Hex; isCreate: boolean }
 >;
 
-type DecodedFunctionResults =
+type DecodedFunctionResult =
   | {
       isSuccess: false;
       rawData: Hex;
@@ -34,7 +34,7 @@ type DecodedFunctionResults =
 // decode using multiple abis
 export function decodeFunctionResultMultipleAbis(
   params: DecodeFunctionResulParams<Array<ContractAndAbi>>
-): DecodedFunctionResults | undefined {
+): DecodedFunctionResult | undefined {
   for (const contractAndAbi of params.decodeData) {
     const oneAbiParams = { ...params, decodeData: contractAndAbi };
     const decodeResult = decodeFunctionResultOneAbi(oneAbiParams);
@@ -43,12 +43,10 @@ export function decodeFunctionResultMultipleAbis(
   return undefined;
 }
 
-// one abi
-
 // decode using one abi
 export function decodeFunctionResultOneAbi(
   params: DecodeFunctionResulParams<ContractAndAbi>
-): DecodedFunctionResults | undefined {
+): DecodedFunctionResult | undefined {
   const {
     decodeData: { contractFQN, abi },
     data,
