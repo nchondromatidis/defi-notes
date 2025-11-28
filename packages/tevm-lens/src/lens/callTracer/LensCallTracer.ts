@@ -97,7 +97,11 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       functionCallEvent.create2Salt = callEvent.salt ? bytesToHex(callEvent.salt) : undefined;
       const result = this.supportedContracts.getContractFqnFromCallData(callData);
       bytecode = result.bytecode;
-      functionCallEvent.createdContractFQN = result.newContractFQN;
+      const newContractFQN = result.newContractFQN;
+      functionCallEvent.createdContractFQN = newContractFQN;
+      const createdContractAbi = this.supportedContracts.getArtifactAbi(newContractFQN);
+
+      decodingData.push({ contractFQN: result.newContractFQN, abi: createdContractAbi });
     }
 
     // function call
