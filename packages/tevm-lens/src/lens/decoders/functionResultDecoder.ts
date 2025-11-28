@@ -56,8 +56,8 @@ export async function decodeFunctionResultMultipleAbisWithCache(
 export function decodeFunctionResultMultipleAbis(
   params: DecodeFunctionResulParams<Array<DecodeFunctionResulData>>
 ): DecodedFunctionResult | undefined {
-  for (const decodeDataSingleAbi of params.decodeData) {
-    const oneAbiParams = { ...params, decodeData: decodeDataSingleAbi };
+  for (const decodeData of params.decodeData) {
+    const oneAbiParams = { ...params, decodeData };
     const decodeResult = decodeFunctionResultOneAbi(oneAbiParams);
     if (decodeResult) return decodeResult;
   }

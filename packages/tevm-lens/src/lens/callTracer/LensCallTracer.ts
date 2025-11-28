@@ -251,7 +251,6 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
     }
 
     // decoding result
-    // TODO: here
     const tracingErrorsCache = getOrCreate(this.decodedErrorsTxCache, tempId, () => new DecodedErrorsCache());
     const decodedResult = await decodeFunctionResultMultipleAbisWithCache(
       {

@@ -43,8 +43,8 @@ export async function decodeLogMultipleAbisWithCache(
 // decode log using multiple abis
 export function decodeLogMultipleAbis(params: DecodeLogParams<Array<ContractLogDecodingData>>): DecodedLog | undefined {
   const { log } = params;
-  for (const contractAndAbi of params.decodeData) {
-    const decodedLog = decodeLogOneAbi({ decodeData: contractAndAbi, log });
+  for (const decodeData of params.decodeData) {
+    const decodedLog = decodeLogOneAbi({ decodeData, log });
     if (decodedLog) return decodedLog;
   }
   return undefined;
@@ -70,13 +70,12 @@ export function decodeLogOneAbi(params: DecodeLogParams<ContractLogDecodingData>
     })
   );
 
-  const result: DecodedLog = {
-    contractFQN,
-  };
-
   if (decodedLogResult.ok) {
     let eventSignature: string | undefined = undefined;
     const decodedLog = decodedLogResult.value;
+    const result: DecodedLog = {
+      contractFQN,
+    };
     if (decodedLog.eventName) {
       result.decodedEventName = decodedLog.eventName;
       const abiEvent = findEventByName(abi, decodedLog.eventName);
@@ -84,12 +83,14 @@ export function decodeLogOneAbi(params: DecodeLogParams<ContractLogDecodingData>
     }
     result.decodedArgs = decodedLog.args;
     result.decodedEventSignature = eventSignature;
+
+    return result;
   }
   if (!decodedLogResult.ok && !(decodedLogResult.error instanceof AbiEventSignatureNotFoundError)) {
     throw decodedLogResult.error;
   }
 
-  return result;
+  return undefined;
 }
 
 function findEventByName(abi: Abi, name: string): AbiEvent {
