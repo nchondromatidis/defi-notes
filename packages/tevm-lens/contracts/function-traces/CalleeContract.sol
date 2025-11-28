@@ -17,7 +17,7 @@ contract CalleeContract {
         return DummyStruct(1, "dummy");
     }
 
-    function externalFunction() external returns (string memory) {
+    function externalFunction(string calldata message) external returns (string memory) {
         emit Log(address(msg.sender), "externalFunction called", 0);
         return "externalFunction called";
     }
@@ -33,5 +33,11 @@ contract CalleeContract {
     fallback(bytes calldata input) external payable returns (bytes memory output){
         emit Log(address(msg.sender),"Fallback function called", msg.value);
         return input;
+    }
+
+    error DummyRevert(address user);
+
+    function revertFunction(address user) public {
+        revert DummyRevert(user);
     }
 }

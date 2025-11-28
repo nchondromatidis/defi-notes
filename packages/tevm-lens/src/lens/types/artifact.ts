@@ -46,3 +46,5 @@ export type LensFunctionIndex = {
 export type LensSourceFunctionIndexes = {
   [source: string]: Array<LensFunctionIndex>;
 };
+
+export type RawLog = [address: Hex, topics: Hex[], data: Hex];

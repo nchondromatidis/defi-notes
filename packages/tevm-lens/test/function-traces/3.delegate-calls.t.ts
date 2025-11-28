@@ -19,5 +19,5 @@ describe('function traces - 3.delegate-calls', () => {
     inspect(lensClient.callDecodeTracer.succeededTxs);
   });
 
-  test('precompile', async () => {});
+  test('emitted different log with same log signature from different contracts', async () => {});
 });

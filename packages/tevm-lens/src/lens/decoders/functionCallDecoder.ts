@@ -1,12 +1,12 @@
 import type { FunctionCallTypes, Hex } from '../types/artifact.ts';
 import { InvariantError } from '../../common/errors.ts';
-import { AbiFunctionSignatureNotFoundError, decodeAbiParameters, decodeFunctionData } from 'viem';
+import { type Abi, AbiFunctionSignatureNotFoundError, decodeAbiParameters, decodeFunctionData } from 'viem';
 import { trySync } from '../../common/utils.ts';
-import type { ContractAndAbi } from './types.ts';
 
 // types
+export type DecodeFunctionCallData = { contractFQN: string | undefined; abi: Abi | undefined };
 
-type DecodeFunctionCallParams<T extends ContractAndAbi | Array<ContractAndAbi>> = Readonly<{
+type DecodeFunctionCallParams<T extends DecodeFunctionCallData | Array<DecodeFunctionCallData>> = Readonly<{
   decodeData: T;
   rawData: Hex;
   precompile: boolean;
@@ -23,7 +23,7 @@ type DecodedFunctionCall = {
 
 // decode using multiple abis
 export function decodeFunctionCallMultipleAbis(
-  params: DecodeFunctionCallParams<Array<ContractAndAbi>>
+  params: DecodeFunctionCallParams<Array<DecodeFunctionCallData>>
 ): DecodedFunctionCall | undefined {
   const { rawData, precompile, value, createdBytecode } = params;
   for (const contractAndAbi of params.decodeData) {
@@ -41,7 +41,7 @@ export function decodeFunctionCallMultipleAbis(
 
 // decode using one abi
 export function decodeFunctionCallOneAbi(
-  params: DecodeFunctionCallParams<ContractAndAbi>
+  params: DecodeFunctionCallParams<DecodeFunctionCallData>
 ): DecodedFunctionCall | undefined {
   const {
     decodeData: { contractFQN, abi },

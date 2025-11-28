@@ -34,7 +34,7 @@ export type FunctionResultEvent = {
   returnValueRaw: unknown;
   isCreate: boolean;
   logs: Array<LensLog>;
-  rawError?: unknown;
+  errorType?: unknown;
   errorName?: string;
   errorAbiItem?: unknown;
   errorArgs?: unknown;

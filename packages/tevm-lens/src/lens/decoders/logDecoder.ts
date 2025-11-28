@@ -1,6 +1,8 @@
-import { type Abi, AbiEventSignatureNotFoundError, bytesToHex, decodeEventLog, toEventSignature } from 'viem';
+import { type Abi, AbiEventSignatureNotFoundError, decodeEventLog, toEventSignature } from 'viem';
 import { trySync } from '../../common/utils.ts';
 import type { AbiEvent } from 'tevm';
+import type { RawLog } from '../types/artifact.ts';
+import { DecodedDataCache } from './DecodedDataCache.ts';
 
 // types
 export type ContractLogDecodingData = {
@@ -9,11 +11,10 @@ export type ContractLogDecodingData = {
   contractAddress: string;
   contractRole: 'DELEGATECALL' | 'IMPLEMENTATION' | 'NORMAL';
 };
-export type Log = [address: Uint8Array, topics: Uint8Array[], data: Uint8Array];
 
 export type DecodeLogParams<T extends ContractLogDecodingData | Array<ContractLogDecodingData>> = Readonly<{
   decodeData: T;
-  log: Log;
+  log: RawLog;
 }>;
 
 export type DecodedLog = {
@@ -22,6 +23,22 @@ export type DecodedLog = {
   decodedArgs?: unknown;
   decodedEventSignature?: string;
 };
+
+// with tx cache for logs that bubble up the stack
+export class DecodedLogsCache extends DecodedDataCache<RawLog, DecodedLog> {}
+
+export async function decodeLogMultipleAbisWithCache(
+  params: DecodeLogParams<Array<ContractLogDecodingData>>,
+  decodedLogsCache: DecodedLogsCache
+): Promise<DecodedLog | undefined> {
+  const { log } = params;
+
+  let decodedLog = await decodedLogsCache.get(log);
+  if (decodedLog) return decodedLog;
+  decodedLog = decodeLogMultipleAbis(params);
+  if (decodedLog) await decodedLogsCache.add(log, decodedLog);
+  return decodedLog;
+}
 
 // decode log using multiple abis
 export function decodeLogMultipleAbis(params: DecodeLogParams<Array<ContractLogDecodingData>>): DecodedLog | undefined {
@@ -42,14 +59,14 @@ export function decodeLogOneAbi(params: DecodeLogParams<ContractLogDecodingData>
 
   if (!contractFQN || !abi) return undefined;
 
-  const topics = log[1].map((it) => bytesToHex(it));
+  const topics = log[1];
   const [signature, ...nonSignatureTopics] = topics;
 
   const decodedLogResult = trySync(() =>
     decodeEventLog({
       abi: abi,
       topics: [signature, ...nonSignatureTopics],
-      data: bytesToHex(log[2]),
+      data: log[2],
     })
   );
 

@@ -1,0 +1,554 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`function traces - 1.external-calls > external call to external function 1`] = `
+{
+  "args": [
+    [
+      1n,
+      2n,
+      3n,
+    ],
+    "0x0000000000000000000000000000000000000000",
+  ],
+  "callType": "CALL",
+  "called": [
+    {
+      "args": [
+        "called by caller",
+      ],
+      "callType": "CALL",
+      "called": [],
+      "contractFQN": "contracts/function-traces/CalleeContract.sol:CalleeContract",
+      "depth": 1,
+      "from": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+      "functionName": "externalFunction",
+      "functionType": "function",
+      "lineEnd": 23,
+      "lineStart": 20,
+      "precompile": false,
+      "rawData": "0x3019f87c0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001063616c6c65642062792063616c6c657200000000000000000000000000000000",
+      "result": {
+        "isCreate": false,
+        "isError": false,
+        "logs": [
+          {
+            "args": [
+              "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+              "externalFunction called",
+              0n,
+            ],
+            "contractFQN": "contracts/function-traces/CalleeContract.sol:CalleeContract",
+            "eventName": "Log",
+            "eventSignature": "Log(address,string,uint256)",
+            "functionName": "externalFunction",
+            "functionType": "function",
+            "rawData": [
+              "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              [
+                "0xfd33e90d0eac940755277aa91045b95664988beeeafc4ed7d1281a6d83afbc00",
+                "0x000000000000000000000000cf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+              ],
+              "0x00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001765787465726e616c46756e6374696f6e2063616c6c6564000000000000000000",
+            ],
+          },
+        ],
+        "returnValue": {
+          "ok": true,
+          "value": "externalFunction called",
+        },
+        "returnValueRaw": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001765787465726e616c46756e6374696f6e2063616c6c6564000000000000000000",
+        "type": "FunctionResultEvent",
+      },
+      "source": "contracts/function-traces/CalleeContract.sol",
+      "to": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+      "type": "FunctionCallEvent",
+      "value": 0n,
+    },
+  ],
+  "contractFQN": "contracts/function-traces/CallerContract.sol:CallerContract",
+  "depth": 0,
+  "from": "0x0000000000000000000000000000000000000000",
+  "functionName": "callExternalFunction",
+  "functionType": "function",
+  "lineEnd": 34,
+  "lineStart": 32,
+  "precompile": false,
+  "rawData": "0x3b80f553000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003",
+  "result": {
+    "isCreate": false,
+    "isError": false,
+    "logs": [
+      {
+        "args": [
+          "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+          "externalFunction called",
+          0n,
+        ],
+        "contractFQN": "contracts/function-traces/CalleeContract.sol:CalleeContract",
+        "eventName": "Log",
+        "eventSignature": "Log(address,string,uint256)",
+        "functionName": "callExternalFunction",
+        "functionType": "function",
+        "rawData": [
+          "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+          [
+            "0xfd33e90d0eac940755277aa91045b95664988beeeafc4ed7d1281a6d83afbc00",
+            "0x000000000000000000000000cf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+          ],
+          "0x00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001765787465726e616c46756e6374696f6e2063616c6c6564000000000000000000",
+        ],
+      },
+    ],
+    "returnValue": {
+      "ok": true,
+      "value": "externalFunction called",
+    },
+    "returnValueRaw": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001765787465726e616c46756e6374696f6e2063616c6c6564000000000000000000",
+    "type": "FunctionResultEvent",
+  },
+  "source": "contracts/function-traces/CallerContract.sol",
+  "to": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+  "type": "FunctionCallEvent",
+  "value": 0n,
+}
+`;
+
+exports[`function traces - 1.external-calls > external call to public function 1`] = `
+{
+  "args": [],
+  "callType": "CALL",
+  "called": [
+    {
+      "args": [],
+      "callType": "CALL",
+      "called": [],
+      "contractFQN": "contracts/function-traces/CalleeContract.sol:CalleeContract",
+      "depth": 1,
+      "from": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+      "functionName": "publicFunction",
+      "functionType": "function",
+      "lineEnd": 18,
+      "lineStart": 15,
+      "precompile": false,
+      "rawData": "0x7b5d520b",
+      "result": {
+        "isCreate": false,
+        "isError": false,
+        "logs": [
+          {
+            "args": [
+              "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+              "publicFunction called",
+              0n,
+            ],
+            "contractFQN": "contracts/function-traces/CalleeContract.sol:CalleeContract",
+            "eventName": "Log",
+            "eventSignature": "Log(address,string,uint256)",
+            "functionName": "publicFunction",
+            "functionType": "function",
+            "rawData": [
+              "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              [
+                "0xfd33e90d0eac940755277aa91045b95664988beeeafc4ed7d1281a6d83afbc00",
+                "0x000000000000000000000000cf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+              ],
+              "0x0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000157075626c696346756e6374696f6e2063616c6c65640000000000000000000000",
+            ],
+          },
+        ],
+        "returnValue": {
+          "ok": true,
+          "value": {
+            "id": 1n,
+            "name": "dummy",
+          },
+        },
+        "returnValueRaw": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000564756d6d79000000000000000000000000000000000000000000000000000000",
+        "type": "FunctionResultEvent",
+      },
+      "source": "contracts/function-traces/CalleeContract.sol",
+      "to": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+      "type": "FunctionCallEvent",
+      "value": 0n,
+    },
+  ],
+  "contractFQN": "contracts/function-traces/CallerContract.sol:CallerContract",
+  "depth": 0,
+  "from": "0x0000000000000000000000000000000000000000",
+  "functionName": "callPublicFunction",
+  "functionType": "function",
+  "lineEnd": 30,
+  "lineStart": 28,
+  "precompile": false,
+  "rawData": "0x340bd7fd",
+  "result": {
+    "isCreate": false,
+    "isError": false,
+    "logs": [
+      {
+        "args": [
+          "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+          "publicFunction called",
+          0n,
+        ],
+        "contractFQN": "contracts/function-traces/CalleeContract.sol:CalleeContract",
+        "eventName": "Log",
+        "eventSignature": "Log(address,string,uint256)",
+        "functionName": "callPublicFunction",
+        "functionType": "function",
+        "rawData": [
+          "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+          [
+            "0xfd33e90d0eac940755277aa91045b95664988beeeafc4ed7d1281a6d83afbc00",
+            "0x000000000000000000000000cf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+          ],
+          "0x0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000157075626c696346756e6374696f6e2063616c6c65640000000000000000000000",
+        ],
+      },
+    ],
+    "returnValue": {
+      "ok": true,
+      "value": {
+        "id": 1n,
+        "name": "dummy",
+      },
+    },
+    "returnValueRaw": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000564756d6d79000000000000000000000000000000000000000000000000000000",
+    "type": "FunctionResultEvent",
+  },
+  "source": "contracts/function-traces/CallerContract.sol",
+  "to": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+  "type": "FunctionCallEvent",
+  "value": 0n,
+}
+`;
+
+exports[`function traces - 1.external-calls > external call with revert 1`] = `undefined`;
+
+exports[`function traces - 1.external-calls > external call with unmatched selector, args, value 1`] = `
+{
+  "args": [
+    "0x20",
+  ],
+  "callType": "CALL",
+  "called": [
+    {
+      "args": [],
+      "callType": "CALL",
+      "called": [],
+      "contractFQN": "contracts/function-traces/CalleeContract.sol:CalleeContract",
+      "depth": 1,
+      "from": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+      "functionName": "",
+      "functionType": "fallback",
+      "lineEnd": 36,
+      "lineStart": 33,
+      "precompile": false,
+      "rawData": "0x307831",
+      "result": {
+        "isCreate": false,
+        "isError": false,
+        "logs": [
+          {
+            "args": [
+              "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+              "Fallback function called",
+              1000000000000000000n,
+            ],
+            "contractFQN": "contracts/function-traces/CalleeContract.sol:CalleeContract",
+            "eventName": "Log",
+            "eventSignature": "Log(address,string,uint256)",
+            "functionName": "",
+            "functionType": "fallback",
+            "rawData": [
+              "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              [
+                "0xfd33e90d0eac940755277aa91045b95664988beeeafc4ed7d1281a6d83afbc00",
+                "0x000000000000000000000000cf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+              ],
+              "0x00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000000000001846616c6c6261636b2066756e6374696f6e2063616c6c65640000000000000000",
+            ],
+          },
+        ],
+        "returnValueRaw": "0x307831",
+        "type": "FunctionResultEvent",
+      },
+      "source": "contracts/function-traces/CalleeContract.sol",
+      "to": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+      "type": "FunctionCallEvent",
+      "value": 1000000000000000000n,
+    },
+  ],
+  "contractFQN": "contracts/function-traces/CallerContract.sol:CallerContract",
+  "depth": 0,
+  "from": "0x0000000000000000000000000000000000000000",
+  "functionName": "callWithFallback",
+  "functionType": "function",
+  "lineEnd": 46,
+  "lineStart": 42,
+  "precompile": false,
+  "rawData": "0x169ceb46000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000000",
+  "result": {
+    "isCreate": false,
+    "isError": false,
+    "logs": [
+      {
+        "args": [
+          "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+          "Fallback function called",
+          1000000000000000000n,
+        ],
+        "contractFQN": "contracts/function-traces/CalleeContract.sol:CalleeContract",
+        "eventName": "Log",
+        "eventSignature": "Log(address,string,uint256)",
+        "functionName": "callWithFallback",
+        "functionType": "function",
+        "rawData": [
+          "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+          [
+            "0xfd33e90d0eac940755277aa91045b95664988beeeafc4ed7d1281a6d83afbc00",
+            "0x000000000000000000000000cf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+          ],
+          "0x00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000000000001846616c6c6261636b2066756e6374696f6e2063616c6c65640000000000000000",
+        ],
+      },
+      {
+        "args": {
+          "message": "callWithFallback executed",
+          "value": 1000000000000000000n,
+        },
+        "contractFQN": "contracts/function-traces/CallerContract.sol:CallerContract",
+        "eventName": "Log",
+        "eventSignature": "Log(string,uint256)",
+        "functionName": "callWithFallback",
+        "functionType": "function",
+        "rawData": [
+          "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+          [
+            "0xdd970dd9b5bfe707922155b058a407655cb18288b807e2216442bca8ad83d6b5",
+          ],
+          "0x00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000000000001963616c6c5769746846616c6c6261636b20657865637574656400000000000000",
+        ],
+      },
+    ],
+    "returnValue": {
+      "ok": true,
+      "value": [
+        true,
+        "0x307831",
+      ],
+    },
+    "returnValueRaw": "0x0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000033078310000000000000000000000000000000000000000000000000000000000",
+    "type": "FunctionResultEvent",
+  },
+  "source": "contracts/function-traces/CallerContract.sol",
+  "to": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+  "type": "FunctionCallEvent",
+  "value": 1000000000000000000n,
+}
+`;
+
+exports[`function traces - 1.external-calls > external call with unmatched selector, no args, value 1`] = `
+{
+  "args": [],
+  "callType": "CALL",
+  "called": [
+    {
+      "args": [],
+      "callType": "CALL",
+      "called": [],
+      "contractFQN": "contracts/function-traces/CalleeContract.sol:CalleeContract",
+      "depth": 1,
+      "from": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+      "functionName": "",
+      "functionType": "receive",
+      "lineEnd": 31,
+      "lineStart": 29,
+      "precompile": false,
+      "rawData": "0x",
+      "result": {
+        "isCreate": false,
+        "isError": false,
+        "logs": [
+          {
+            "args": [
+              "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+              "Receive function called",
+              1000000000000000000n,
+            ],
+            "contractFQN": "contracts/function-traces/CalleeContract.sol:CalleeContract",
+            "eventName": "Log",
+            "eventSignature": "Log(address,string,uint256)",
+            "functionName": "",
+            "functionType": "receive",
+            "rawData": [
+              "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+              [
+                "0xfd33e90d0eac940755277aa91045b95664988beeeafc4ed7d1281a6d83afbc00",
+                "0x000000000000000000000000cf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+              ],
+              "0x00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000000000000000017526563656976652066756e6374696f6e2063616c6c6564000000000000000000",
+            ],
+          },
+        ],
+        "returnValueRaw": "0x",
+        "type": "FunctionResultEvent",
+      },
+      "source": "contracts/function-traces/CalleeContract.sol",
+      "to": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+      "type": "FunctionCallEvent",
+      "value": 1000000000000000000n,
+    },
+  ],
+  "contractFQN": "contracts/function-traces/CallerContract.sol:CallerContract",
+  "depth": 0,
+  "from": "0x0000000000000000000000000000000000000000",
+  "functionName": "callReceiveFunction",
+  "functionType": "function",
+  "lineEnd": 52,
+  "lineStart": 48,
+  "precompile": false,
+  "rawData": "0xe72c72a9",
+  "result": {
+    "isCreate": false,
+    "isError": false,
+    "logs": [
+      {
+        "args": [
+          "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+          "Receive function called",
+          1000000000000000000n,
+        ],
+        "contractFQN": "contracts/function-traces/CalleeContract.sol:CalleeContract",
+        "eventName": "Log",
+        "eventSignature": "Log(address,string,uint256)",
+        "functionName": "callReceiveFunction",
+        "functionType": "function",
+        "rawData": [
+          "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+          [
+            "0xfd33e90d0eac940755277aa91045b95664988beeeafc4ed7d1281a6d83afbc00",
+            "0x000000000000000000000000cf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+          ],
+          "0x00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000000000000000017526563656976652066756e6374696f6e2063616c6c6564000000000000000000",
+        ],
+      },
+      {
+        "args": {
+          "message": "callReceiveFunction executed",
+          "value": 1000000000000000000n,
+        },
+        "contractFQN": "contracts/function-traces/CallerContract.sol:CallerContract",
+        "eventName": "Log",
+        "eventSignature": "Log(string,uint256)",
+        "functionName": "callReceiveFunction",
+        "functionType": "function",
+        "rawData": [
+          "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+          [
+            "0xdd970dd9b5bfe707922155b058a407655cb18288b807e2216442bca8ad83d6b5",
+          ],
+          "0x00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000000000001c63616c6c5265636569766546756e6374696f6e20657865637574656400000000",
+        ],
+      },
+    ],
+    "returnValue": {
+      "ok": true,
+      "value": [
+        true,
+        "0x",
+      ],
+    },
+    "returnValueRaw": "0x000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000",
+    "type": "FunctionResultEvent",
+  },
+  "source": "contracts/function-traces/CallerContract.sol",
+  "to": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+  "type": "FunctionCallEvent",
+  "value": 1000000000000000000n,
+}
+`;
+
+exports[`function traces - 1.external-calls > external static call to public function 1`] = `
+{
+  "args": [],
+  "callType": "CALL",
+  "called": [
+    {
+      "args": [],
+      "callType": "STATICCALL",
+      "called": [],
+      "contractFQN": "contracts/function-traces/CalleeContract.sol:CalleeContract",
+      "depth": 1,
+      "from": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+      "functionName": "viewFunction",
+      "functionType": "function",
+      "lineEnd": 27,
+      "lineStart": 25,
+      "precompile": false,
+      "rawData": "0xed36b3d8",
+      "result": {
+        "isCreate": false,
+        "isError": false,
+        "logs": [],
+        "returnValue": {
+          "ok": true,
+          "value": 0n,
+        },
+        "returnValueRaw": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "type": "FunctionResultEvent",
+      },
+      "source": "contracts/function-traces/CalleeContract.sol",
+      "to": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+      "type": "FunctionCallEvent",
+      "value": 0n,
+    },
+  ],
+  "contractFQN": "contracts/function-traces/CallerContract.sol:CallerContract",
+  "depth": 0,
+  "from": "0x0000000000000000000000000000000000000000",
+  "functionName": "callStaticCallViewFunction",
+  "functionType": "function",
+  "lineEnd": 40,
+  "lineStart": 36,
+  "precompile": false,
+  "rawData": "0xcd5542f5",
+  "result": {
+    "isCreate": false,
+    "isError": false,
+    "logs": [
+      {
+        "args": {
+          "message": "callStaticCallViewFunction executed",
+          "value": 0n,
+        },
+        "contractFQN": "contracts/function-traces/CallerContract.sol:CallerContract",
+        "eventName": "Log",
+        "eventSignature": "Log(string,uint256)",
+        "functionName": "callStaticCallViewFunction",
+        "functionType": "function",
+        "rawData": [
+          "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+          [
+            "0xdd970dd9b5bfe707922155b058a407655cb18288b807e2216442bca8ad83d6b5",
+          ],
+          "0x00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002363616c6c53746174696343616c6c5669657746756e6374696f6e2065786563757465640000000000000000000000000000000000000000000000000000000000",
+        ],
+      },
+    ],
+    "returnValue": {
+      "ok": true,
+      "value": [
+        true,
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
+      ],
+    },
+    "returnValueRaw": "0x0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000",
+    "type": "FunctionResultEvent",
+  },
+  "source": "contracts/function-traces/CallerContract.sol",
+  "to": "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+  "type": "FunctionCallEvent",
+  "value": 0n,
+}
+`;

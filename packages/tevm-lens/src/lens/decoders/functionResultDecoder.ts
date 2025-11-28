@@ -7,14 +7,18 @@ import {
 } from 'viem';
 import { trySync } from '../../common/utils.ts';
 import type { Hex } from '../types/artifact.ts';
-import type { ContractAndAbi } from './types.ts';
+import { DecodedDataCache } from './DecodedDataCache.ts';
 
 // types
 
-type DecodeFunctionResulParams<T extends ContractAndAbi | Array<ContractAndAbi>> = Readonly<
-  | { decodeData: T; data: Hex; functionName: string }
-  | { decodeData: T; data: Hex; isError: boolean }
-  | { decodeData: T; data: Hex; isCreate: boolean }
+export type DecodeFunctionResulData = {
+  contractFQN: string | undefined;
+  abi: Abi | undefined;
+  functionName: string | undefined;
+};
+
+type DecodeFunctionResulParams<T extends DecodeFunctionResulData | Array<DecodeFunctionResulData>> = Readonly<
+  { decodeData: T; data: Hex; isError: boolean } | { decodeData: T; data: Hex; isError: boolean; isCreate: boolean }
 >;
 
 type DecodedFunctionResult =
@@ -31,12 +35,29 @@ type DecodedFunctionResult =
       decodedFunctionResult: unknown;
     };
 
+// with tx cache for errors that bubble up the stack
+type ReturnValue = Hex;
+export class DecodedErrorsCache extends DecodedDataCache<ReturnValue, DecodedFunctionResult> {}
+
+export async function decodeFunctionResultMultipleAbisWithCache(
+  params: DecodeFunctionResulParams<Array<DecodeFunctionResulData>>,
+  decodedErrorsCache: DecodedErrorsCache
+): Promise<DecodedFunctionResult | undefined> {
+  const { data } = params;
+
+  let decodedError = await decodedErrorsCache.get(data);
+  if (decodedError) return decodedError;
+  decodedError = decodeFunctionResultMultipleAbis(params);
+  if (decodedError && params.isError) await decodedErrorsCache.add(data, decodedError);
+  return decodedError;
+}
+
 // decode using multiple abis
 export function decodeFunctionResultMultipleAbis(
-  params: DecodeFunctionResulParams<Array<ContractAndAbi>>
+  params: DecodeFunctionResulParams<Array<DecodeFunctionResulData>>
 ): DecodedFunctionResult | undefined {
-  for (const contractAndAbi of params.decodeData) {
-    const oneAbiParams = { ...params, decodeData: contractAndAbi };
+  for (const decodeDataSingleAbi of params.decodeData) {
+    const oneAbiParams = { ...params, decodeData: decodeDataSingleAbi };
     const decodeResult = decodeFunctionResultOneAbi(oneAbiParams);
     if (decodeResult) return decodeResult;
   }
@@ -45,7 +66,7 @@ export function decodeFunctionResultMultipleAbis(
 
 // decode using one abi
 export function decodeFunctionResultOneAbi(
-  params: DecodeFunctionResulParams<ContractAndAbi>
+  params: DecodeFunctionResulParams<DecodeFunctionResulData>
 ): DecodedFunctionResult | undefined {
   const {
     decodeData: { contractFQN, abi },
@@ -55,7 +76,7 @@ export function decodeFunctionResultOneAbi(
   if (!contractFQN || !abi) return undefined;
 
   // error
-  if ('isError' in params && params.isError) {
+  if (params.isError) {
     const decodedError = trySync(() => decodeErrorResultViem({ abi, data }));
 
     if (decodedError.ok) {
@@ -64,11 +85,12 @@ export function decodeFunctionResultOneAbi(
     if (!decodedError.ok && !(decodedError.error instanceof AbiErrorSignatureNotFoundError)) {
       throw decodedError.error;
     }
+    return undefined;
   }
 
   // function
-  if ('functionName' in params) {
-    const { functionName } = params;
+  if (params.decodeData.functionName) {
+    const { functionName } = params.decodeData;
     const decodedFunctionResult = trySync(() => decodeFunctionResultViem({ abi, data, functionName }));
 
     if (decodedFunctionResult.ok) {

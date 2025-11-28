@@ -17,8 +17,6 @@ contract CallerContract {
         emit Log("CallerContract deployed", 0);
     }
 
-    // deploy contract
-
     function deployContract() public {
         new CalleeContract2(4);
     }
@@ -27,14 +25,18 @@ contract CallerContract {
         new CalleeContract2{salt: salt}(6);
     }
 
-    //  function calls to another contract
-
     function callPublicFunction() public returns (CalleeContract.DummyStruct memory) {
         return callee.publicFunction();
     }
 
-    function callExternalFunction() public returns (string memory) {
-        return callee.externalFunction();
+    function callExternalFunction(uint256[] memory numbers, address target) public returns (string memory) {
+        return callee.externalFunction('called by caller');
+    }
+
+    function callStaticCallViewFunction() public returns (bool, bytes memory) {
+        (bool success, bytes memory result) = address(callee).staticcall(abi.encodeWithSignature("viewFunction()"));
+        emit Log("callStaticCallViewFunction executed", 0);
+        return (success, result);
     }
 
     function callWithFallback(bytes memory _ignoredCalldata) public payable returns (bool, bytes memory) {
@@ -55,17 +57,8 @@ contract CallerContract {
         return (success, result);
     }
 
-    function callStaticCallViewFunction() public returns (bool, bytes memory) {
-        (bool success, bytes memory result) = address(callee).staticcall(abi.encodeWithSignature("viewFunction()"));
-        emit Log("callStaticCallViewFunction executed", 0);
-        return (success, result);
-    }
-
-    // function calls to external library
-
     using ExternalLib for uint[];
     uint[] public storageData1;
-
 
     function testExternalLibCall() public {
         storageData1.externalModifyStorage(0);
@@ -77,8 +70,6 @@ contract CallerContract {
         ExternalLib2.externalOperation(2, 5);
     }
 
-    // function calls to inline library
-
     using InlineLib for string;
     string public internalLibData;
 
@@ -87,8 +78,6 @@ contract CallerContract {
         string memory mem = "";
         mem.inlineOperateOnMemory("");
     }
-
-    // function calls to same contract
 
     function callPublicAndExternal() public returns (string memory) {
         viewFunctionPublic();
@@ -120,5 +109,9 @@ contract CallerContract {
     function privateFunction() private returns (string memory) {
         emit Log("privateFunction called", 0);
         return "privateFunction called";
+    }
+
+    function callRevert() public {
+        callee.revertFunction(msg.sender);
     }
 }

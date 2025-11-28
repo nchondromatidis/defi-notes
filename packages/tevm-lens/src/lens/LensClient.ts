@@ -64,7 +64,7 @@ export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
   ): Promise<ContractResult<TAbi, TFunctionName>> {
     const tempId = randomId();
     if (traceTx) this.callDecodeTracer.startTracing(tempId);
-    const contractInteractionResult = await tevmContract(this.client, {
+    const contractTxResult = await tevmContract(this.client, {
       to: contract.address,
       code: undefined,
       value,
@@ -86,13 +86,13 @@ export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
         next?.();
       },
     });
-    if (contractInteractionResult.errors) {
+    if (contractTxResult.errors) {
       if (traceTx) this.callDecodeTracer.stopTracingFailed(tempId, tempId);
     } else {
-      if (traceTx) this.callDecodeTracer.stopTracingSuccess(contractInteractionResult.txHash, tempId);
+      if (traceTx) this.callDecodeTracer.stopTracingSuccess(contractTxResult.txHash, tempId);
     }
 
-    return contractInteractionResult;
+    return contractTxResult;
   }
 
   async getContract<ContractFqnT extends LensContractFQN<ArtifactMapT>>(address: Hex, contractFQN: ContractFqnT) {
