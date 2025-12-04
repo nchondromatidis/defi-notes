@@ -8,7 +8,6 @@ export default async function (
   await runSuper(taskArguments);
 
   if (hre.config.artifactsAugment.runOnBuild) {
-    await hre.tasks.getTask('augment-artifacts').run();
     await hre.tasks.getTask('index-functions').run();
     await hre.tasks.getTask('list-contracts-per-protocol').run();
     await hre.tasks.getTask('list-protocols').run();

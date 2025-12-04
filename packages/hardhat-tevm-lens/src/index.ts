@@ -10,9 +10,6 @@ const plugin: HardhatPlugin = {
     config: () => import('./hooks/config.ts'),
   },
   tasks: [
-    task('augment-artifacts', 'Augments contract artifacts from build info.')
-      .setAction(() => import('./tasks/augment-artifacts/augment-artifacts.ts'))
-      .build(),
     task('index-functions', 'Creates indexes for all functions.')
       .setAction(() => import('./tasks/index-functions/index-functions.ts'))
       .build(),
