@@ -5,8 +5,9 @@ export type FunctionData = {
   stateMutability: 'payable' | 'pure' | 'nonpayable' | 'view';
   functionSelector: string | undefined;
   src: string;
-  lineStart: string;
-  lineEnd: string;
+  lineStart: number;
+  lineEnd: number;
+  source: string;
   pc: number;
   parameterSlots: number;
   returnSlots: number;
@@ -14,4 +15,4 @@ export type FunctionData = {
 
 export type ContractFQN = string;
 export type FunctionName = string;
-export type FunctionEntryIndexes = Record<ContractFQN, Record<FunctionName, FunctionData>>;
+export type FunctionEntryIndexes = Record<ContractFQN, Array<FunctionData>>;

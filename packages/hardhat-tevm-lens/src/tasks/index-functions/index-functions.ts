@@ -1,14 +1,13 @@
 import fs from 'fs';
-import type { SolidityBuildInfo, SolidityBuildInfoOutput } from 'hardhat/types/solidity';
+import type { CompilerOutputBytecode, SolidityBuildInfo, SolidityBuildInfoOutput } from 'hardhat/types/solidity';
 import path from 'node:path';
 import type { HardhatRuntimeEnvironment } from 'hardhat/types/hre';
 import createDebug from 'debug';
 import { DEBUG_PREFIX } from '../../debug.ts';
 import { fileURLToPath } from 'node:url';
-import { astDereferencer } from 'solidity-ast/utils.js';
+import { type ASTDereferencer, astDereferencer, type SrcDecoder, srcDecoder } from 'solidity-ast/utils.js';
 import { hardhatConvertFromSourceInputToContractFQN, isNotUndefined, trySync } from '../../utils';
 import type { FunctionData, FunctionEntryIndexes } from './types';
-import { type SrcDecoder, srcDecoder } from 'solidity-ast/utils.js';
 
 const debug = createDebug(`${DEBUG_PREFIX}:index-functions`);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -59,38 +58,62 @@ function createFunctionEntryIndexes(
     for (const [contractName, contractData] of Object.entries(contractsData)) {
       const contractFQN = hardhatConvertFromSourceInputToContractFQN(`${inputSourceName}:${contractName}`);
       debug(`Indexing contract: ${contractFQN}`);
-      const functionDebugData = contractData.evm?.deployedBytecode?.functionDebugData;
-      if (!functionDebugData) continue;
 
-      functionEntryIndexes[contractFQN] = Object.fromEntries(
-        Object.entries(functionDebugData)
-          .filter(([functionName]) => functionName.startsWith('@'))
-          .map(([_functionName, functionData]) => {
-            const result = trySync(() => deref.withSourceUnit('FunctionDefinition', functionData.id));
-            if (!result.ok) return undefined;
-
-            const { node } = result.value;
-            const { lineStart, lineEnd } = getLines(node.src, decodeSrc);
-            const newFunctionData: FunctionData = {
-              name: node.name,
-              kind: node.kind,
-              visibility: node.visibility,
-              stateMutability: node.stateMutability,
-              functionSelector: node.functionSelector,
-              src: node.src,
-              lineStart,
-              lineEnd,
-              pc: functionData.entryPoint,
-              parameterSlots: functionData.parameterSlots,
-              returnSlots: functionData.returnSlots,
-            };
-
-            const functionId = node.kind === 'function' || node.kind === 'freeFunction' ? node.name : node.kind;
-            return [functionId, newFunctionData] as const;
-          })
-          .filter(isNotUndefined)
+      const deployedBytecodeFunctionData = convertToFunctionData(
+        contractData.evm?.deployedBytecode?.functionDebugData,
+        decodeSrc,
+        deref
       );
+
+      const bytecodeFunctionData = convertToFunctionData(
+        contractData.evm?.bytecode?.functionDebugData,
+        decodeSrc,
+        deref
+      );
+
+      const functionData = [...(deployedBytecodeFunctionData ?? []), ...(bytecodeFunctionData ?? [])];
+
+      functionEntryIndexes[contractFQN] = functionData;
     }
+}
+
+function convertToFunctionData(
+  functionDebugData: CompilerOutputBytecode['functionDebugData'],
+  decodeSrc: SrcDecoder,
+  deref: ASTDereferencer
+) {
+  if (!functionDebugData) return undefined;
+
+  return Object.entries(functionDebugData)
+    .filter(([functionName]) => functionName.startsWith('@'))
+    .map(([_functionName, functionData]) => {
+      const result = trySync(() => deref.withSourceUnit('FunctionDefinition', functionData.id));
+      if (!result.ok) {
+        // expected and ignored generated public variable getters
+        return undefined;
+      }
+
+      const { node } = result.value;
+      const { lineStart, lineEnd, source } = getLines(node.src, decodeSrc);
+
+      const newFunctionData: FunctionData = {
+        name: node.name,
+        kind: node.kind,
+        visibility: node.visibility,
+        stateMutability: node.stateMutability,
+        functionSelector: node.functionSelector,
+        src: node.src,
+        lineStart,
+        lineEnd,
+        source,
+        pc: functionData.entryPoint,
+        parameterSlots: functionData.parameterSlots,
+        returnSlots: functionData.returnSlots,
+      };
+
+      return newFunctionData;
+    })
+    .filter(isNotUndefined);
 }
 
 //*************************************** SAVING FILES ***************************************//
@@ -177,12 +200,22 @@ function getLines(location: string, decodeSrc: SrcDecoder) {
   const [start, length, fileIndex] = location.split(':').map(Number);
   const endSrc = `${start + length}:0:${fileIndex}`;
   try {
-    const lineStart = decodeSrc({ src: location });
-    const lineEnd = decodeSrc({ src: endSrc });
-    return { lineStart, lineEnd };
+    const start = decodeSrc({ src: location });
+    const end = decodeSrc({ src: endSrc });
+
+    const source1 = start.split(':')[0];
+    const source2 = end.split(':')[0];
+    if (source1 != source2) throw new Error(`Source does not match: ${start}, ${end}`);
+
+    const source = hardhatConvertFromSourceInputToContractFQN(source1);
+
+    const lineStart = Number(start.split(':')[1]);
+    const lineEnd = Number(end.split(':')[1]);
+
+    return { lineStart, lineEnd, source };
   } catch (e: unknown) {
     debug(`Location not found: ${location}: ${e}`);
-    return { lineStart: '-1', lineEnd: '-1' };
+    return { lineStart: -1, lineEnd: -1, source: '' };
   }
 }
 
