@@ -1,5 +1,5 @@
-import { SupportedContracts } from '../indexes/SupportedContracts.ts';
-import { DeployedContracts } from '../indexes/DeployedContracts.ts';
+import { DebugMetadata } from '../indexes/DebugMetadata.ts';
+import { DeploymentTracer } from './DeploymentTracer.ts';
 import type { Message } from 'tevm/actions';
 import type { EvmResult } from 'tevm/evm';
 import { type Abi, bytesToHex, type Prettify } from 'viem';
@@ -36,8 +36,8 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
   public readonly failedTxs: Map<TempTxId, LensCallTracerResult> = new Map();
 
   constructor(
-    private readonly supportedContracts: SupportedContracts,
-    private readonly deployedContracts: DeployedContracts
+    private readonly debugMetadata: DebugMetadata,
+    private readonly deployedContracts: DeploymentTracer
   ) {}
 
   //** Start-Stop tracing **/
@@ -95,11 +95,11 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       functionCallEvent.callType = 'CREATE';
       if (callEvent.salt) functionCallEvent.callType = 'CREATE2';
       functionCallEvent.create2Salt = callEvent.salt ? bytesToHex(callEvent.salt) : undefined;
-      const result = this.supportedContracts.getContractFqnFromCallData(callData);
+      const result = this.debugMetadata.artifacts.getContractFqnFromCallData(callData);
       bytecode = result.bytecode;
       const newContractFQN = result.newContractFQN;
       functionCallEvent.createdContractFQN = newContractFQN;
-      const createdContractAbi = this.supportedContracts.getArtifactAbi(newContractFQN);
+      const createdContractAbi = this.debugMetadata.artifacts.getArtifactAbi(newContractFQN);
 
       decodingData.push({ contractFQN: result.newContractFQN, abi: createdContractAbi });
     }
@@ -110,7 +110,7 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       if (callEvent.isStatic) functionCallEvent.callType = 'STATICCALL';
       const contractFQN = this.deployedContracts.getContractFqnForAddress(callEvent.to.toString());
       functionCallEvent.contractFQN = contractFQN;
-      const { contractAbi, linkLibraries } = this.supportedContracts.getAllAbisRelatedTo(contractFQN);
+      const { contractAbi, linkLibraries } = this.debugMetadata.artifacts.getAllAbisRelatedTo(contractFQN);
       // called contract
       decodingData.push({ contractFQN, abi: contractAbi });
       // called contract external libraries
@@ -131,7 +131,7 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       functionCallEvent.implContractFQN = implContractFQN;
       functionCallEvent.implAddress = codeAddress;
 
-      const implAbi = this.supportedContracts.getArtifactAbi(implContractFQN);
+      const implAbi = this.debugMetadata.artifacts.getArtifactAbi(implContractFQN);
       decodingData.push({ contractFQN: implContractFQN, abi: implAbi });
     }
 
@@ -149,7 +149,7 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       functionCallEvent.functionType = decodedFunctionCall.type;
       functionCallEvent.args = decodedFunctionCall.decodedArgs;
 
-      const sourceLocation = this.supportedContracts.getFunctionCallLocation(
+      const sourceLocation = this.debugMetadata.functions.getFunctionCallLocation(
         decodedFunctionCall.contractFQN,
         decodedFunctionCall.decodedFunctionName,
         decodedFunctionCall.type
@@ -193,7 +193,7 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       if (createdContractFQN) {
         functionResultEvent.createdContractFQN = createdContractFQN;
 
-        const createdContractAbi = this.supportedContracts.getArtifactAbi(createdContractFQN);
+        const createdContractAbi = this.debugMetadata.artifacts.getArtifactAbi(createdContractFQN);
         decodeData.push({
           contractAddress: functionResultEvent.createdAddress,
           functionName: functionCallEvent.functionName,
@@ -212,7 +212,7 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       (functionCallEvent.callType === 'CALL' || functionCallEvent.callType === 'STATICCALL')
     ) {
       const contractFQN = functionCallEvent.contractFQN;
-      const contractAbi = this.supportedContracts.getArtifactAbi(contractFQN);
+      const contractAbi = this.debugMetadata.artifacts.getArtifactAbi(contractFQN);
       decodeData.push({
         contractAddress: functionCallEvent.to,
         contractFQN: contractFQN,
@@ -230,7 +230,7 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       functionCallEvent.callType === 'DELEGATECALL'
     ) {
       const contractFQN = functionCallEvent.contractFQN;
-      const contractAbi = this.supportedContracts.getArtifactAbi(contractFQN);
+      const contractAbi = this.debugMetadata.artifacts.getArtifactAbi(contractFQN);
       decodeData.push({
         contractAddress: functionCallEvent.to,
         contractFQN: contractFQN,
@@ -240,7 +240,7 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       });
 
       const implContractFQN = functionCallEvent.implContractFQN;
-      const implAbi = this.supportedContracts.getArtifactAbi(implContractFQN);
+      const implAbi = this.debugMetadata.artifacts.getArtifactAbi(implContractFQN);
       decodeData.push({
         contractAddress: functionCallEvent.implAddress,
         contractFQN: implContractFQN,

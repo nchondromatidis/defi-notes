@@ -5,8 +5,8 @@ import { deployUniswapV2 } from './_setup/deploy.ts';
 import { LensClient } from '../../src/lens/LensClient.ts';
 import { buildClient } from '../../src/lens/client.ts';
 import { TestResourceLoader } from '../_setup/TestResourceLoader.ts';
-import { DeployedContracts } from '../../src/lens/indexes/DeployedContracts.ts';
-import { SupportedContracts } from '../../src/lens/indexes/SupportedContracts.ts';
+import { DeploymentTracer } from '../../src/lens/callTracer/DeploymentTracer.ts';
+import { DebugMetadata } from '../../src/lens/indexes/DebugMetadata.ts';
 import { LensCallTracer } from '../../src/lens/callTracer/LensCallTracer.ts';
 import { inspect } from '../_setup/utils/debug.ts';
 import { getContractAddress, encodePacked, keccak256 } from 'viem';
@@ -15,6 +15,8 @@ import { safeCastToHex } from '../../src/lens/types/artifact.ts';
 import type { ProtocolName } from '@defi-notes/protocols/*';
 import type { UniswapV2ArtifactsMap } from './_setup/types.ts';
 import type { FunctionEntryIndexes } from '../_setup/artifacts';
+import { ArtifactsProvider } from '../../src/lens/indexes/ArtifactsProvider.ts';
+import { FunctionIndexesRegistry } from '../../src/lens/indexes/FunctionIndexesRegistry.ts';
 
 const ETHER_1 = parseEther('1');
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -33,16 +35,19 @@ describe('uniswap-v2', () => {
 
     resourceLoader = new TestResourceLoader<UniswapV2ArtifactsMap, FunctionEntryIndexes, ProtocolName>();
 
-    const supportedContracts = new SupportedContracts();
-    const labeledContracts = new DeployedContracts();
-    const tracer = new LensCallTracer<UniswapV2ArtifactsMap>(supportedContracts, labeledContracts);
-    lensClient = new LensClient<UniswapV2ArtifactsMap>(client, supportedContracts, labeledContracts, tracer);
+    const artifactsProvider = new ArtifactsProvider();
+    const functionIndexesRegistry = new FunctionIndexesRegistry();
+    const debugMetadataContext = new DebugMetadata(artifactsProvider, functionIndexesRegistry);
+
+    const labeledContracts = new DeploymentTracer();
+    const tracer = new LensCallTracer<UniswapV2ArtifactsMap>(debugMetadataContext, labeledContracts);
+    lensClient = new LensClient<UniswapV2ArtifactsMap>(client, debugMetadataContext, labeledContracts, tracer);
 
     const uniswapV2Artifacts = await resourceLoader.getProtocolArtifacts('uniswap-v2');
-    await supportedContracts.registerArtifacts(uniswapV2Artifacts);
+    await debugMetadataContext.artifacts.registerArtifacts(uniswapV2Artifacts);
 
     const uniswapFunctionIndexes = await resourceLoader.getFunctionIndexes('uniswap-v2');
-    await supportedContracts.registerFunctionIndexes(uniswapFunctionIndexes);
+    await debugMetadataContext.functions.registerFunctionIndexes(uniswapFunctionIndexes);
 
     await tevmSetAccount(lensClient.client, {
       address: deployerAccount.address,

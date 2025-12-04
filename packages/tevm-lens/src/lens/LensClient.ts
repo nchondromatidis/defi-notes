@@ -11,8 +11,8 @@ import {
 import type { ContractResult, Message } from 'tevm/actions';
 import type { EvmResult } from 'tevm/evm';
 import { randomId } from '../common/utils.ts';
-import { SupportedContracts } from './indexes/SupportedContracts.ts';
-import { DeployedContracts } from './indexes/DeployedContracts.ts';
+import { DebugMetadata } from './indexes/DebugMetadata.ts';
+import { DeploymentTracer } from './callTracer/DeploymentTracer.ts';
 import { LensCallTracer } from './callTracer/LensCallTracer.ts';
 import { InvalidArgument, InvariantError } from '../common/errors.ts';
 import type { Address, Hex, LensArtifactsMap, LensContractFQN } from './types/artifact.ts';
@@ -24,8 +24,8 @@ export type Next = () => void;
 export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
   constructor(
     public readonly client: Client<TevmTransport>,
-    public readonly supportedContracts: SupportedContracts,
-    public readonly deployedContracts: DeployedContracts,
+    public readonly debugMetadata: DebugMetadata,
+    public readonly deployedContracts: DeploymentTracer,
     public readonly callDecodeTracer: LensCallTracer<ArtifactMapT>
   ) {}
 
@@ -34,7 +34,7 @@ export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
     args: ContractConstructorArgs<ArtifactMapT[ContractFQNT]['abi']>,
     librariesToLink: Array<{ libFQN: ContractFQNT; address: Address }> = []
   ) {
-    const artifact = this.supportedContracts.getArtifactFrom(contractFQN);
+    const artifact = this.debugMetadata.artifacts.getArtifactFrom(contractFQN);
     if (!artifact) throw new InvalidArgument(`Artifact for ${contractFQN} not found.`);
 
     let bytecode = artifact.bytecode;
@@ -96,7 +96,7 @@ export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
   }
 
   async getContract<ContractFqnT extends LensContractFQN<ArtifactMapT>>(address: Hex, contractFQN: ContractFqnT) {
-    const contractAbi = this.supportedContracts.getArtifactAbi(contractFQN);
+    const contractAbi = this.debugMetadata.artifacts.getArtifactAbi(contractFQN);
     if (!contractAbi) throw new InvalidArgument(`Artifact for ${contractFQN} not found.`);
 
     return getContract({

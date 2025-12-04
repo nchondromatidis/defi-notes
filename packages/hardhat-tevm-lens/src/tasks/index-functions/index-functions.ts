@@ -38,8 +38,6 @@ declare module 'hardhat/types/solidity' {
   }
 }
 
-// index
-
 //*************************************** INDEX CREATION ***************************************//
 
 function createFunctionEntryIndexes(
@@ -71,9 +69,7 @@ function createFunctionEntryIndexes(
         deref
       );
 
-      const functionData = [...(deployedBytecodeFunctionData ?? []), ...(bytecodeFunctionData ?? [])];
-
-      functionEntryIndexes[contractFQN] = functionData;
+      functionEntryIndexes[contractFQN] = [...(deployedBytecodeFunctionData ?? []), ...(bytecodeFunctionData ?? [])];
     }
 }
 
@@ -232,5 +228,3 @@ function assertBuildInfoOutput(file: any): asserts file is SolidityBuildInfoOutp
     throw new Error(`Invalid build info format. Expected 'hh3-sol-build-info-output-1', got '${file['_format']}'`);
   }
 }
-
-//*************************************** UTILS ***************************************//

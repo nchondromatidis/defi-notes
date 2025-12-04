@@ -3,31 +3,36 @@ import { buildClient } from '../../../src/lens/client.ts';
 import { TestResourceLoader } from '../../_setup/TestResourceLoader.ts';
 import type { FunctionTracesArtifactsMap } from './types.ts';
 import type { FunctionEntryIndexes, ProtocolName } from '../../_setup/artifacts';
-import { SupportedContracts } from '../../../src/lens/indexes/SupportedContracts.ts';
-import { DeployedContracts } from '../../../src/lens/indexes/DeployedContracts.ts';
+import { DebugMetadata } from '../../../src/lens/indexes/DebugMetadata.ts';
+import { DeploymentTracer } from '../../../src/lens/callTracer/DeploymentTracer.ts';
 import { LensCallTracer } from '../../../src/lens/callTracer/LensCallTracer.ts';
 import { LensClient } from '../../../src/lens/LensClient.ts';
 import { tevmSetAccount } from 'tevm';
 import { ETHER_1 } from '../../_setup/utils/constants.ts';
 import { deployFunctionTracesContracts } from './deploy.ts';
+import { ArtifactsProvider } from '../../../src/lens/indexes/ArtifactsProvider.ts';
+import { FunctionIndexesRegistry } from '../../../src/lens/indexes/FunctionIndexesRegistry.ts';
 
 export async function testSetup() {
   const deployerAccount = privateKeyToAccount(generatePrivateKey());
-
   const client = await buildClient(deployerAccount);
 
   const resourceLoader = new TestResourceLoader<FunctionTracesArtifactsMap, FunctionEntryIndexes, ProtocolName>();
 
-  const supportedContracts = new SupportedContracts();
-  const labeledContracts = new DeployedContracts();
-  const tracer = new LensCallTracer<FunctionTracesArtifactsMap>(supportedContracts, labeledContracts);
-  const lensClient = new LensClient<FunctionTracesArtifactsMap>(client, supportedContracts, labeledContracts, tracer);
+  const artifactsProvider = new ArtifactsProvider();
+  const functionIndexesRegistry = new FunctionIndexesRegistry();
+  const debugMetadata = new DebugMetadata(artifactsProvider, functionIndexesRegistry);
+
+  const deploymentTracer = new DeploymentTracer();
+  const tracer = new LensCallTracer<FunctionTracesArtifactsMap>(debugMetadata, deploymentTracer);
+
+  const lensClient = new LensClient<FunctionTracesArtifactsMap>(client, debugMetadata, deploymentTracer, tracer);
 
   const artifacts = await resourceLoader.getProtocolArtifacts('function-traces');
-  await supportedContracts.registerArtifacts(artifacts);
+  await debugMetadata.artifacts.registerArtifacts(artifacts);
 
   const functionIndexes = await resourceLoader.getFunctionIndexes('function-traces');
-  await supportedContracts.registerFunctionIndexes(functionIndexes);
+  await debugMetadata.functions.registerFunctionIndexes(functionIndexes);
 
   await tevmSetAccount(lensClient.client, {
     address: deployerAccount.address,
