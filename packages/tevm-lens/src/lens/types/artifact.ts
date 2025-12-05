@@ -37,15 +37,15 @@ export type FunctionCallTypes = 'function' | 'constructor' | 'fallback' | 'recei
 
 // function index schema
 export type LensFunctionIndex = {
+  nameOrKind: string;
   name: string;
   kind: FunctionCallTypes;
   lineStart: number;
   lineEnd: number;
   source: string;
+  contractFQN: string;
 };
 
-export type LensSourceFunctionIndexes = {
-  [contractFQN: string]: Array<LensFunctionIndex>;
-};
+export type LensSourceFunctionIndexes = Array<LensFunctionIndex>;
 
 export type RawLog = [address: Hex, topics: Hex[], data: Hex];

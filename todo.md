@@ -1,9 +1,8 @@
 # TODO
 
 - temv-lens
-  - Optimization: instead of calculating the selector every time and compare it. Use indexes from function indexes task.
-  - Fix: fallback or receive check after all inherited/lib abi checks.
-  - Fix: Fallback, receive order per contract order. C3 inheritance.
+  - Fix: external functions with storage
+  - Support: inheritance. Function inheritance order.
 - tevm-lens-ui
     - txTrace -> components
 - analysis

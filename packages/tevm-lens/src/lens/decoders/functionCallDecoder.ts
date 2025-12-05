@@ -87,7 +87,9 @@ export function decodeFunctionCallOneAbi(
     throw decodeFunctionDataResult.error;
   }
 
-  // TODO: decode external library call with argument typed storage
+  //  external library function with argument typed storage (does not exist in abi)
+  if (!decodeFunctionDataResult.ok) {
+  }
 
   // fallback/receive: function selector failed to match
   const receive = abi.find((x) => x.type === 'receive');

@@ -4,7 +4,7 @@ export abstract class BaseError extends Error {
     public readonly context: unknown = {},
     public cause: unknown = undefined
   ) {
-    super(message);
+    super(JSON.stringify({ message, context, cause }));
     this.name = this.constructor.name || 'BaseError';
     this.makeErrorSerializable(this);
     if (cause instanceof Error) {

@@ -149,14 +149,14 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       functionCallEvent.functionType = decodedFunctionCall.type;
       functionCallEvent.args = decodedFunctionCall.decodedArgs;
 
-      const sourceLocation = this.debugMetadata.functions.getFunctionCallLocation(
+      const functionData = this.debugMetadata.functions.getFunctionDataBy(
         decodedFunctionCall.contractFQN,
         decodedFunctionCall.decodedFunctionName,
         decodedFunctionCall.type
       );
-      functionCallEvent.lineStart = sourceLocation?.lineStart;
-      functionCallEvent.lineEnd = sourceLocation?.lineEnd;
-      functionCallEvent.source = sourceLocation?.source;
+      functionCallEvent.lineStart = functionData?.lineStart;
+      functionCallEvent.lineEnd = functionData?.lineEnd;
+      functionCallEvent.source = functionData?.source;
     }
 
     tempIdTxTrace.addFunctionCall(functionCallEvent);

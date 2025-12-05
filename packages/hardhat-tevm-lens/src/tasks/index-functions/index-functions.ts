@@ -58,22 +58,26 @@ function createFunctionEntryIndexes(
       debug(`Indexing contract: ${contractFQN}`);
 
       const deployedBytecodeFunctionData = convertToFunctionData(
+        contractFQN,
         contractData.evm?.deployedBytecode?.functionDebugData,
         decodeSrc,
         deref
       );
 
       const bytecodeFunctionData = convertToFunctionData(
+        contractFQN,
         contractData.evm?.bytecode?.functionDebugData,
         decodeSrc,
         deref
       );
 
-      functionEntryIndexes[contractFQN] = [...(deployedBytecodeFunctionData ?? []), ...(bytecodeFunctionData ?? [])];
+      if (deployedBytecodeFunctionData) functionEntryIndexes.push(...deployedBytecodeFunctionData);
+      if (bytecodeFunctionData) functionEntryIndexes.push(...bytecodeFunctionData);
     }
 }
 
 function convertToFunctionData(
+  contractFQN: string,
   functionDebugData: CompilerOutputBytecode['functionDebugData'],
   decodeSrc: SrcDecoder,
   deref: ASTDereferencer
@@ -83,16 +87,24 @@ function convertToFunctionData(
   return Object.entries(functionDebugData)
     .filter(([functionName]) => functionName.startsWith('@'))
     .map(([_functionName, functionData]) => {
-      const result = trySync(() => deref.withSourceUnit('FunctionDefinition', functionData.id));
+      const result = trySync(() => deref.withSourceUnit('*', functionData.id));
       if (!result.ok) {
-        // expected and ignored generated public variable getters
+        const msg = (result.error as any).message;
+        console.warn(`Failed to find ast.id: ${msg}`);
         return undefined;
       }
 
       const { node } = result.value;
       const { lineStart, lineEnd, source } = getLines(node.src, decodeSrc);
 
+      if (node.nodeType != 'FunctionDefinition') {
+        // expected and ignored generated public variable getters
+        console.warn(`Ignoring: ast.id ${node.id}, not a FunctionDefinition, type is ${node.nodeType}`);
+        return undefined;
+      }
+
       const newFunctionData: FunctionData = {
+        nameOrKind: node.name ? node.name : node.kind,
         name: node.name,
         kind: node.kind,
         visibility: node.visibility,
@@ -102,6 +114,7 @@ function convertToFunctionData(
         lineStart,
         lineEnd,
         source,
+        contractFQN,
         pc: functionData.entryPoint,
         parameterSlots: functionData.parameterSlots,
         returnSlots: functionData.returnSlots,
@@ -114,12 +127,12 @@ function convertToFunctionData(
 
 //*************************************** SAVING FILES ***************************************//
 
-function groupFunctionIndexesPerProtocol(data: Record<string, any>): Record<string, any> {
-  const protocolFunctionIndexes: Record<string, any> = {};
-  for (const source of Object.keys(data)) {
-    const secondFolder = source.split('/')[1];
-    if (!protocolFunctionIndexes[secondFolder]) protocolFunctionIndexes[secondFolder] = {};
-    protocolFunctionIndexes[secondFolder][source] = data[source];
+function groupFunctionIndexesPerProtocol(data: FunctionEntryIndexes) {
+  const protocolFunctionIndexes: Record<string, Array<FunctionData>> = {};
+  for (const functionData of data) {
+    const secondFolder = functionData.source.split('/')[1];
+    if (!protocolFunctionIndexes[secondFolder]) protocolFunctionIndexes[secondFolder] = [];
+    protocolFunctionIndexes[secondFolder].push(functionData);
   }
 
   return protocolFunctionIndexes;
@@ -144,7 +157,7 @@ export default async function (_taskArgs: Record<string, any>, hre: HardhatRunti
   const artifactsContractPath = hre.config.artifactsAugment.artifactContractsPath;
   const buildInfoPairPaths = await getBuildInfoPairsPath(hre);
 
-  const functionEntryIndexes: FunctionEntryIndexes = {};
+  const functionEntryIndexes: FunctionEntryIndexes = [];
 
   for (const buildInfoPairPath of buildInfoPairPaths) {
     const buildInfoPair = getBuildInfoPair(buildInfoPairPath);

@@ -1,4 +1,5 @@
 export type FunctionData = {
+  nameOrKind: string;
   name: string;
   kind: 'function' | 'receive' | 'constructor' | 'fallback' | 'freeFunction';
   visibility: 'external' | 'public' | 'internal' | 'private';
@@ -8,11 +9,11 @@ export type FunctionData = {
   lineStart: number;
   lineEnd: number;
   source: string;
+  contractFQN: string;
   pc: number;
   parameterSlots: number;
   returnSlots: number;
 };
 
 export type ContractFQN = string;
-export type FunctionName = string;
-export type FunctionEntryIndexes = Record<ContractFQN, Array<FunctionData>>;
+export type FunctionEntryIndexes = Array<FunctionData>;

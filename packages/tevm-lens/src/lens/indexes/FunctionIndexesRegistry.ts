@@ -1,56 +1,33 @@
-import type { FunctionCallTypes, LensSourceFunctionIndexes } from '../types/artifact.ts';
+import type { FunctionCallTypes, LensFunctionIndex, LensSourceFunctionIndexes } from '../types/artifact.ts';
+import { InvariantError } from '../../common/errors.ts';
 
-type FunctionName = string;
-type Source = string;
+type FunctionNameOrKind = string;
 type ContractFQN = string;
 
-type Location = { lineStart: number; lineEnd: number; source: string };
-
 export class FunctionIndexesRegistry {
-  protected sourceFunctionNameFunctionIndexes: Map<
-    Source,
-    Map<FunctionName, LensSourceFunctionIndexes[string][number]>
-  > = new Map();
-  protected sourceFunctionIndexes: Map<Source, LensSourceFunctionIndexes[string]> = new Map();
+  protected index1: Map<ContractFQN, Array<LensFunctionIndex>> = new Map();
+  protected index2: Map<ContractFQN, Map<FunctionNameOrKind, LensFunctionIndex>> = new Map();
 
-  public async registerFunctionIndexes(artifacts: LensSourceFunctionIndexes) {
-    for (const [contractFQN, functionIndexes] of Object.entries(artifacts)) {
-      this.sourceFunctionIndexes.set(contractFQN, functionIndexes);
-      const sourceFunctionIndexes: Map<FunctionName, LensSourceFunctionIndexes[string][number]> = new Map();
-      this.sourceFunctionNameFunctionIndexes.set(contractFQN, sourceFunctionIndexes);
-      for (const functionIndex of functionIndexes) {
-        sourceFunctionIndexes.set(functionIndex.name, functionIndex);
+  public async registerFunctionIndexes(functionIndexes: LensSourceFunctionIndexes) {
+    for (const fnIndex of functionIndexes) {
+      // index1
+      if (!this.index1.get(fnIndex.contractFQN)) this.index1.set(fnIndex.contractFQN, []);
+      this.index1.get(fnIndex.contractFQN)!.push(fnIndex);
+
+      // index2
+      if (!this.index2.get(fnIndex.contractFQN)) this.index2.set(fnIndex.contractFQN, new Map());
+      if (this.index2.get(fnIndex.contractFQN)!.has(fnIndex.name)) {
+        throw new InvariantError('Two function indexes per contractFQN/function_name', {
+          contractFQN: fnIndex.contractFQN,
+          functionNameOrKind: fnIndex.nameOrKind,
+        });
       }
+      this.index2.get(fnIndex.contractFQN)!.set(fnIndex.nameOrKind, fnIndex);
     }
   }
 
-  // query
-
-  public getAbiFunctionNameLocation(contractFQN: ContractFQN, functionName: string): Location | undefined {
-    const { lineStart, lineEnd, source } =
-      this.sourceFunctionNameFunctionIndexes.get(contractFQN)?.get(functionName) ?? {};
-    return lineStart !== undefined && lineEnd !== undefined && source !== undefined
-      ? { lineStart, lineEnd, source }
-      : undefined;
-  }
-
-  public getAbiTypeLocation(contractFQN: ContractFQN, type: FunctionCallTypes): Location | undefined {
-    const sourceFunctionIndexes = this.sourceFunctionIndexes.get(contractFQN) ?? [];
-    const functionIndex = sourceFunctionIndexes.find((it) => it.kind === type);
-    if (!functionIndex) return undefined;
-    return {
-      lineStart: functionIndex.lineStart,
-      lineEnd: functionIndex.lineEnd,
-      source: functionIndex.source,
-    };
-  }
-  public getFunctionCallLocation(
-    contractFQN: ContractFQN,
-    functionName: string,
-    type: FunctionCallTypes
-  ): Location | undefined {
-    if (functionName !== '') return this.getAbiFunctionNameLocation(contractFQN, functionName);
-    if (functionName === '') return this.getAbiTypeLocation(contractFQN, type);
-    return undefined;
+  public getFunctionDataBy(contractFQN: ContractFQN, functionName: string, type: FunctionCallTypes) {
+    const functionNameOrKind = functionName ? functionName : type;
+    return this.index2.get(contractFQN)?.get(functionNameOrKind);
   }
 }
