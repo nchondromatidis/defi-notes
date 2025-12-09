@@ -9,7 +9,7 @@ export function safeCastToHex(value: string): Hex {
   return value;
 }
 
-// artifact schema
+// Artifact schema
 export type LensArtifact = {
   readonly contractName: string;
   readonly sourceName: string;
@@ -19,19 +19,32 @@ export type LensArtifact = {
   readonly linkReferences: Record<string, Record<string, unknown>>;
 };
 
-// T object must be:
-// - key formated as `LensArtifact['sourceName']:LensArtifact['contractName']`
+// Object must be:
 // - values satisfy LensArtifact type
-export type LensArtifactsMap<T extends Record<string, LensArtifact>> = {
-  [K in keyof T]: T[K] extends LensArtifact
-    ? K extends `${T[K]['sourceName']}:${T[K]['contractName']}`
-      ? T[K]
+// - key formated as `LensArtifact['sourceName']:LensArtifact['contractName']`
+// - `LensArtifact['sourceName']` formated as  `${RootT}/${ProjectT}/contracts/`
+export type LensArtifactsMap<
+  ArtifactMapT extends object,
+  ProjectsT extends LensProjects,
+  ProjectT extends ProjectsT,
+  RootT extends string,
+> = {
+  [K in keyof ArtifactMapT as ArtifactMapT[K] extends LensArtifact
+    ? K extends `${ArtifactMapT[K]['sourceName']}:${ArtifactMapT[K]['contractName']}`
+      ? ArtifactMapT[K]['sourceName'] extends `${RootT}/${ProjectT}/${string}`
+        ? K
+        : never
       : never
-    : never;
+    : never]: Extract<ArtifactMapT[K], LensArtifact>;
 };
 
-export type LensContractFQN<T extends Record<string, LensArtifact>> = keyof LensArtifactsMap<T> & string;
-export type LensProtocolsList = string;
+export type LensContractFQN<
+  ArtifactMapT extends object,
+  ProjectsT extends LensProjects,
+  ProjectT extends ProjectsT,
+  RootT extends string,
+> = keyof LensArtifactsMap<ArtifactMapT, ProjectsT, ProjectT, RootT> & string;
+export type LensProjects = string;
 
 export type FunctionCallTypes = 'function' | 'constructor' | 'fallback' | 'receive' | 'freeFunction';
 
@@ -40,6 +53,7 @@ export type LensFunctionIndex = {
   nameOrKind: string;
   name: string;
   kind: FunctionCallTypes;
+  functionSelector: string | undefined;
   lineStart: number;
   lineEnd: number;
   source: string;

@@ -1,18 +1,28 @@
 import { test, beforeEach, describe, expect } from 'vitest';
-import { LensClient } from '../../src/lens/LensClient.ts';
-import { ETHER_1, ZERO_ADDRESS } from '../_setup/utils/constants.ts';
-import type { FunctionTracesArtifactsMap } from './_setup/types.ts';
-import { deployFunctionTracesContracts } from './_setup/deploy.ts';
-import { testSetup } from './_setup/testSetup.ts';
-import { getTracedTxFactory } from './_setup/utils.ts';
+import { LensClient } from '../src/lens/LensClient.ts';
+import { ETHER_1, ZERO_ADDRESS } from './_setup/utils/constants.ts';
+import { lensTracerTestSetup } from './_setup/lensTracerTestSetup.ts';
+import { deployFactory, getTracedTxFactory } from './_setup/utils.ts';
+import type { ArtifactMap, ProtocolName } from './_setup/artifacts';
 
-describe('function traces - 1.external-calls', () => {
-  let lensClient: LensClient<FunctionTracesArtifactsMap>;
-  let callerContract: Awaited<ReturnType<typeof deployFunctionTracesContracts>>['callerContract'];
+describe('external-calls', () => {
+  let lensClient: LensClient<ArtifactMap, ProtocolName, 'external-calls', 'test-contracts'>;
+  let callerContract: Awaited<
+    ReturnType<ReturnType<typeof deployFactory<ProtocolName, 'external-calls', 'test-contracts'>>>
+  >;
   let getTracedTx: ReturnType<typeof getTracedTxFactory>;
 
   beforeEach(async () => {
-    ({ lensClient, callerContract } = await testSetup());
+    const { lensClient: _lensClient, resourceLoader } = await lensTracerTestSetup('external-calls', 'test-contracts');
+    lensClient = _lensClient;
+
+    // deploy
+    const deploy = deployFactory<ProtocolName, 'external-calls', 'test-contracts'>(lensClient, resourceLoader);
+    const calleeContract = await deploy('test-contracts/external-calls/CalleeContract.sol:CalleeContract', []);
+    callerContract = await deploy('test-contracts/external-calls/CallerContract.sol:CallerContract', [
+      calleeContract.address,
+    ]);
+
     getTracedTx = getTracedTxFactory(lensClient);
   });
 

@@ -18,14 +18,14 @@ const config: HardhatUserConfig = {
     ],
   },
   paths: {
-    sources: './contracts',
+    sources: './test-contracts',
     artifacts: './test/_setup/artifacts',
     cache: './cache',
   },
   networks: {},
   artifactsAugment: {
     runOnBuild: true,
-    artifactContractsPath: './test/_setup/artifacts/contracts',
+    artifactContractsPath: './test/_setup/artifacts/test-contracts',
   },
 };
 

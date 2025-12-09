@@ -2,7 +2,7 @@ import { DebugMetadata } from '../indexes/DebugMetadata.ts';
 import { DeploymentTracer } from './DeploymentTracer.ts';
 import type { Message } from 'tevm/actions';
 import type { EvmResult } from 'tevm/evm';
-import { type Abi, bytesToHex, type Prettify } from 'viem';
+import { type Abi, bytesToHex, parseAbi, type Prettify } from 'viem';
 import { InvariantError } from '../../common/errors.ts';
 import {
   type FunctionCallEvent,
@@ -23,11 +23,12 @@ import {
   decodeLogMultipleAbisWithCache,
 } from '../decoders/logDecoder.ts';
 import { getOrCreate } from '../../common/utils.ts';
+import { QueryBy } from '../indexes/FunctionIndexesRegistry.ts';
 
 type TempTxId = string;
 type TxId = Hex;
 
-export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
+export class LensCallTracer {
   public readonly tracingTxs: Map<string, LensCallTracerResult> = new Map();
   public readonly decodedLogsTxCache: Map<TempTxId, DecodedLogsCache> = new Map();
   public readonly decodedErrorsTxCache: Map<TempTxId, DecodedErrorsCache> = new Map();
@@ -144,15 +145,52 @@ export class LensCallTracer<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>>
       createdBytecode: bytecode,
     });
 
+    //  External function call without ABI
+    if (!decodedFunctionCall) {
+      const functionSelector = callData.slice(2, 10);
+      const functionData = this.debugMetadata.functions.getBy(QueryBy.selector(functionSelector));
+
+      // TODO:
+      // Tracer:
+      // - Create an empty `function ABI`
+      // - Expand `function ABI` with an abi entry from: function interface with parseABI. <- provided by function interfaces
+      // - Find the user defined types used in function params or return types in current ABI
+      // - Expand `function ABI`: copy user defined types from ABI
+      // replace storage with uint
+      // decode args / return
+
+      // const functionAbi = parseAbiItem(
+      //   'function externalModifyStorage(uint self, uint value) public returns (string memory)'
+      // );
+      // const args = decodeAbiParameters(functionAbi.inputs, `0x${callData.slice(10, callData.length)}`);
+
+      const functionAbi2 = parseAbi([
+        'struct InnerStruct { address a; uint256 b; }',
+        'struct OuterStruct { InnerStruct st2; uint256[] c; bytes[3] d; }',
+        'function externalModifyStorage2(OuterStruct storage outerStruct) public returns (string memory)',
+      ]);
+      console.log(functionAbi2);
+
+      functionCallEvent.functionName = functionData?.name;
+      functionCallEvent.functionType = functionData?.kind;
+      // todo: args
+      functionCallEvent.args = undefined;
+      functionCallEvent.lineStart = functionData?.lineStart;
+      functionCallEvent.lineEnd = functionData?.lineEnd;
+      functionCallEvent.source = functionData?.source;
+    }
+
     if (decodedFunctionCall) {
       functionCallEvent.functionName = decodedFunctionCall.decodedFunctionName;
       functionCallEvent.functionType = decodedFunctionCall.type;
       functionCallEvent.args = decodedFunctionCall.decodedArgs;
 
-      const functionData = this.debugMetadata.functions.getFunctionDataBy(
-        decodedFunctionCall.contractFQN,
-        decodedFunctionCall.decodedFunctionName,
-        decodedFunctionCall.type
+      const functionData = this.debugMetadata.functions.getBy(
+        QueryBy.contractAndName(
+          decodedFunctionCall.contractFQN,
+          decodedFunctionCall.decodedFunctionName,
+          decodedFunctionCall.type
+        )
       );
       functionCallEvent.lineStart = functionData?.lineStart;
       functionCallEvent.lineEnd = functionData?.lineEnd;

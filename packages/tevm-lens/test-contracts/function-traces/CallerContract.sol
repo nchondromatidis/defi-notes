@@ -60,14 +60,35 @@ contract CallerContract {
     using ExternalLib for uint[];
     uint[] public storageData1;
 
-    function testExternalLibCall() public {
+
+    mapping(uint256 => ExternalLib.OuterStruct) public outerStructMap;
+
+    function testExternalLibCall1() public {
         storageData1.externalModifyStorage(0);
+        uint[] memory mem = new uint[](1);
+        mem.externalOperateOnMemory(0);
+        ExternalLib2.externalOperation(2, 5);
+    }
+
+    function testExternalLibCall2() public {
         uint[] memory mem = new uint[](1);
         mem.externalOperateOnMemory(0);
     }
 
-    function testExternalLibCall2() public {
-        ExternalLib2.externalOperation(2, 5);
+    function testExternalLibCall3() public {
+        ExternalLib.InnerStruct memory innerStruct = ExternalLib.InnerStruct(0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db,3);
+        uint256[] memory c = new uint256[](2);
+        c[0] = 1;
+        c[1] = 3;
+        bytes[3] memory d;
+        d[0] = hex"01";
+        d[1] = hex"0203";
+        d[2] = hex"040506";
+        ExternalLib.OuterStruct memory outerStruct = ExternalLib.OuterStruct(innerStruct, c,d);
+
+        outerStructMap[1] = outerStruct;
+
+        ExternalLib.externalModifyStorage2(outerStructMap[1]);
     }
 
     using InlineLib for string;

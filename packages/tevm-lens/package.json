@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test:contracts:build": "pnpm exec hardhat build --force",
+    "test:contracts:build:debug": "DEBUG=hardhat:* pnpm exec hardhat build --force  --show-stack-traces",
     "test": "vitest"
   },
   "dependencies": {

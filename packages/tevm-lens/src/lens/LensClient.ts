@@ -15,23 +15,34 @@ import { DebugMetadata } from './indexes/DebugMetadata.ts';
 import { DeploymentTracer } from './callTracer/DeploymentTracer.ts';
 import { LensCallTracer } from './callTracer/LensCallTracer.ts';
 import { InvalidArgument, InvariantError } from '../common/errors.ts';
-import type { Address, Hex, LensArtifactsMap, LensContractFQN } from './types/artifact.ts';
+import type { Address, Hex, LensArtifactsMap, LensProjects } from './types/artifact.ts';
 import type { InterpreterStep } from 'tevm/evm';
 import { hardhatLinkExternalLibToBytecode } from '../utils/hardhat.ts';
 
 export type Next = () => void;
 
-export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
+export class LensClient<
+  ArtifactMapT extends object,
+  ProjectsT extends LensProjects,
+  ProjectT extends ProjectsT,
+  RootT extends string,
+  LensArtifactsMapT extends LensArtifactsMap<ArtifactMapT, ProjectsT, ProjectT, RootT> = LensArtifactsMap<
+    ArtifactMapT,
+    ProjectsT,
+    ProjectT,
+    RootT
+  >,
+> {
   constructor(
     public readonly client: Client<TevmTransport>,
     public readonly debugMetadata: DebugMetadata,
     public readonly deployedContracts: DeploymentTracer,
-    public readonly callDecodeTracer: LensCallTracer<ArtifactMapT>
+    public readonly callDecodeTracer: LensCallTracer
   ) {}
 
-  async deploy<ContractFQNT extends LensContractFQN<ArtifactMapT>>(
+  async deploy<ContractFQNT extends keyof LensArtifactsMapT & string>(
     contractFQN: ContractFQNT,
-    args: ContractConstructorArgs<ArtifactMapT[ContractFQNT]['abi']>,
+    args: ContractConstructorArgs<LensArtifactsMapT[ContractFQNT]['abi']>,
     librariesToLink: Array<{ libFQN: ContractFQNT; address: Address }> = []
   ) {
     const artifact = this.debugMetadata.artifacts.getArtifactFrom(contractFQN);
@@ -95,7 +106,7 @@ export class LensClient<ArtifactMapT extends LensArtifactsMap<ArtifactMapT>> {
     return contractTxResult;
   }
 
-  async getContract<ContractFqnT extends LensContractFQN<ArtifactMapT>>(address: Hex, contractFQN: ContractFqnT) {
+  async getContract<ContractFqnT extends keyof LensArtifactsMapT & string>(address: Hex, contractFQN: ContractFqnT) {
     const contractAbi = this.debugMetadata.artifacts.getArtifactAbi(contractFQN);
     if (!contractAbi) throw new InvalidArgument(`Artifact for ${contractFQN} not found.`);
 

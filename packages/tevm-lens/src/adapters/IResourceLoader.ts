@@ -1,29 +1,32 @@
-import type {
-  LensArtifactsMap,
-  LensContractFQN,
-  LensProtocolsList,
-  LensSourceFunctionIndexes,
-} from '../lens/types/artifact.ts';
+import type { LensArtifactsMap, LensProjects, LensSourceFunctionIndexes } from '../lens/types/artifact.ts';
 
 export interface IResourceLoader<
-  ArtifactMapT extends LensArtifactsMap<ArtifactMapT>,
+  ArtifactMapT extends object,
+  ProjectsT extends LensProjects,
+  ProjectT extends ProjectsT,
   FunctionIndexesT extends LensSourceFunctionIndexes,
-  ProtocolsListT extends LensProtocolsList,
+  RootT extends string,
+  LensArtifactsMapT extends LensArtifactsMap<ArtifactMapT, ProjectsT, ProjectT, RootT>,
 > {
-  getArtifact<LensContractFqnT extends LensContractFQN<ArtifactMapT>>(
+  getArtifact<LensContractFqnT extends keyof LensArtifactsMapT & string>(
     contractFQN: LensContractFqnT
-  ): Promise<ArtifactMapT[LensContractFqnT]>;
+  ): Promise<LensArtifactsMapT[LensContractFqnT]>;
+
+  getArtifacts<LensContractFqnT extends keyof LensArtifactsMapT & string>(
+    contractFQN: LensContractFqnT[]
+  ): Promise<LensArtifactsMapT[LensContractFqnT][]>;
+
   getArtifactPart<
-    ContractFqnT extends LensContractFQN<ArtifactMapT>,
-    ArtifactPartT extends keyof ArtifactMapT[ContractFqnT],
+    ContractFqnT extends keyof LensArtifactsMapT & string,
+    ArtifactPartT extends keyof LensArtifactsMapT[ContractFqnT],
   >(
     contractFQN: ContractFqnT,
     artifactPart: ArtifactPartT
-  ): Promise<ArtifactMapT[ContractFqnT][ArtifactPartT]>;
-  getArtifacts<LensContractFqnT extends LensContractFQN<ArtifactMapT>>(
-    contractFQN: LensContractFqnT[]
-  ): Promise<Array<ArtifactMapT[LensContractFqnT]>>;
-  getProtocolContractsFqn(protocolName: ProtocolsListT): Promise<Array<LensContractFQN<ArtifactMapT>>>;
-  getProtocolArtifacts(protocolName: ProtocolsListT): Promise<Array<ArtifactMapT[LensContractFQN<ArtifactMapT>]>>;
-  getFunctionIndexes(protocolName: ProtocolsListT): Promise<FunctionIndexesT>;
+  ): Promise<LensArtifactsMapT[ContractFqnT][ArtifactPartT]>;
+
+  getProtocolContractsFqn(protocolName: ProjectsT): Promise<Array<keyof LensArtifactsMapT & string>>;
+
+  getProtocolArtifacts(protocolName: ProjectsT): Promise<Array<LensArtifactsMapT[keyof LensArtifactsMapT & string]>>;
+
+  getFunctionIndexes(protocolName: ProjectsT): Promise<FunctionIndexesT>;
 }
