@@ -98,9 +98,15 @@ importers:
       debug:
         specifier: ^4.4.3
         version: 4.4.3
+      jsel:
+        specifier: ^1.1.6
+        version: 1.1.6
       solc-typed-ast:
         specifier: ^19.0.0
         version: 19.0.0(debug@4.4.3)(typescript@5.9.3)(zod@4.1.12)
+      solidity-ast:
+        specifier: ^0.4.61
+        version: 0.4.61
       zod:
         specifier: ^4.1.12
         version: 4.1.12
@@ -132,9 +138,6 @@ importers:
       prettier:
         specifier: 3.6.2
         version: 3.6.2
-      solidity-ast:
-        specifier: ^0.4.61
-        version: 0.4.61
       tsx:
         specifier: ^4.19.4
         version: 4.20.6

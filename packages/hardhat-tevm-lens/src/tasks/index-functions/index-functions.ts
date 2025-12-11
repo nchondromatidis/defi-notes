@@ -3,10 +3,20 @@ import type { FunctionData, FunctionEntryIndexes } from './types';
 import { type ASTDereferencer, astDereferencer, type SrcDecoder, srcDecoder } from 'solidity-ast/utils.js'; // force common.js
 import { hardhatConvertFromSourceInputToContractFQN, isNotUndefined, trySync } from '../../utils';
 import type { FunctionDefinition } from 'solidity-ast';
-import type { CompilerOutputBytecode, SolidityBuildInfoOutput } from 'hardhat/types/solidity';
+import type { CompilerOutputBytecode } from 'hardhat/types/solidity';
 import { keccak_256 } from '@noble/hashes/sha3.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 import { debug } from './_debug';
+import {
+  ASTNode,
+  ASTReader,
+  ASTWriter,
+  DefaultASTWriterMapping,
+  LatestCompilerVersion,
+  PrettyFormatter,
+  SourceUnit,
+  FunctionDefinition as FunctionDefinition2,
+} from 'solc-typed-ast';
 
 //*************************************** TYPES ***************************************//
 
@@ -38,7 +48,10 @@ export function createFunctionIndexes(
 
   const decodeSrc = srcDecoder(buildInfoInput.input, buildInfoOutput.output);
 
-  for (const [inputSourceName, contractsData] of Object.entries(contracts))
+  const reader = new ASTReader();
+  const sourceUnits = reader.read(buildInfoOutput.output);
+
+  for (const [inputSourceName, contractsData] of Object.entries(contracts)) {
     for (const [contractName, contractData] of Object.entries(contractsData)) {
       const contractFQN = hardhatConvertFromSourceInputToContractFQN(`${inputSourceName}:${contractName}`);
       debug(`Indexing contract: ${contractFQN}`);
@@ -47,26 +60,30 @@ export function createFunctionIndexes(
         contractFQN,
         contractData.evm?.deployedBytecode?.functionDebugData,
         decodeSrc,
-        deref
+        deref,
+        sourceUnits
       );
 
       const bytecodeFunctionData = convertToFunctionData(
         contractFQN,
         contractData.evm?.bytecode?.functionDebugData,
         decodeSrc,
-        deref
+        deref,
+        sourceUnits
       );
 
       if (deployedBytecodeFunctionData) functionEntryIndexes.push(...deployedBytecodeFunctionData);
       if (bytecodeFunctionData) functionEntryIndexes.push(...bytecodeFunctionData);
     }
+  }
 }
 
 function convertToFunctionData(
   contractFQN: string,
   functionDebugData: CompilerOutputBytecode['functionDebugData'],
   decodeSrc: SrcDecoder,
-  deref: ASTDereferencer
+  deref: ASTDereferencer,
+  sourceUnits: SourceUnit[]
 ) {
   if (!functionDebugData) return undefined;
 
@@ -89,7 +106,7 @@ function convertToFunctionData(
         return undefined;
       }
 
-      const functionInterface = toFunctionInterface(node);
+      const functionInterface = toFunctionInterface(node, sourceUnits);
       const functionSelector =
         (node.functionSelector ?? (node.visibility === 'external' || node.visibility === 'public'))
           ? toFunctionSelector(toFunctionSignature(node))
@@ -116,52 +133,6 @@ function convertToFunctionData(
       return newFunctionData;
     })
     .filter(isNotUndefined);
-}
-
-function toFunctionInterface(node: FunctionDefinition | undefined) {
-  if (!node) return undefined;
-
-  // Handle function name (constructor/fallback/receive)
-  let fnName;
-  switch (node.kind) {
-    case 'constructor':
-      fnName = 'constructor';
-      break;
-    case 'fallback':
-      fnName = 'fallback';
-      break;
-    case 'receive':
-      fnName = 'receive';
-      break;
-    default:
-      fnName = `function ${node.name || ''}`;
-  }
-
-  // Parameters
-  const params = node.parameters?.parameters || [];
-  const paramList = params
-    .map((p) => {
-      const type = p.typeDescriptions?.typeString || 'unknown';
-      const name = p.name ? ` ${p.name}` : '';
-      return `${type}${name}`;
-    })
-    .join(', ');
-
-  // Returns
-  const returns = node.returnParameters?.parameters || [];
-  const returnList = returns.map((p) => p.typeDescriptions?.typeString || 'unknown').join(', ');
-  const returnClause = returns.length ? ` returns (${returnList})` : '';
-
-  // Visibility + state mutability
-  const visibility = node.visibility ? ` ${node.visibility}` : '';
-  const stateMutability =
-    node.stateMutability && node.stateMutability !== 'nonpayable' ? ` ${node.stateMutability}` : '';
-
-  // Assemble the interface
-  const signature = `${fnName}(${paramList})${visibility}${stateMutability}${returnClause};`;
-
-  // Clean up spacing
-  return signature.replace(/\s+/g, ' ').trim();
 }
 
 function toFunctionSignature(node: FunctionDefinition | undefined) {
@@ -206,4 +177,39 @@ function getLines(location: string, decodeSrc: SrcDecoder) {
     debug(`Location not found: ${location}: ${e}`);
     return { lineStart: -1, lineEnd: -1, source: '' };
   }
+}
+
+function toFunctionInterface(node: FunctionDefinition | undefined, sourceUnits: SourceUnit[]) {
+  if (!node) return undefined;
+  const target = findNodeById(sourceUnits, node.id);
+  if (!target) return undefined;
+
+  const formatter = new PrettyFormatter(4, 0);
+  const writer = new ASTWriter(DefaultASTWriterMapping, formatter, LatestCompilerVersion);
+  const targetNode = target.targetNode;
+  if (targetNode instanceof FunctionDefinition2) {
+    targetNode.vBody = undefined;
+    return writer.write(targetNode).replace(';', '');
+  }
+  return undefined;
+}
+
+function findNodeById(
+  sourceUnits: SourceUnit[],
+  targetId: number
+): { targetNode: ASTNode; targetSourceUnit: SourceUnit } | undefined {
+  let targetNode: ASTNode | undefined = undefined;
+  let targetSourceUnit: SourceUnit | undefined = undefined;
+
+  for (const sourceUnit of sourceUnits) {
+    sourceUnit.walk((node) => {
+      if (node.id === targetId) {
+        targetNode = node;
+        targetSourceUnit = sourceUnit;
+      }
+    });
+    if (targetNode) break;
+  }
+  if (!targetNode || !targetSourceUnit) return undefined;
+  return { targetNode, targetSourceUnit };
 }
