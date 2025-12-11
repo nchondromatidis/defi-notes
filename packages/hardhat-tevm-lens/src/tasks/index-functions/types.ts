@@ -4,7 +4,7 @@ export type FunctionData = {
   kind: 'function' | 'receive' | 'constructor' | 'fallback' | 'freeFunction';
   visibility: 'external' | 'public' | 'internal' | 'private';
   stateMutability: 'payable' | 'pure' | 'nonpayable' | 'view';
-  functionInterface: string | undefined;
+  functionInterfaceDecode: string | undefined;
   functionSelector: string | undefined;
   src: string;
   lineStart: number;

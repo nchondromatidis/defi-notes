@@ -17,6 +17,8 @@ import {
   SourceUnit,
   FunctionDefinition as FunctionDefinition2,
 } from 'solc-typed-ast';
+import { DataLocation } from 'solc-typed-ast/dist/ast/constants';
+import { ElementaryTypeName } from 'solc-typed-ast/dist/ast/implementation/type/elementary_type_name';
 
 //*************************************** TYPES ***************************************//
 
@@ -106,7 +108,8 @@ function convertToFunctionData(
         return undefined;
       }
 
-      const functionInterface = toFunctionInterface(node, sourceUnits);
+      const node2 = findNodeById(sourceUnits, node.id);
+      const functionInterfaceDecode = toFunctionInterfaceDecode(node2?.targetNode);
       const functionSelector =
         (node.functionSelector ?? (node.visibility === 'external' || node.visibility === 'public'))
           ? toFunctionSelector(toFunctionSignature(node))
@@ -118,7 +121,7 @@ function convertToFunctionData(
         kind: node.kind,
         visibility: node.visibility,
         stateMutability: node.stateMutability,
-        functionInterface,
+        functionInterfaceDecode,
         functionSelector,
         src: node.src,
         lineStart,
@@ -179,17 +182,24 @@ function getLines(location: string, decodeSrc: SrcDecoder) {
   }
 }
 
-function toFunctionInterface(node: FunctionDefinition | undefined, sourceUnits: SourceUnit[]) {
+function toFunctionInterfaceDecode(node: ASTNode | undefined) {
   if (!node) return undefined;
-  const target = findNodeById(sourceUnits, node.id);
-  if (!target) return undefined;
 
   const formatter = new PrettyFormatter(4, 0);
   const writer = new ASTWriter(DefaultASTWriterMapping, formatter, LatestCompilerVersion);
-  const targetNode = target.targetNode;
-  if (targetNode instanceof FunctionDefinition2) {
-    targetNode.vBody = undefined;
-    return writer.write(targetNode).replace(';', '');
+  if (node instanceof FunctionDefinition2) {
+    delete node.vBody;
+
+    node.vParameters.vParameters.forEach((param) => {
+      if (param.storageLocation === 'storage') {
+        param.storageLocation = DataLocation.Default;
+        param.typeString = 'uint256';
+        param.typeIdentifier = 't_uint256';
+        param.vType = new ElementaryTypeName(param.id, param.src, 'uint256', 't_uint256', 'uint256');
+      }
+    });
+
+    return writer.write(node);
   }
   return undefined;
 }
