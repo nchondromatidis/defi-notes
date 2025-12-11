@@ -4,6 +4,8 @@ import type { AbiEvent } from 'tevm';
 import type { RawLog } from '../types/artifact.ts';
 import { DecodedDataCache } from './DecodedDataCache.ts';
 
+//*************************************** DECODE WITH ABIs ***************************************//
+
 // types
 export type ContractLogDecodingData = {
   contractFQN: string | undefined;

@@ -1,7 +1,38 @@
-import type { FunctionCallTypes, Hex } from '../types/artifact.ts';
+import type { FunctionCallTypes, Hex, LensFunctionIndex } from '../types/artifact.ts';
 import { InvariantError } from '../../common/errors.ts';
-import { type Abi, AbiFunctionSignatureNotFoundError, decodeAbiParameters, decodeFunctionData } from 'viem';
+import {
+  type Abi,
+  AbiFunctionSignatureNotFoundError,
+  decodeAbiParameters,
+  decodeFunctionData,
+  parseAbiItem,
+} from 'viem';
 import { trySync } from '../../common/utils.ts';
+
+//*************************************** DECODE WITH FUNCTION INDEXES ***************************************//
+
+export function decodeFunctionCallWithFunctionIndexes(params: {
+  callData: `0x${string}`;
+  functionIndex?: LensFunctionIndex;
+}) {
+  if (!params.functionIndex) return undefined;
+  const functionInterfaceDecode = params.functionIndex?.functionInterfaceDecode;
+  if (functionInterfaceDecode) {
+    const functionAbiReturn = trySync(() => parseAbiItem(functionInterfaceDecode.replace(';', '')));
+    if (functionAbiReturn.ok) {
+      const functionAbi = functionAbiReturn.value;
+      if (functionAbi.type === 'function') {
+        const paramsReturn = trySync(() =>
+          decodeAbiParameters(functionAbi.inputs, `0x${params.callData.slice(10, params.callData.length)}`)
+        );
+        if (paramsReturn.ok) return paramsReturn.value;
+      }
+    }
+  }
+  return undefined;
+}
+
+//*************************************** DECODE WITH ABIs ***************************************//
 
 // types
 export type DecodeFunctionCallData = { contractFQN: string | undefined; abi: Abi | undefined };

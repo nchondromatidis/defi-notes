@@ -4,10 +4,35 @@ import {
   AbiErrorSignatureNotFoundError,
   decodeErrorResult as decodeErrorResultViem,
   decodeFunctionResult as decodeFunctionResultViem,
+  parseAbiItem,
+  decodeAbiParameters,
 } from 'viem';
 import { trySync } from '../../common/utils.ts';
-import type { Hex } from '../types/artifact.ts';
+import type { Hex, LensFunctionIndex } from '../types/artifact.ts';
 import { DecodedDataCache } from './DecodedDataCache.ts';
+
+//*************************************** DECODE WITH FUNCTION INDEXES ***************************************//
+
+export function decodeFunctionReturnWithFunctionIndex(params: {
+  returnData: `0x${string}`;
+  functionIndex?: LensFunctionIndex;
+}) {
+  if (!params.functionIndex) return undefined;
+  const functionInterfaceDecode = params.functionIndex?.functionInterfaceDecode;
+  if (functionInterfaceDecode) {
+    const functionAbiReturn = trySync(() => parseAbiItem(functionInterfaceDecode.replace(';', '')));
+    if (functionAbiReturn.ok) {
+      const functionAbi = functionAbiReturn.value;
+      if (functionAbi.type === 'function') {
+        const paramsReturn = trySync(() => decodeAbiParameters(functionAbi.outputs, params.returnData));
+        if (paramsReturn.ok) return paramsReturn.value;
+      }
+    }
+  }
+  return undefined;
+}
+
+//*************************************** DECODE WITH ABIs ***************************************//
 
 // types
 

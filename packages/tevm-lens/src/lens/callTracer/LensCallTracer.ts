@@ -2,7 +2,7 @@ import { DebugMetadata } from '../indexes/DebugMetadata.ts';
 import { DeploymentTracer } from './DeploymentTracer.ts';
 import type { Message } from 'tevm/actions';
 import type { EvmResult } from 'tevm/evm';
-import { type Abi, bytesToHex, parseAbi, type Prettify } from 'viem';
+import { type Abi, bytesToHex } from 'viem';
 import { InvariantError } from '../../common/errors.ts';
 import {
   type FunctionCallEvent,
@@ -10,12 +10,16 @@ import {
   LensCallTracerResult,
   type LensLog,
 } from './LensCallTracerResult.ts';
-import { type Address, type Hex, type LensArtifactsMap, type RawLog } from '../types/artifact.ts';
-import { decodeFunctionCallMultipleAbis } from '../decoders/functionCallDecoder.ts';
+import { type Address, type Hex, type RawLog } from '../types/artifact.ts';
+import {
+  decodeFunctionCallMultipleAbis,
+  decodeFunctionCallWithFunctionIndexes,
+} from '../decoders/functionCallDecoder.ts';
 import {
   DecodedErrorsCache,
   type DecodeFunctionResulData,
   decodeFunctionResultMultipleAbisWithCache,
+  decodeFunctionReturnWithFunctionIndex,
 } from '../decoders/functionResultDecoder.ts';
 import {
   type ContractLogDecodingData,
@@ -123,6 +127,10 @@ export class LensCallTracer {
     // function delegate call
     if (callEvent.to && callEvent.delegatecall) {
       functionCallEvent.callType = 'DELEGATECALL';
+
+      // delegate call caller contract
+      functionCallEvent.contractFQN = this.deployedContracts.getContractFqnForAddress(callEvent.to.toString());
+
       // callEvent type missing _codeAddress, but implementation has it
       const codeAddress = (callEvent as any)['_codeAddress'].toString() as Address;
       if (!codeAddress) throw new InvariantError('codeAddress is empty', { callEvent, functionCallEvent });
@@ -145,56 +153,39 @@ export class LensCallTracer {
       createdBytecode: bytecode,
     });
 
-    //  External function call without ABI
-    if (!decodedFunctionCall) {
-      const functionSelector = callData.slice(2, 10);
-      const functionData = this.debugMetadata.functions.getBy(QueryBy.selector(functionSelector));
-
-      // TODO:
-      // Tracer:
-      // - Create an empty `function ABI`
-      // - Expand `function ABI` with an abi entry from: function interface with parseABI. <- provided by function interfaces
-      // - Find the user defined types used in function params or return types in current ABI
-      // - Expand `function ABI`: copy user defined types from ABI
-      // replace storage with uint
-      // decode args / return
-
-      // const functionAbi = parseAbiItem(
-      //   'function externalModifyStorage(uint self, uint value) public returns (string memory)'
-      // );
-      // const args = decodeAbiParameters(functionAbi.inputs, `0x${callData.slice(10, callData.length)}`);
-
-      const functionAbi2 = parseAbi([
-        'struct InnerStruct { address a; uint256 b; }',
-        'struct OuterStruct { InnerStruct st2; uint256[] c; bytes[3] d; }',
-        'function externalModifyStorage2(OuterStruct storage outerStruct) public returns (string memory)',
-      ]);
-      console.log(functionAbi2);
-
-      functionCallEvent.functionName = functionData?.name;
-      functionCallEvent.functionType = functionData?.kind;
-      // todo: args
-      functionCallEvent.args = undefined;
-      functionCallEvent.lineStart = functionData?.lineStart;
-      functionCallEvent.lineEnd = functionData?.lineEnd;
-      functionCallEvent.source = functionData?.source;
-    }
-
     if (decodedFunctionCall) {
       functionCallEvent.functionName = decodedFunctionCall.decodedFunctionName;
       functionCallEvent.functionType = decodedFunctionCall.type;
       functionCallEvent.args = decodedFunctionCall.decodedArgs;
 
-      const functionData = this.debugMetadata.functions.getBy(
-        QueryBy.contractAndName(
+      const functionIndex = this.debugMetadata.functions.getBy(
+        QueryBy.contractAndNameOrKind(
           decodedFunctionCall.contractFQN,
           decodedFunctionCall.decodedFunctionName,
           decodedFunctionCall.type
         )
       );
-      functionCallEvent.lineStart = functionData?.lineStart;
-      functionCallEvent.lineEnd = functionData?.lineEnd;
-      functionCallEvent.source = functionData?.source;
+      functionCallEvent.lineStart = functionIndex?.lineStart;
+      functionCallEvent.lineEnd = functionIndex?.lineEnd;
+      functionCallEvent.source = functionIndex?.source;
+    }
+
+    // External function call, selector not matching any ABI
+    if (!decodedFunctionCall) {
+      const functionSelector = callData.slice(2, 10);
+      const contractFQN = functionCallEvent.implContractFQN ?? functionCallEvent.contractFQN;
+      if (contractFQN) {
+        const functionIndex = this.debugMetadata.functions.getBy(
+          QueryBy.contractAndSelector(contractFQN, functionSelector)
+        );
+
+        functionCallEvent.functionName = functionIndex?.name;
+        functionCallEvent.functionType = functionIndex?.kind;
+        functionCallEvent.lineStart = functionIndex?.lineStart;
+        functionCallEvent.lineEnd = functionIndex?.lineEnd;
+        functionCallEvent.source = functionIndex?.source;
+        functionCallEvent.args = decodeFunctionCallWithFunctionIndexes({ callData, functionIndex });
+      }
     }
 
     tempIdTxTrace.addFunctionCall(functionCallEvent);
@@ -207,10 +198,10 @@ export class LensCallTracer {
     const functionCallEvent = tempIdTxTrace.getCurrentFunctionCallEvent();
 
     // base function result object
-    const returnValueHex = bytesToHex(resultEvent.execResult.returnValue);
+    const returnData = bytesToHex(resultEvent.execResult.returnValue);
     const functionResultEvent: FunctionResultEvent = {
       type: 'FunctionResultEvent',
-      returnValueRaw: returnValueHex,
+      returnValueRaw: returnData,
       isError: !!resultEvent.execResult.exceptionError,
       isCreate: !!resultEvent.createdAddress,
       logs: [],
@@ -218,7 +209,7 @@ export class LensCallTracer {
     if (functionResultEvent.isError) functionResultEvent.errorType = resultEvent.execResult.exceptionError;
 
     // data needed to decode function result
-    const decodeData: Array<Prettify<ContractLogDecodingData & DecodeFunctionResulData>> = [];
+    const decodeData: Array<ContractLogDecodingData & DecodeFunctionResulData> = [];
 
     // new contract
     if (functionCallEvent.callType === 'CREATE' || functionCallEvent.callType === 'CREATE2') {
@@ -282,7 +273,7 @@ export class LensCallTracer {
       decodeData.push({
         contractAddress: functionCallEvent.implAddress,
         contractFQN: implContractFQN,
-        functionName: functionCallEvent.functionName, // todo: fix that
+        functionName: functionCallEvent.functionName,
         abi: implAbi,
         contractRole: 'IMPLEMENTATION',
       });
@@ -293,7 +284,7 @@ export class LensCallTracer {
     const decodedResult = await decodeFunctionResultMultipleAbisWithCache(
       {
         decodeData: decodeData,
-        data: returnValueHex,
+        data: returnData,
         isError: functionResultEvent.isError,
       },
       tracingErrorsCache
@@ -305,6 +296,18 @@ export class LensCallTracer {
     }
     if (decodedResult && decodedResult.isSuccess) {
       functionResultEvent.returnValue = decodedResult.decodedFunctionResult;
+    }
+
+    // External function call, selector not matching any ABI
+    if (!decodedResult) {
+      if (functionCallEvent.contractFQN && functionCallEvent.functionName && functionCallEvent.type) {
+        const contractFQN = functionCallEvent.implContractFQN ?? functionCallEvent.contractFQN;
+        const functionIndex = this.debugMetadata.functions.getBy(
+          QueryBy.contractAndNameOrKind(contractFQN, functionCallEvent.functionName, functionCallEvent.type)
+        );
+
+        functionResultEvent.returnValue = decodeFunctionReturnWithFunctionIndex({ returnData, functionIndex });
+      }
     }
 
     // decoding logs

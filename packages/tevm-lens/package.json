@@ -9,6 +9,7 @@
     "build": "tsc",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "test:contracts:build:clean": "rm -rf test/_setup/artifacts && rm -rf cache",
     "test:contracts:build": "pnpm exec hardhat build --force",
     "test:contracts:build:debug": "DEBUG=hardhat:* pnpm exec hardhat build --force  --show-stack-traces",
     "test": "vitest"

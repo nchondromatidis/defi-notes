@@ -54,6 +54,7 @@ export type LensFunctionIndex = {
   name: string;
   kind: FunctionCallTypes;
   functionSelector: string | undefined;
+  functionInterfaceDecode: string | undefined;
   lineStart: number;
   lineEnd: number;
   source: string;
