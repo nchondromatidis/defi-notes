@@ -3,9 +3,8 @@ import type { LensClient } from '../src/lens/LensClient.ts';
 import type { ArtifactMap, ProtocolName } from './_setup/artifacts';
 import { deployFactory, getTracedTxFactory } from './_setup/utils.ts';
 import { lensTracerTestSetup } from './_setup/lensTracerTestSetup.ts';
-import { inspect } from './_setup/utils/inspect.ts';
 
-describe('function traces - 4.external-libraries', () => {
+describe('external-libraries', () => {
   let lensClient: LensClient<ArtifactMap, ProtocolName, 'external-libraries', 'test-contracts'>;
   let callerContract: Awaited<
     ReturnType<ReturnType<typeof deployFactory<ProtocolName, 'external-libraries', 'test-contracts'>>>
