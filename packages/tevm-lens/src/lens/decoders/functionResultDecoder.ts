@@ -18,7 +18,7 @@ export function decodeFunctionReturnWithFunctionIndex(params: {
   functionIndex?: LensFunctionIndex;
 }) {
   if (!params.functionIndex) return undefined;
-  const functionInterfaceDecode = params.functionIndex?.functionInterfaceDecode;
+  const functionInterfaceDecode = params.functionIndex?.functionHumanReadableABI;
   if (functionInterfaceDecode) {
     const functionAbiReturn = trySync(() => parseAbiItem(functionInterfaceDecode.replace(';', '')));
     if (functionAbiReturn.ok) {

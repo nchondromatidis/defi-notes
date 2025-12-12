@@ -100,8 +100,8 @@ exports[`function traces - 4.external-libraries > testExternalLibCall1 1`] = `
   "from": "0x0000000000000000000000000000000000000000",
   "functionName": "testExternalLibCall1",
   "functionType": "function",
-  "lineEnd": 27,
-  "lineStart": 20,
+  "lineEnd": 28,
+  "lineStart": 21,
   "precompile": false,
   "rawData": "0x807a48b8",
   "result": {
@@ -334,6 +334,130 @@ exports[`function traces - 4.external-libraries > testExternalLibCall2 1`] = `
             "0xdd970dd9b5bfe707922155b058a407655cb18288b807e2216442bca8ad83d6b5",
           ],
           "0x00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001d7465737445787465726e616c4c696243616c6c32206578656375746564000000",
+        ],
+      },
+    ],
+    "returnValue": {
+      "ok": true,
+      "value": undefined,
+    },
+    "returnValueRaw": "0x",
+    "type": "FunctionResultEvent",
+  },
+  "source": "test-contracts/external-libraries/CallerContract.sol",
+  "to": "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0",
+  "type": "FunctionCallEvent",
+  "value": 0n,
+}
+`;
+
+exports[`function traces - 4.external-libraries > testExternalLibCall3 1`] = `
+{
+  "args": [],
+  "callType": "CALL",
+  "called": [
+    {
+      "args": [
+        105409183525425523237923285454331214386340807945685310246717412709691342439136n,
+      ],
+      "callType": "DELEGATECALL",
+      "called": [],
+      "contractFQN": "test-contracts/external-libraries/CallerContract.sol:CallerContract",
+      "depth": 1,
+      "from": "0x0000000000000000000000000000000000000000",
+      "functionName": "externalModifyStorage2",
+      "functionType": "function",
+      "implAddress": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+      "implContractFQN": "test-contracts/external-libraries/ExternalLib.sol:ExternalLib",
+      "lineEnd": 24,
+      "lineStart": 20,
+      "precompile": false,
+      "rawData": "0xb0e41cf9e90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
+      "result": {
+        "isCreate": false,
+        "isError": false,
+        "logs": [
+          {
+            "args": {
+              "value": 2n,
+              "who": "0x0000000000000000000000000000000000000000",
+            },
+            "contractFQN": "test-contracts/external-libraries/ExternalLib.sol:ExternalLib",
+            "eventName": "LibLog",
+            "eventSignature": "LibLog(address,uint256)",
+            "functionName": "externalModifyStorage2",
+            "functionType": "function",
+            "rawData": [
+              "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0",
+              [
+                "0xf1796e526a589b0bfce72c0ba856e2b29e1b20c933dfa3e87dc34867e18c7c60",
+              ],
+              "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002",
+            ],
+          },
+        ],
+        "returnValue": [
+          {
+            "e": 43n,
+            "status": 1,
+          },
+        ],
+        "returnValueRaw": "0x000000000000000000000000000000000000000000000000000000000000002b0000000000000000000000000000000000000000000000000000000000000001",
+        "type": "FunctionResultEvent",
+      },
+      "source": "test-contracts/external-libraries/ExternalLib.sol",
+      "to": "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0",
+      "type": "FunctionCallEvent",
+      "value": 0n,
+    },
+  ],
+  "contractFQN": "test-contracts/external-libraries/CallerContract.sol:CallerContract",
+  "depth": 0,
+  "from": "0x0000000000000000000000000000000000000000",
+  "functionName": "testExternalLibCall3",
+  "functionType": "function",
+  "lineEnd": 53,
+  "lineStart": 38,
+  "precompile": false,
+  "rawData": "0xe7462f4c",
+  "result": {
+    "isCreate": false,
+    "isError": false,
+    "logs": [
+      {
+        "args": {
+          "value": 2n,
+          "who": "0x0000000000000000000000000000000000000000",
+        },
+        "contractFQN": "test-contracts/external-libraries/ExternalLib.sol:ExternalLib",
+        "eventName": "LibLog",
+        "eventSignature": "LibLog(address,uint256)",
+        "functionName": "testExternalLibCall3",
+        "functionType": "function",
+        "rawData": [
+          "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0",
+          [
+            "0xf1796e526a589b0bfce72c0ba856e2b29e1b20c933dfa3e87dc34867e18c7c60",
+          ],
+          "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002",
+        ],
+      },
+      {
+        "args": {
+          "message": "testExternalLibCall3 executed",
+          "value": 0n,
+        },
+        "contractFQN": "test-contracts/external-libraries/CallerContract.sol:CallerContract",
+        "eventName": "Log",
+        "eventSignature": "Log(string,uint256)",
+        "functionName": "testExternalLibCall3",
+        "functionType": "function",
+        "rawData": [
+          "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0",
+          [
+            "0xdd970dd9b5bfe707922155b058a407655cb18288b807e2216442bca8ad83d6b5",
+          ],
+          "0x00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001d7465737445787465726e616c4c696243616c6c33206578656375746564000000",
         ],
       },
     ],

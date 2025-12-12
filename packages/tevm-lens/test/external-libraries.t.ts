@@ -54,12 +54,8 @@ describe('function traces - 4.external-libraries', () => {
     expect(getTracedTx.success(result)).toMatchSnapshot();
   });
 
-  // TODO: continue here
-  test.skip('testExternalLibCall3', async () => {
+  test('testExternalLibCall3', async () => {
     const result = await lensClient.contract(callerContract, 'testExternalLibCall3', []);
-    inspect(getTracedTx.success(result));
-    // TODO: fails to decode external library call with argument typed storage
-    // does not support user defined types E(StructDefinition, EnumDefinition, UserDefinedValueTypeDefinition)
-    // https://docs.soliditylang.org/en/latest/contracts.html#function-signatures-and-selectors-in-libraries
+    expect(getTracedTx.success(result)).toMatchSnapshot();
   });
 });
