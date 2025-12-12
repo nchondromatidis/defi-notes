@@ -10,6 +10,8 @@ import { tevmSetAccount } from 'tevm';
 import { ETHER_1 } from './utils/constants.ts';
 import { ArtifactsProvider } from '../../src/lens/indexes/ArtifactsProvider.ts';
 import { FunctionIndexesRegistry } from '../../src/lens/indexes/FunctionIndexesRegistry.ts';
+import { ExternalCallHandler } from '../../src/lens/handlers/ExternalCallHandler.ts';
+import { ExternalCallResultHandler } from '../../src/lens/handlers/ExternalCallResultHandler.ts';
 
 export async function lensTracerTestSetup<ProjectNameT extends ProtocolName, RootT extends string>(
   projectName: ProjectNameT,
@@ -27,7 +29,9 @@ export async function lensTracerTestSetup<ProjectNameT extends ProtocolName, Roo
   const debugMetadata = new DebugMetadata(artifactsProvider, functionIndexesRegistry);
 
   const deploymentTracer = new DeploymentTracer();
-  const tracer = new LensCallTracer(debugMetadata, deploymentTracer);
+  const externalCallHandler = new ExternalCallHandler(debugMetadata, deploymentTracer);
+  const externalCallResultHandler = new ExternalCallResultHandler(debugMetadata, deploymentTracer);
+  const tracer = new LensCallTracer(externalCallHandler, externalCallResultHandler);
 
   const lensClient = new LensClient<ArtifactMap, ProtocolName, ProjectNameT, RootT>(
     client,
