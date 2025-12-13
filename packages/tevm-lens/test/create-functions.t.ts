@@ -2,23 +2,31 @@ import { test, beforeEach, describe, expect } from 'vitest';
 import { LensClient } from '../src/lens/LensClient.ts';
 import type { Hex } from '../src/lens/types/artifact.ts';
 import { lensTracerTestSetup } from './_setup/lensTracerTestSetup.ts';
-import { deployFactory, getTracedTxFactory } from './_setup/utils.ts';
+import { getTracedTxFactory } from './_setup/utils.ts';
 import type { ArtifactMap, ProtocolName } from './_setup/artifacts';
+import type { GetContractReturnType } from 'viem';
 
 describe('function traces - create-functions', () => {
   let lensClient: LensClient<ArtifactMap, ProtocolName, 'create-functions', 'test-contracts'>;
-  let callerContract: Awaited<
-    ReturnType<ReturnType<typeof deployFactory<ProtocolName, 'create-functions', 'test-contracts'>>>
+  let callerContract: GetContractReturnType<
+    ArtifactMap['test-contracts/create-functions/CallerContract.sol:CallerContract']['abi']
   >;
   let getTracedTx: ReturnType<typeof getTracedTxFactory>;
 
   beforeEach(async () => {
-    const { lensClient: _lensClient, resourceLoader } = await lensTracerTestSetup('create-functions', 'test-contracts');
+    const { lensClient: _lensClient } = await lensTracerTestSetup('create-functions', 'test-contracts');
     lensClient = _lensClient;
 
     // deploy
-    const deploy = deployFactory<ProtocolName, 'create-functions', 'test-contracts'>(lensClient, resourceLoader);
-    callerContract = await deploy('test-contracts/create-functions/CallerContract.sol:CallerContract', []);
+    const callerContractDeployment = await lensClient.deploy(
+      'test-contracts/create-functions/CallerContract.sol:CallerContract',
+      []
+    );
+
+    callerContract = lensClient.getContract(
+      callerContractDeployment.createdAddress!,
+      'test-contracts/create-functions/CallerContract.sol:CallerContract'
+    );
 
     getTracedTx = getTracedTxFactory(lensClient);
   });

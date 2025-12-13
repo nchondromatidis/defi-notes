@@ -12,6 +12,7 @@ import { ArtifactsProvider } from '../../src/lens/indexes/ArtifactsProvider.ts';
 import { FunctionIndexesRegistry } from '../../src/lens/indexes/FunctionIndexesRegistry.ts';
 import { ExternalCallHandler } from '../../src/lens/handlers/ExternalCallHandler.ts';
 import { ExternalCallResultHandler } from '../../src/lens/handlers/ExternalCallResultHandler.ts';
+import { InternalCallHandler } from '../../src/lens/handlers/InternalCallHandler.ts';
 
 export async function lensTracerTestSetup<ProjectNameT extends ProtocolName, RootT extends string>(
   projectName: ProjectNameT,
@@ -31,7 +32,8 @@ export async function lensTracerTestSetup<ProjectNameT extends ProtocolName, Roo
   const deploymentTracer = new DeploymentTracer();
   const externalCallHandler = new ExternalCallHandler(debugMetadata, deploymentTracer);
   const externalCallResultHandler = new ExternalCallResultHandler(debugMetadata, deploymentTracer);
-  const tracer = new LensCallTracer(externalCallHandler, externalCallResultHandler);
+  const internalCallHandler = new InternalCallHandler(debugMetadata, deploymentTracer);
+  const tracer = new LensCallTracer(externalCallHandler, externalCallResultHandler, internalCallHandler);
 
   const lensClient = new LensClient<ArtifactMap, ProtocolName, ProjectNameT, RootT>(
     client,
@@ -51,5 +53,5 @@ export async function lensTracerTestSetup<ProjectNameT extends ProtocolName, Roo
     balance: ETHER_1,
   });
 
-  return { lensClient, resourceLoader };
+  return { lensClient };
 }
