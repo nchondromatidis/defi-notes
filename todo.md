@@ -1,14 +1,17 @@
 # TODO
 
 - temv-lens
-  - Fix: external functions with storage
-  - Support: inheritance. Function inheritance order.
-  - break decoding result
-    - error
-    - result
-  - break decoding function call
-    - function call
-    - fallback handlers
+  - Features
+    - inheritance. Function inheritance order.
+    - precompiles
+    - Detect fallback/receive? ast -> sourcemap -> pc
+    - Decode arguments for function entry handler
+    - Decode result for function exit handler
+  - Refactor
+    - break decoding function call: function call, fallback handlers
+    - break decoding result: error, result
+  - Nice to have
+    - logger
 - tevm-lens-ui
     - txTrace -> components
 - analysis

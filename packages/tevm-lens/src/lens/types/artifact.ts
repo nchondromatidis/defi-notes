@@ -61,6 +61,8 @@ export type LensFunctionIndex = {
   contractFQN: string;
   pc: number;
   visibility: 'external' | 'public' | 'internal' | 'private';
+  parameterSlots: number;
+  returnSlots: number;
 };
 
 export type LensSourceFunctionIndexes = Array<LensFunctionIndex>;

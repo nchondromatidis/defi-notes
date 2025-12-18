@@ -10,9 +10,10 @@ import { tevmSetAccount } from 'tevm';
 import { ETHER_1 } from './utils/constants.ts';
 import { ArtifactsProvider } from '../../src/lens/indexes/ArtifactsProvider.ts';
 import { FunctionIndexesRegistry } from '../../src/lens/indexes/FunctionIndexesRegistry.ts';
-import { ExternalCallHandler } from '../../src/lens/event-handlers/ExternalCallHandler.ts';
-import { ExternalCallResultHandler } from '../../src/lens/event-handlers/ExternalCallResultHandler.ts';
-import { OpcodesCallHandler } from '../../src/lens/event-handlers/OpcodesCallHandler.ts';
+import { ExternalCallHandler } from '../../src/lens/opcode-handlers/ExternalCallHandler.ts';
+import { ExternalCallResultHandler } from '../../src/lens/opcode-handlers/ExternalCallResultHandler.ts';
+import { FunctionEntryHandler } from '../../src/lens/opcode-handlers/FunctionEntryHandler.ts';
+import { FunctionExitHandler } from '../../src/lens/opcode-handlers/FunctionExitHandler.ts';
 
 export async function lensTracerTestSetup<ProjectNameT extends ProtocolName, RootT extends string>(
   projectName: ProjectNameT,
@@ -32,8 +33,15 @@ export async function lensTracerTestSetup<ProjectNameT extends ProtocolName, Roo
   const addressLabeler = new AddressLabeler();
   const externalCallHandler = new ExternalCallHandler(debugMetadata, addressLabeler);
   const externalCallResultHandler = new ExternalCallResultHandler(debugMetadata, addressLabeler);
-  const internalCallHandler = new OpcodesCallHandler(debugMetadata, addressLabeler);
-  const tracer = new TxTracer(externalCallHandler, externalCallResultHandler, internalCallHandler);
+  const functionEntryHandler = new FunctionEntryHandler(debugMetadata, addressLabeler);
+  const functionExitHandler = new FunctionExitHandler(debugMetadata, addressLabeler);
+
+  const tracer = new TxTracer(
+    externalCallHandler,
+    externalCallResultHandler,
+    functionEntryHandler,
+    functionExitHandler
+  );
 
   const lensClient = new LensClient<ArtifactMap, ProtocolName, ProjectNameT, RootT>(
     client,

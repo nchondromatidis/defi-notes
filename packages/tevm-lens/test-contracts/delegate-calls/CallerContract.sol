@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../create-functions/CalleeContract.sol";
+import "./CalleeContract.sol";
 
 contract CallerContract {
     event Log(string message, uint256 value);

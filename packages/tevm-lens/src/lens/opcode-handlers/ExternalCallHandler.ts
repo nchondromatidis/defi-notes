@@ -9,8 +9,10 @@ import {
   decodeFunctionCallWithFunctionIndexes,
 } from '../abi-decoders/functionCallDecoder.ts';
 import { QueryBy } from '../indexes/FunctionIndexesRegistry.ts';
+import type { FunctionCallEventHandlers } from './trace-metadata.ts';
 
 // Handles opcodes: 'CALL' | 'DELEGATECALL' | 'STATICCALL' | 'CREATE' | 'CREATE2'
+// All of these opcodes are abstracted as `Message` object from tevm
 export class ExternalCallHandler extends HandlerBase {
   public async handle(callEvent: Message) {
     // base function call object
@@ -123,6 +125,10 @@ export class ExternalCallHandler extends HandlerBase {
       }
     }
 
-    return functionCallEvent;
+    const functionTraceMetadata: FunctionCallEventHandlers = {
+      externalCallHandler: true,
+      opcodesCallHandler: false,
+    };
+    return { functionCallEvent, functionTraceMetadata };
   }
 }

@@ -21,11 +21,12 @@ import type { RawLog } from '../types/artifact.ts';
 type TempTxId = string;
 
 // Handles function results (return, exits, logs, errors) initiated from external calls
+// All of these opcodes are abstracted as `EvmResult` object from tevm
 export class ExternalCallResultHandler extends HandlerBase {
   public readonly decodedLogsTxCache: Map<TempTxId, DecodedLogsCache> = new Map();
   public readonly decodedErrorsTxCache: Map<TempTxId, DecodedErrorsCache> = new Map();
 
-  async handle(resultEvent: EvmResult, tempId: string, parentFunctionCallEvent: FunctionCallEvent) {
+  async handle(resultEvent: EvmResult, tracingId: string, parentFunctionCallEvent: FunctionCallEvent) {
     // base function result object
     const returnData = bytesToHex(resultEvent.execResult.returnValue);
     const functionResultEvent: FunctionResultEvent = {
@@ -109,7 +110,7 @@ export class ExternalCallResultHandler extends HandlerBase {
     }
 
     // decoding result
-    const tracingErrorsCache = getOrCreate(this.decodedErrorsTxCache, tempId, () => new DecodedErrorsCache());
+    const tracingErrorsCache = getOrCreate(this.decodedErrorsTxCache, tracingId, () => new DecodedErrorsCache());
     const decodedResult = await decodeFunctionResultMultipleAbisWithCache(
       {
         decodeData: decodeData,
@@ -143,7 +144,7 @@ export class ExternalCallResultHandler extends HandlerBase {
     if (resultEvent.execResult.logs) {
       for (const ethJsLog of resultEvent.execResult.logs) {
         const rawLog = this.convertToRawLog(ethJsLog);
-        const tracingLogCache = getOrCreate(this.decodedLogsTxCache, tempId, () => new DecodedLogsCache());
+        const tracingLogCache = getOrCreate(this.decodedLogsTxCache, tracingId, () => new DecodedLogsCache());
         const decodedLog = await decodeLogMultipleAbisWithCache({ decodeData, log: rawLog }, tracingLogCache);
 
         const lensLog: LensLog = {

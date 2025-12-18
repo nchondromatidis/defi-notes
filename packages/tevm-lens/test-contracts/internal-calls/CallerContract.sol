@@ -13,11 +13,13 @@ contract CallerContract {
     }
 
     function mixedCall(uint256 input) external returns (uint256){
-        uint256 a = publicFunction(input);
-        uint256 c = internalFunction(input);
+        uint256 a = internalFunction(input);
+        uint256 b = privateFunction(input);
         internalFunction2();
+        uint256 c = publicFunction(input);
         uint256 d = this.publicFunction(input);
-        return a + c + d;
+        uint256 e = publicFunction(input);
+        return a + c + d + e;
     }
 
     function internalFunction(uint256 input) internal returns (uint256) {
@@ -36,8 +38,9 @@ contract CallerContract {
     }
 
 
-    function publicFunction(uint256 input) public view returns (uint256){
-        return input + 3;
+    function publicFunction(uint256 input) public returns (uint256) {
+        uint256 a = internalFunction(input);
+        return a + 3;
     }
 
     function callAnotherContract() public returns (uint256) {

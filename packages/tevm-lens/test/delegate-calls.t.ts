@@ -41,5 +41,7 @@ describe('delegate-calls', () => {
     expect(getTracedTx.success(result)).toMatchSnapshot();
   });
 
-  test('emitted different log with same log signature from different contracts', async () => {});
+  test.skip('callWithDelegateCallAndCall', async () => {});
+
+  test.skip('emitted different log with same log signature from different contracts', async () => {});
 });

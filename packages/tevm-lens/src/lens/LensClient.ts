@@ -73,8 +73,8 @@ export class LensClient<
     value?: bigint,
     traceTx = true
   ): Promise<ContractResult<TAbi, TFunctionName>> {
-    const tempId = randomId();
-    if (traceTx) this.txTracer.startTracing(tempId);
+    const tracingId = randomId();
+    if (traceTx) this.txTracer.startTracing(tracingId);
     const contractTxResult = await tevmContract(this.client, {
       to: contract.address,
       code: undefined,
@@ -85,22 +85,23 @@ export class LensClient<
       args: args,
       throwOnFail: false,
       onStep: async (event: InterpreterStep, next?: Next) => {
-        // if (traceTx) await this.txTracer.handleInternalCall(event, tempId);
+        if (traceTx) await this.txTracer.handleFunctionEntryHandler(event, tracingId);
+        if (traceTx) await this.txTracer.handleFunctionExitHandler(event, tracingId);
         next?.();
       },
       onBeforeMessage: async (event: Message, next?: Next) => {
-        if (traceTx) await this.txTracer.handleExternalCall(event, tempId);
+        if (traceTx) await this.txTracer.handleExternalCall(event, tracingId);
         next?.();
       },
       onAfterMessage: async (event: EvmResult, next?: Next) => {
-        if (traceTx) await this.txTracer.handleExternalCallResult(event, tempId);
+        if (traceTx) await this.txTracer.handleExternalCallResult(event, tracingId);
         next?.();
       },
     });
     if (contractTxResult.errors) {
-      if (traceTx) this.txTracer.stopTracingFailed(tempId, tempId);
+      if (traceTx) this.txTracer.stopTracing(contractTxResult.txHash!, tracingId, 'failed');
     } else {
-      if (traceTx) this.txTracer.stopTracingSuccess(contractTxResult.txHash, tempId);
+      if (traceTx) this.txTracer.stopTracing(contractTxResult.txHash!, tracingId, 'success');
     }
 
     return contractTxResult;
