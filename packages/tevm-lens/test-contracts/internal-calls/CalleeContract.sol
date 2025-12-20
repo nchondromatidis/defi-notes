@@ -23,4 +23,8 @@ contract CalleeContract {
         return input;
     }
 
+    fallback(bytes calldata input) external payable returns (bytes memory output){
+        emit Log(address(msg.sender),"Fallback function called", msg.value);
+        return input;
+    }
 }

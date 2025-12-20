@@ -45,7 +45,14 @@ contract CallerContract {
 
     function callAnotherContract() public returns (uint256) {
         uint256 a = callee.callInternalAndPrivate2();
-        emit Log("callInternalAndPrivate called", 0);
+        emit Log("callAnotherContract called", 0);
+        return a;
+    }
+
+    function callAnotherContractWithFallback(uint256 input) public returns (uint256){
+        (bool success, bytes memory result) = address(callee).call("0x1");
+        uint256 a = publicFunction(input);
+        emit Log("callAnotherContractWithFallback executed", a);
         return a;
     }
 }

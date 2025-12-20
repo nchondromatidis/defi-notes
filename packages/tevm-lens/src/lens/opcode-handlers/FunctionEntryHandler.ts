@@ -66,10 +66,11 @@ export class FunctionEntryHandler extends HandlerBase {
       lineStart: functionData.lineStart,
       lineEnd: functionData.lineEnd,
       source: functionData.source,
-      implContractFQN: parentFunctionCallEvent.implContractFQN,
-      implAddress: parentFunctionCallEvent.implAddress,
     };
-
+    if (parentFunctionCallEvent.implAddress) {
+      functionCallEvent.implContractFQN = parentFunctionCallEvent.implContractFQN;
+      functionCallEvent.implAddress = parentFunctionCallEvent.implAddress;
+    }
     const functionExitPc = safeBigIntToNumber(stepEvent.stack[stackTop - functionData.parameterSlots]);
 
     return { functionCallEvent, functionExitPc };

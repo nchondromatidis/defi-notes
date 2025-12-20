@@ -1,4 +1,4 @@
-import { test, beforeEach, describe } from 'vitest';
+import { test, beforeEach, describe, expect } from 'vitest';
 import type { LensClient } from '../src/lens/LensClient.ts';
 import type { ArtifactMap, ProtocolName } from './_setup/artifacts';
 import { getTracedTxFactory } from './_setup/utils.ts';
@@ -75,16 +75,16 @@ describe('internal-calls', () => {
 
   test('mixedCall', async () => {
     const result = await lensClient.contract(callerContract, 'mixedCall', [2n]);
-    inspect(getTracedTx.success(result));
-  }, 999999);
+    expect(getTracedTx.success(result)).toMatchSnapshot();
+  });
 
   test('callAnotherContract', async () => {
     const result = await lensClient.contract(callerContract, 'callAnotherContract', []);
-    //inspect(getTracedTx.success(result));
-    //inspect(getTracedTx.failed(0));
-  }, 999999);
+    expect(getTracedTx.success(result)).toMatchSnapshot();
+  });
 
-  test.skip('test function trace that has functions after a failed decoded function call/result', async () => {
-    // eg fallback does not have entry pc
+  test('test function fallback', async () => {
+    const result = await lensClient.contract(callerContract, 'callAnotherContractWithFallback', [1n]);
+    expect(getTracedTx.success(result)).toMatchSnapshot();
   });
 });
