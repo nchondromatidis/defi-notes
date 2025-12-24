@@ -1,8 +1,20 @@
 import type { BuildInfoPair } from './build-info-pairs';
 import type { FunctionData, FunctionEntryIndexes } from './types';
-import { type ASTDereferencer, astDereferencer, type SrcDecoder, srcDecoder } from 'solidity-ast/utils.js'; // force common.js
+import {
+  type ASTDereferencer,
+  astDereferencer,
+  findAll,
+  isNodeType,
+  type SrcDecoder,
+  srcDecoder,
+} from 'solidity-ast/utils.js'; // force common.js
 import { hardhatConvertFromSourceInputToContractFQN, isNotUndefined, trySync } from '../../utils';
-import { type FunctionDefinition, type VariableDeclaration } from 'solidity-ast';
+import {
+  type ContractDefinition,
+  type FunctionDefinition,
+  type SourceUnit,
+  type VariableDeclaration,
+} from 'solidity-ast';
 import type { CompilerOutputBytecode } from 'hardhat/types/solidity';
 import { keccak_256 } from '@noble/hashes/sha3.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
@@ -41,10 +53,16 @@ export function createFunctionIndexes(
   for (const [inputSourceName, contractsData] of Object.entries(contracts)) {
     for (const [contractName, contractData] of Object.entries(contractsData)) {
       const contractFQN = hardhatConvertFromSourceInputToContractFQN(`${inputSourceName}:${contractName}`);
+
+      const contractFQNSourceUnit = buildInfoOutput.output.sources?.[inputSourceName]?.ast as SourceUnit | undefined;
+      if (!contractFQNSourceUnit) throw new Error(`No SourceUnit for sourceName ${inputSourceName}`);
+      const contractFQNContractAst = findContractDefinition(contractFQNSourceUnit, contractName);
+
       debug(`Indexing contract: ${contractFQN}`);
 
       const deployedBytecodeFunctionData = convertToFunctionData(
         contractFQN,
+        contractFQNContractAst,
         contractData.evm?.deployedBytecode?.functionDebugData,
         decodeSrc,
         deref
@@ -52,6 +70,7 @@ export function createFunctionIndexes(
 
       const bytecodeFunctionData = convertToFunctionData(
         contractFQN,
+        contractFQNContractAst,
         contractData.evm?.bytecode?.functionDebugData,
         decodeSrc,
         deref
@@ -65,6 +84,7 @@ export function createFunctionIndexes(
 
 function convertToFunctionData(
   contractFQN: string,
+  contractFQNContractAst: ContractDefinition,
   functionDebugData: CompilerOutputBytecode['functionDebugData'],
   decodeSrc: SrcDecoder,
   deref: ASTDereferencer
@@ -74,7 +94,7 @@ function convertToFunctionData(
   return Object.entries(functionDebugData)
     .filter(([functionName]) => functionName.startsWith('@'))
     .map(([_functionName, functionData]) => {
-      const result = trySync(() => deref.withSourceUnit('*', functionData.id));
+      const result = findAstById(deref, functionData.id);
       if (!result.ok) {
         const msg = (result.error as any).message;
         console.warn(`Failed to find ast.id: ${msg}`);
@@ -84,38 +104,57 @@ function convertToFunctionData(
       const { node } = result.value;
       const { lineStart, lineEnd, source } = getLines(node.src, decodeSrc);
 
-      if (node.nodeType != 'FunctionDefinition') {
-        // expected and ignored generated public variable getters
-        console.warn(`Ignoring function call from: ast.id ${node.id}, type is ${node.nodeType}`);
-        return undefined;
+      if (isNodeType('FunctionDefinition', node)) {
+        const fnDef = node;
+
+        const functionHumanReadableABI = toHumanReadableAbi(fnDef, deref);
+        let functionSelector = fnDef.functionSelector;
+        if (!functionSelector && (fnDef.visibility === 'external' || fnDef.visibility === 'public')) {
+          functionSelector = toFunctionSelector(toFunctionSignature(fnDef));
+        }
+        const result = findAstById(deref, fnDef.id);
+        if (!result.ok) throw new Error(`Failed to find ast.id: ${result.error}`);
+
+        const { sourceUnit: fnDefContractDefSourceUnit } = result.value;
+
+        const fnDefContractDefs = Array.from(findAll('ContractDefinition', fnDefContractDefSourceUnit));
+
+        if (fnDefContractDefs.length !== 1) {
+          throw new Error(
+            `Expected one ContractDefinition for fnDef.id=${fnDef.id}, found ${fnDefContractDefs.length}, freeFunction not supported yet`
+          );
+        }
+
+        const fnDefContractDef = fnDefContractDefs[0];
+        const linearizationOrderNumber =
+          contractFQNContractAst.linearizedBaseContracts.indexOf(fnDefContractDef.id) + 1;
+
+        const nameOrKind = fnDef.name ? fnDef.name : fnDef.kind;
+        const newFunctionData: FunctionData = {
+          nameOrKind,
+          name: fnDef.name,
+          kind: fnDef.kind,
+          visibility: fnDef.visibility,
+          stateMutability: fnDef.stateMutability,
+          functionHumanReadableABI,
+          functionSelector,
+          src: fnDef.src,
+          lineStart,
+          lineEnd,
+          source,
+          contractFQN,
+          pc: functionData.entryPoint,
+          parameterSlots: functionData.parameterSlots,
+          returnSlots: functionData.returnSlots,
+          linearizationOrderNumber,
+        };
+
+        return newFunctionData;
       }
 
-      const functionHumanReadableABI = toHumanReadableAbi(node, deref);
-      let functionSelector = node.functionSelector;
-      if (!functionSelector && (node.visibility === 'external' || node.visibility === 'public')) {
-        functionSelector = toFunctionSelector(toFunctionSignature(node));
-      }
-
-      const nameOrKind = node.name ? node.name : node.kind;
-      const newFunctionData: FunctionData = {
-        nameOrKind,
-        name: node.name,
-        kind: node.kind,
-        visibility: node.visibility,
-        stateMutability: node.stateMutability,
-        functionHumanReadableABI,
-        functionSelector,
-        src: node.src,
-        lineStart,
-        lineEnd,
-        source,
-        contractFQN,
-        pc: functionData.entryPoint,
-        parameterSlots: functionData.parameterSlots,
-        returnSlots: functionData.returnSlots,
-      };
-
-      return newFunctionData;
+      // expected and ignored generated public variable getters
+      console.warn(`Ignoring function call from: ast.id ${node.id}, type is ${node.nodeType}`);
+      return undefined;
     })
     .filter(isNotUndefined);
 }
@@ -194,7 +233,6 @@ function toHumanReadableAbi(node: FunctionDefinition | undefined, deref: ASTDere
   return `function ${functionNameOrKind}(${functionParams.join(', ')})${returns}`;
 }
 
-// AI generated
 function getParametersForFunctionInterface(params: VariableDeclaration, deref: ASTDereferencer): string {
   const returnParams: string[] = [];
 
@@ -271,4 +309,20 @@ function getParametersForFunctionInterface(params: VariableDeclaration, deref: A
   }
 
   return returnParams.join(' ');
+}
+
+// AST
+
+function findAstById(deref: ASTDereferencer, astId: number) {
+  return trySync(() => deref.withSourceUnit('*', astId));
+}
+
+function findContractDefinition(contractFQNSourceUnit: SourceUnit, contractName: string) {
+  const contractFQNContractAst = Array.from(findAll('ContractDefinition', contractFQNSourceUnit)).find(
+    (c) => c.name === contractName
+  );
+  if (!contractFQNContractAst) {
+    throw new Error(`No ContractDefinition for contractName=${contractName}, freeFunction not supported yet`);
+  }
+  return contractFQNContractAst;
 }

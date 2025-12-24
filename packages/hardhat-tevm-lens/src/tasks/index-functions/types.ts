@@ -14,6 +14,7 @@ export type FunctionData = {
   pc: number;
   parameterSlots: number;
   returnSlots: number;
+  linearizationOrderNumber: number;
 };
 
 export type ContractFQN = string;

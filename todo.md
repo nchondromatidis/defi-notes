@@ -3,16 +3,24 @@
 - temv-lens
   - Features
     - inheritance. Function inheritance order.
-    - precompiles
-    - Detect fallback/receive? ast -> sourcemap -> pc
-    - Decode arguments for function entry handler
-    - Decode result for function exit handler
-  - Refactor
-    - break decoding function call: function call, fallback handlers
-    - break decoding result: error, result
-  - Nice to have
-    - logger
-    - convert anemic to rich domain model
+    - Register call and result line numbers
+    - Next milestone:
+      - FunctionEntryHandler
+        - Decode arguments
+      - FunctionExitHandler
+        - Decode result
+        - Decode Events
+        - Decode Errors
+      - Indexer: 
+        - detect/decode public variables getters
+        - use solc instead of hardhat to be able to be used directly in browser
+      - Detect/decode precompiles
+      - add logger
+    - Refactor
+      - break decoding function call: function call, fallback handlers
+      - break decoding result: error, result
+      - convert anemic to a rich domain model
+      - Replace tevm objects for external calls and results with raw data (opcodes, stack, memory)
 - tevm-lens-ui
     - txTrace -> components
 - analysis

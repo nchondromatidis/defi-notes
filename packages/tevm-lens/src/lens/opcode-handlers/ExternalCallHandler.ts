@@ -16,7 +16,10 @@ import { QueryBy } from '../indexes/FunctionIndexesRegistry.ts';
  * All of these opcodes are abstracted as `Message` object from tevm. <br>
  * <b> Marks the start of an execution context at depth X. </b>
  *
- * event.to --labeledContracts--> contractFQN --debugMetadata.artifacts--> ABIs  + calldata --decoders--> function call
+ * <i>
+ * event.to --labeledContracts--> contractFQN --debugMetadata.artifacts--> ABIs  + calldata --decoders-->
+ * decoded function call --debugMetadata.functions--> function call
+ * </>
  */
 export class ExternalCallHandler extends HandlerBase {
   public async handle(callEvent: Message) {
@@ -104,7 +107,8 @@ export class ExternalCallHandler extends HandlerBase {
         QueryBy.contractAndNameOrKind(
           decodedFunctionCall.contractFQN,
           decodedFunctionCall.decodedFunctionName,
-          decodedFunctionCall.type
+          decodedFunctionCall.type,
+          1
         )
       );
       functionCallEvent.lineStart = functionIndex?.lineStart;
@@ -118,7 +122,7 @@ export class ExternalCallHandler extends HandlerBase {
       const contractFQN = functionCallEvent.implContractFQN ?? functionCallEvent.contractFQN;
       if (contractFQN) {
         const functionIndex = this.debugMetadata.functions.getBy(
-          QueryBy.contractAndSelector(contractFQN, functionSelector)
+          QueryBy.contractAndSelector(contractFQN, functionSelector, 1)
         );
 
         functionCallEvent.functionName = functionIndex?.name;

@@ -63,6 +63,7 @@ export type LensFunctionIndex = {
   visibility: 'external' | 'public' | 'internal' | 'private';
   parameterSlots: number;
   returnSlots: number;
+  linearizationOrderNumber: number;
 };
 
 export type LensSourceFunctionIndexes = Array<LensFunctionIndex>;

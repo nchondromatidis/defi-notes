@@ -3,7 +3,6 @@ import type { LensClient } from '../src/lens/LensClient.ts';
 import type { ArtifactMap, ProtocolName } from './_setup/artifacts';
 import { getTracedTxFactory } from './_setup/utils.ts';
 import { lensTracerTestSetup } from './_setup/lensTracerTestSetup.ts';
-import { inspect } from './_setup/utils/inspect.ts';
 import type { GetContractReturnType } from 'viem';
 
 describe('internal-calls', () => {
