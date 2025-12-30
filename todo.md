@@ -15,6 +15,8 @@
       - Detect/decode precompiles
       - add logger
       - Register call and result line numbers
+      - Inline libs detection
+      - Precompile detection
     - Refactor
       - break decoding function call: function call, fallback handlers
       - break decoding result: error, result
