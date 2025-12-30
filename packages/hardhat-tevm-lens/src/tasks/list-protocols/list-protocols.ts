@@ -3,7 +3,7 @@ import path from 'path';
 import { Project } from 'ts-morph';
 import fs from 'fs';
 import createDebug from 'debug';
-import { DEBUG_PREFIX } from '../debug.ts';
+import { DEBUG_PREFIX } from '../../debug.ts';
 import { glob } from 'glob';
 
 const debug = createDebug(`${DEBUG_PREFIX}:list-protocols`);

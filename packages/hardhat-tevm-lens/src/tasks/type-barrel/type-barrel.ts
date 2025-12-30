@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { glob } from 'glob';
 import createDebug from 'debug';
-import { DEBUG_PREFIX } from '../debug.ts';
+import { DEBUG_PREFIX } from '../../debug.ts';
 
 const debug = createDebug(`${DEBUG_PREFIX}:type-barrel`);
 

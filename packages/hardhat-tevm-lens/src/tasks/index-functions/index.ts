@@ -2,23 +2,16 @@ import fs from 'fs';
 import path from 'node:path';
 import type { HardhatRuntimeEnvironment } from 'hardhat/types/hre';
 import { fileURLToPath } from 'node:url';
-import type { FunctionData, FunctionEntryIndexes } from './types';
-import { getBuildInfoPair, getBuildInfoPairsPath } from './build-info-pairs';
-import { createFunctionIndexes } from './index-functions';
+import type { FunctionIndexes } from './types';
+import { getBuildInfoPair, getBuildInfoPairsPath } from '../../_utils/build-info';
+import { createFunctionDataIndexes } from './index-functions';
 import { debug } from './_debug';
+import { groupSourcesPerProtocol } from '../../_utils/paths';
+import { getSharedState, setSharedState } from '../tasks-shared-state';
+
+//*************************************** TYPES ***************************************//
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-function groupFunctionIndexesPerProtocol(data: FunctionEntryIndexes) {
-  const protocolFunctionIndexes: Record<string, Array<FunctionData>> = {};
-  for (const functionData of data) {
-    const secondFolder = functionData.source.split('/')[1];
-    if (!protocolFunctionIndexes[secondFolder]) protocolFunctionIndexes[secondFolder] = [];
-    protocolFunctionIndexes[secondFolder].push(functionData);
-  }
-
-  return protocolFunctionIndexes;
-}
 
 function copyFunctionIndexesTypes(indexFilePath: string) {
   // after compilation in dist folder types inside types.ts go to types.d.ts
@@ -39,14 +32,14 @@ export default async function (_taskArgs: Record<string, any>, hre: HardhatRunti
   const artifactsContractPath = hre.config.artifactsAugment.artifactContractsPath;
   const buildInfoPairPaths = await getBuildInfoPairsPath(hre);
 
-  const functionEntryIndexes: FunctionEntryIndexes = [];
+  const functionIndexes: FunctionIndexes = [];
 
   for (const buildInfoPairPath of buildInfoPairPaths) {
     const buildInfoPair = getBuildInfoPair(buildInfoPairPath);
-    createFunctionIndexes(buildInfoPair, functionEntryIndexes);
+    createFunctionDataIndexes(buildInfoPair, functionIndexes);
   }
 
-  const protocolFunctionEntryIndexes = groupFunctionIndexesPerProtocol(functionEntryIndexes);
+  const protocolFunctionEntryIndexes = groupSourcesPerProtocol(functionIndexes);
 
   for (const [protocol, sourceFunctionIndexes] of Object.entries(protocolFunctionEntryIndexes)) {
     const protocolSourceFunctionIndexesPath = path.join(artifactsContractPath, protocol, 'function-indexes.json');
@@ -57,6 +50,10 @@ export default async function (_taskArgs: Record<string, any>, hre: HardhatRunti
   debug('Paths:', { functionIndexesTypesPath });
 
   copyFunctionIndexesTypes(functionIndexesTypesPath);
+
+  const tasksSharedState = getSharedState();
+  tasksSharedState.functionIndexes = functionIndexes;
+  setSharedState(tasksSharedState);
 
   debug('Index functions task ended');
 }

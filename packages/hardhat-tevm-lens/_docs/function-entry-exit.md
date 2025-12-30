@@ -35,6 +35,7 @@ Summary
 - No encoding overhead: Internal calls skip ABI encoding, values are raw on stack
 
 
+```
 // FUNCTION ENTRY INIT
 PC 0x50:  PUSH 0x70          Stack: [0x70, ...] Return address 0x70
 PC 0x52:  PUSH 1000          Stack: [1000, 0x70, ...] Argument
@@ -52,3 +53,4 @@ PC 0x26:  SUB                Stack: [950, 0x70, ...]
 PC 0x27:  JUMP               Stack: [950, ...] No preceding PUSH, pops return addr 0x70, jumps to 0x70
 ...
 PC 0x70:  Resume             Stack: [950, ...] Return value 950 first in stack for caller to process
+```

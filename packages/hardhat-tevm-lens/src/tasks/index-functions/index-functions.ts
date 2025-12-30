@@ -1,5 +1,5 @@
-import type { BuildInfoPair } from './build-info-pairs';
-import type { FunctionData, FunctionEntryIndexes } from './types';
+import type { BuildInfoPair } from '../../_utils/build-info';
+import type { FunctionIndex, FunctionIndexes } from './types';
 import {
   type ASTDereferencer,
   astDereferencer,
@@ -8,7 +8,7 @@ import {
   type SrcDecoder,
   srcDecoder,
 } from 'solidity-ast/utils.js'; // force common.js
-import { hardhatConvertFromSourceInputToContractFQN, isNotUndefined, trySync } from '../../utils';
+import { hardhatConvertFromSourceInputToContractFQN } from '../../_utils/hardhat';
 import {
   type ContractDefinition,
   type FunctionDefinition,
@@ -19,6 +19,9 @@ import type { CompilerOutputBytecode } from 'hardhat/types/solidity';
 import { keccak_256 } from '@noble/hashes/sha3.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 import { debug } from './_debug';
+import { getSrcLocation } from '../../_utils/source-location';
+import { findAstById, findContractDefinition } from '../../_utils/ast';
+import { isNotUndefined } from '../../_utils/type-utils';
 
 //*************************************** TYPES ***************************************//
 
@@ -38,13 +41,15 @@ declare module 'hardhat/types/solidity' {
 
 //*************************************** INDEXES ***************************************//
 
-export function createFunctionIndexes(
+export function createFunctionDataIndexes(
   buildInfoPair: BuildInfoPair,
-  functionEntryIndexes: FunctionEntryIndexes // mutates
+  functionIndexes: FunctionIndexes // mutates
 ) {
-  const { buildInfoInput, buildInfoOutput } = buildInfoPair;
+  const { buildInfoInput, buildInfoOutput, buildInfoOutputPath } = buildInfoPair;
   const contracts = buildInfoOutput.output.contracts;
-  if (!contracts) return undefined;
+  if (!contracts) {
+    throw new Error(`No contracts found in build info output: ${buildInfoOutputPath}`);
+  }
 
   const deref = astDereferencer(buildInfoOutput.output);
 
@@ -76,8 +81,8 @@ export function createFunctionIndexes(
         deref
       );
 
-      if (deployedBytecodeFunctionData) functionEntryIndexes.push(...deployedBytecodeFunctionData);
-      if (bytecodeFunctionData) functionEntryIndexes.push(...bytecodeFunctionData);
+      if (deployedBytecodeFunctionData) functionIndexes.push(...deployedBytecodeFunctionData);
+      if (bytecodeFunctionData) functionIndexes.push(...bytecodeFunctionData);
     }
   }
 }
@@ -102,7 +107,7 @@ function convertToFunctionData(
       }
 
       const { node } = result.value;
-      const { lineStart, lineEnd, source } = getLines(node.src, decodeSrc);
+      const sourceLine = getSrcLocation(node.src, decodeSrc, debug);
 
       if (isNodeType('FunctionDefinition', node)) {
         const fnDef = node;
@@ -130,20 +135,20 @@ function convertToFunctionData(
           contractFQNContractAst.linearizedBaseContracts.indexOf(fnDefContractDef.id) + 1;
 
         const nameOrKind = fnDef.name ? fnDef.name : fnDef.kind;
-        const newFunctionData: FunctionData = {
+        const newFunctionData: FunctionIndex = {
           nameOrKind,
           name: fnDef.name,
           kind: fnDef.kind,
           visibility: fnDef.visibility,
           stateMutability: fnDef.stateMutability,
-          functionHumanReadableABI,
-          functionSelector,
+          humanReadableABI: functionHumanReadableABI,
+          selector: functionSelector,
           src: fnDef.src,
-          lineStart,
-          lineEnd,
-          source,
+          functionLineStart: sourceLine?.lineStart ?? -2,
+          functionLineEnd: sourceLine?.lineEnd ?? -2,
+          source: sourceLine?.source ?? '',
           contractFQN,
-          pc: functionData.entryPoint,
+          jumpDestPc: functionData.entryPoint,
           parameterSlots: functionData.parameterSlots,
           returnSlots: functionData.returnSlots,
           linearizationOrderNumber,
@@ -153,7 +158,7 @@ function convertToFunctionData(
       }
 
       // expected and ignored generated public variable getters
-      console.warn(`Ignoring function call from: ast.id ${node.id}, type is ${node.nodeType}`);
+      console.warn(`FunctionData: Ignoring function call from: ast.id ${node.id}, type is ${node.nodeType}`);
       return undefined;
     })
     .filter(isNotUndefined);
@@ -178,29 +183,6 @@ function toFunctionSelector(functionSignature: string | undefined) {
   if (!functionSignature) return undefined;
   const hash = keccak_256(utf8ToBytes(functionSignature));
   return bytesToHex(hash).slice(0, 8);
-}
-
-function getLines(location: string, decodeSrc: SrcDecoder) {
-  const [start, length, fileIndex] = location.split(':').map(Number);
-  const endSrc = `${start + length}:0:${fileIndex}`;
-  try {
-    const start = decodeSrc({ src: location });
-    const end = decodeSrc({ src: endSrc });
-
-    const source1 = start.split(':')[0];
-    const source2 = end.split(':')[0];
-    if (source1 != source2) throw new Error(`Source does not match: ${start}, ${end}`);
-
-    const source = hardhatConvertFromSourceInputToContractFQN(source1);
-
-    const lineStart = Number(start.split(':')[1]);
-    const lineEnd = Number(end.split(':')[1]);
-
-    return { lineStart, lineEnd, source };
-  } catch (e: unknown) {
-    debug(`Location not found: ${location}: ${e}`);
-    return { lineStart: -1, lineEnd: -1, source: '' };
-  }
 }
 
 function toHumanReadableAbi(node: FunctionDefinition | undefined, deref: ASTDereferencer) {
@@ -309,20 +291,4 @@ function getParametersForFunctionInterface(params: VariableDeclaration, deref: A
   }
 
   return returnParams.join(' ');
-}
-
-// AST
-
-function findAstById(deref: ASTDereferencer, astId: number) {
-  return trySync(() => deref.withSourceUnit('*', astId));
-}
-
-function findContractDefinition(contractFQNSourceUnit: SourceUnit, contractName: string) {
-  const contractFQNContractAst = Array.from(findAll('ContractDefinition', contractFQNSourceUnit)).find(
-    (c) => c.name === contractName
-  );
-  if (!contractFQNContractAst) {
-    throw new Error(`No ContractDefinition for contractName=${contractName}, freeFunction not supported yet`);
-  }
-  return contractFQNContractAst;
 }
