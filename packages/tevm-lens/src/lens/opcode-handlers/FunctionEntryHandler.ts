@@ -5,9 +5,6 @@ import { QueryBy } from '../indexes/FunctionIndexesRegistry.ts';
 import type { FunctionCallEvent } from '../tx-tracer/TxTrace.ts';
 import type { PC, RuntimeTraceMetadata } from './trace-metadata.ts';
 import { safeBigIntToNumber } from '../../common/utils.ts';
-import { isPushOpcode } from '../opcodes';
-
-type TracingId = string;
 
 /*
  * Detects internal function calls. <br>

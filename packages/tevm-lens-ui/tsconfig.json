@@ -1,3 +1,4 @@
 {
-  "extends": "@defi-notes/config/tsconfig.json"
+  "files": [],
+  "references": [{ "path": "./tsconfig.web.json" }, { "path": "./tsconfig.node.json" }]
 }
