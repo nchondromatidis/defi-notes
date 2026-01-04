@@ -1,10 +1,8 @@
-// hex types
-export type Address = `0x${string}`;
-export type Hex = `0x${string}`;
-
 type External = 'EXTERNAL';
 type InternalCallTypes = 'INTERNAL';
 type ExternalCallTypes = 'CALL' | 'DELEGATECALL' | 'STATICCALL' | 'CREATE' | 'CREATE2';
+type Address = `0x${string}`;
+type Hex = `0x${string}`;
 
 export type FunctionCallEvent = {
   type: 'FunctionCallEvent';
