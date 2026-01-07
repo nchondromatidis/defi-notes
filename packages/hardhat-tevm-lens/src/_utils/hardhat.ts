@@ -1,3 +1,3 @@
-export function hardhatConvertFromSourceInputToContractFQN(contractSourceInput: string): string {
+export function toUserSource(contractSourceInput: string): string {
   return contractSourceInput?.replace('project/', '');
 }

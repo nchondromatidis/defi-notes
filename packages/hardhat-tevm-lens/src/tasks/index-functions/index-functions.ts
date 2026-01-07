@@ -8,7 +8,7 @@ import {
   type SrcDecoder,
   srcDecoder,
 } from 'solidity-ast/utils.js'; // force common.js
-import { hardhatConvertFromSourceInputToContractFQN } from '../../_utils/hardhat';
+import { toUserSource } from '../../_utils/hardhat';
 import {
   type ContractDefinition,
   type FunctionDefinition,
@@ -57,7 +57,7 @@ export function createFunctionDataIndexes(
 
   for (const [inputSourceName, contractsData] of Object.entries(contracts)) {
     for (const [contractName, contractData] of Object.entries(contractsData)) {
-      const contractFQN = hardhatConvertFromSourceInputToContractFQN(`${inputSourceName}:${contractName}`);
+      const contractFQN = toUserSource(`${inputSourceName}:${contractName}`);
 
       const contractFQNSourceUnit = buildInfoOutput.output.sources?.[inputSourceName]?.ast as SourceUnit | undefined;
       if (!contractFQNSourceUnit) throw new Error(`No SourceUnit for sourceName ${inputSourceName}`);
@@ -98,7 +98,7 @@ function convertToFunctionData(
 
   return Object.entries(functionDebugData)
     .filter(([functionName]) => functionName.startsWith('@'))
-    .map(([_functionName, functionData]) => {
+    .flatMap(([_functionName, functionData]) => {
       const result = findAstById(deref, functionData.id);
       if (!result.ok) {
         const msg = (result.error as any).message;
@@ -124,37 +124,36 @@ function convertToFunctionData(
 
         const fnDefContractDefs = Array.from(findAll('ContractDefinition', fnDefContractDefSourceUnit));
 
-        if (fnDefContractDefs.length !== 1) {
-          throw new Error(
-            `Expected one ContractDefinition for fnDef.id=${fnDef.id}, found ${fnDefContractDefs.length}, freeFunction not supported yet`
-          );
+        const functionIndexes: FunctionIndex[] = [];
+
+        // one source may contain multiple ContractDefinitions
+        for (const fnDefContractDef of fnDefContractDefs) {
+          const linearizationOrderNumber =
+            contractFQNContractAst.linearizedBaseContracts.indexOf(fnDefContractDef.id) + 1;
+
+          const nameOrKind = fnDef.name ? fnDef.name : fnDef.kind;
+          const functionIndex: FunctionIndex = {
+            nameOrKind,
+            name: fnDef.name,
+            kind: fnDef.kind,
+            visibility: fnDef.visibility,
+            stateMutability: fnDef.stateMutability,
+            humanReadableABI: functionHumanReadableABI,
+            selector: functionSelector,
+            src: fnDef.src,
+            functionLineStart: sourceLine?.lineStart ?? -2,
+            functionLineEnd: sourceLine?.lineEnd ?? -2,
+            source: sourceLine?.source ?? '',
+            contractFQN,
+            jumpDestPc: functionData.entryPoint,
+            parameterSlots: functionData.parameterSlots,
+            returnSlots: functionData.returnSlots,
+            linearizationOrderNumber,
+          };
+          functionIndexes.push(functionIndex);
         }
 
-        const fnDefContractDef = fnDefContractDefs[0];
-        const linearizationOrderNumber =
-          contractFQNContractAst.linearizedBaseContracts.indexOf(fnDefContractDef.id) + 1;
-
-        const nameOrKind = fnDef.name ? fnDef.name : fnDef.kind;
-        const newFunctionData: FunctionIndex = {
-          nameOrKind,
-          name: fnDef.name,
-          kind: fnDef.kind,
-          visibility: fnDef.visibility,
-          stateMutability: fnDef.stateMutability,
-          humanReadableABI: functionHumanReadableABI,
-          selector: functionSelector,
-          src: fnDef.src,
-          functionLineStart: sourceLine?.lineStart ?? -2,
-          functionLineEnd: sourceLine?.lineEnd ?? -2,
-          source: sourceLine?.source ?? '',
-          contractFQN,
-          jumpDestPc: functionData.entryPoint,
-          parameterSlots: functionData.parameterSlots,
-          returnSlots: functionData.returnSlots,
-          linearizationOrderNumber,
-        };
-
-        return newFunctionData;
+        return functionIndexes;
       }
 
       // expected and ignored generated public variable getters

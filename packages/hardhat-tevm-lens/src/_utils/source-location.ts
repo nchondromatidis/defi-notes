@@ -1,5 +1,5 @@
 import type { SrcDecoder } from 'solidity-ast/utils';
-import { hardhatConvertFromSourceInputToContractFQN } from './hardhat';
+import { toUserSource } from './hardhat';
 import type { Debugger } from 'debug';
 
 export function getSrcLocation(location: string, decodeSrc: SrcDecoder, debug: Debugger) {
@@ -13,12 +13,12 @@ export function getSrcLocation(location: string, decodeSrc: SrcDecoder, debug: D
     const source2 = end.split(':')[0];
     if (source1 != source2) throw new Error(`Source does not match: ${start}, ${end}`);
 
-    const source = hardhatConvertFromSourceInputToContractFQN(source1);
+    const userSource = toUserSource(source1);
 
     const lineStart = Number(start.split(':')[1]);
     const lineEnd = Number(end.split(':')[1]);
 
-    return { lineStart, lineEnd, source };
+    return { lineStart, lineEnd, source: userSource };
   } catch (e: unknown) {
     debug(`Location not found: ${location}: ${e}`);
     return undefined;
