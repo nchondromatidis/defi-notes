@@ -65,7 +65,7 @@ export function createFunctionDataIndexes(
 
       debug(`Indexing contract: ${contractFQN}`);
 
-      const deployedBytecodeFunctionData = convertToFunctionData(
+      const deployedBytecodeFunctionData = convertToFunctionIndex(
         contractFQN,
         contractFQNContractAst,
         contractData.evm?.deployedBytecode?.functionDebugData,
@@ -73,7 +73,7 @@ export function createFunctionDataIndexes(
         deref
       );
 
-      const bytecodeFunctionData = convertToFunctionData(
+      const bytecodeFunctionData = convertToFunctionIndex(
         contractFQN,
         contractFQNContractAst,
         contractData.evm?.bytecode?.functionDebugData,
@@ -87,7 +87,7 @@ export function createFunctionDataIndexes(
   }
 }
 
-function convertToFunctionData(
+function convertToFunctionIndex(
   contractFQN: string,
   contractFQNContractAst: ContractDefinition,
   functionDebugData: CompilerOutputBytecode['functionDebugData'],

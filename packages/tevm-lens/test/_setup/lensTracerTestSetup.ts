@@ -1,7 +1,7 @@
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { buildClient } from '../../src/lens/client.ts';
 import { TestResourceLoader } from './TestResourceLoader.ts';
-import type { ArtifactMap, FunctionIndexes, ProtocolName } from './artifacts';
+import type { ArtifactMap, ProtocolName } from './artifacts';
 import { DebugMetadata } from '../../src/lens/indexes/DebugMetadata.ts';
 import { AddressLabeler } from '../../src/lens/indexes/AddressLabeler.ts';
 import { TxTracer } from '../../src/lens/tx-tracer/TxTracer.ts';
@@ -31,7 +31,7 @@ export async function lensTracerTestSetup<ProjectNameT extends ProtocolName, Roo
   const deployerAccount = privateKeyToAccount(generatePrivateKey());
   const client = await buildClient(deployerAccount);
 
-  const resourceLoader = new TestResourceLoader<ArtifactMap, ProtocolName, FunctionIndexes>(root);
+  const resourceLoader = new TestResourceLoader(root);
 
   const artifactsProvider = new ArtifactsProvider();
   const functionIndexesRegistry = new FunctionIndexesRegistry();

@@ -19,8 +19,6 @@ export type LensArtifact = {
   readonly linkReferences: Record<string, Record<string, unknown>>;
 };
 
-export type LensProjects = string;
-
 // Object must be:
 // - values satisfy LensArtifact type
 // - key formated as `LensArtifact['sourceName']:LensArtifact['contractName']`
@@ -53,4 +51,3 @@ export type LensFunctionIndex = {
   returnSlots: number;
   linearizationOrderNumber: number;
 };
-export type LensSourceFunctionIndexes = Array<LensFunctionIndex>;

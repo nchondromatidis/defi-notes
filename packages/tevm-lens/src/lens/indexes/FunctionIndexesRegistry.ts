@@ -1,4 +1,4 @@
-import type { LensFunctionIndex, LensSourceFunctionIndexes } from '../types/artifact.ts';
+import type { LensFunctionIndex } from '../types/artifact.ts';
 import { NestedMap } from '../../common/NestedMap.ts';
 
 export const QueryBy = {
@@ -21,7 +21,7 @@ export class FunctionIndexesRegistry {
     LensFunctionIndex
   >();
 
-  public async registerFunctionIndexes(functionIndexes: LensSourceFunctionIndexes) {
+  public async registerFunctionIndexes(functionIndexes: LensFunctionIndex[]) {
     for (const fnIndex of functionIndexes) {
       // create index1
       if (fnIndex.jumpDestPc) {
