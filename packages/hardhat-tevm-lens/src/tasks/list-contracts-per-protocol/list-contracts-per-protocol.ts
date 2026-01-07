@@ -9,7 +9,7 @@ const debug = createDebug(`${DEBUG_PREFIX}:list-folder-contracts`);
 
 async function getAllFullyQualifiedNames(hre: HardhatRuntimeEnvironment) {
   return Array.from(await hre.artifacts.getAllFullyQualifiedNames()).filter(
-    (it) => !it.includes('function-indexes') && !it.includes('contract-fqn-list')
+    (it) => !it.includes('function-indexes') && !it.includes('contract-fqn-list') && !it.includes('source')
   );
 }
 
