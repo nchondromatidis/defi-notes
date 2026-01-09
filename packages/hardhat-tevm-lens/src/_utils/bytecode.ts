@@ -6,7 +6,7 @@ type ByteCodeIndex = {
   pushValuesOpcodeEntries: Array<{ stackValue: string; opcodeEntry: OpcodeEntry }>;
 };
 
-export function createByteCodeIndex(opcodesMnemonicsString: string, pushValuesToIndex: Set<number>): ByteCodeIndex {
+export function createByteCodeIndex(opcodesMnemonicsString: string, pushValuesToIndex?: Set<number>): ByteCodeIndex {
   const opcodesMnemonicsArray = opcodesMnemonicsString.split(' ').filter(Boolean);
 
   const bytecodeIndex: ByteCodeIndex = {
@@ -29,7 +29,7 @@ export function createByteCodeIndex(opcodesMnemonicsString: string, pushValuesTo
       const opcodeEntry = bytecodeIndex.opcodeEntries.at(-1)!;
       opcodeEntry.stack.push(stackValue);
 
-      if (pushValuesToIndex.has(Number(stackValue))) {
+      if (pushValuesToIndex && pushValuesToIndex.has(Number(stackValue))) {
         bytecodeIndex.pushValuesOpcodeEntries.push({ stackValue, opcodeEntry });
       }
     }

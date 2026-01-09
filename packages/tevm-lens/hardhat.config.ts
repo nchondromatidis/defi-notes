@@ -13,7 +13,7 @@ const config: HardhatUserConfig = {
           },
           outputSelection: {
             '*': {
-              '*': ['abi', 'evm.bytecode', 'evm.deployedBytecode', 'evm.methodIdentifiers', 'storageLayout'],
+              '*': ['abi', 'evm.bytecode', 'evm.deployedBytecode'],
             },
           },
         },

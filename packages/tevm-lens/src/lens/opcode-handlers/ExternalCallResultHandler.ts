@@ -141,7 +141,7 @@ export class ExternalCallResultHandler extends HandlerBase {
       if (functionCallEvent.contractFQN && functionCallEvent.functionName && functionCallEvent.type) {
         const contractFQN = functionCallEvent.implContractFQN ?? functionCallEvent.contractFQN;
         const functionIndex = this.debugMetadata.functions.getBy(
-          QueryBy.contractAndNameOrKind(contractFQN, functionCallEvent.functionName, functionCallEvent.type, 1)
+          QueryBy.contractAndNameOrKind(contractFQN, functionCallEvent.functionName, functionCallEvent.type, 0)
         );
 
         functionResultEvent.returnValue = decodeFunctionReturnWithFunctionIndex({ returnData, functionIndex });

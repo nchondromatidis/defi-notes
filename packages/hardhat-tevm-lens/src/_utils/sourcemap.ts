@@ -1,4 +1,4 @@
-type DecompressedSourceMap = { start: number; length: number; file: number; jump: string; src: string };
+export type DecompressedSourceMap = { start: number; length: number; file: number; jump: string; src: string };
 
 export function decompressSourceMap(compressedSourceMap: string) {
   const map = compressedSourceMap.split(';');

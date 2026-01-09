@@ -10,7 +10,7 @@ function createCompilerSettings(version: string) {
       optimizer: { enabled: true, runs: 100 },
       outputSelection: {
         '*': {
-          '*': ['abi', 'evm.bytecode', 'evm.deployedBytecode', 'evm.methodIdentifiers', 'storageLayout'],
+          '*': ['abi', 'evm.bytecode', 'evm.deployedBytecode'],
         },
       },
     },
