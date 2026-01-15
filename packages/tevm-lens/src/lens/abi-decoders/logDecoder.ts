@@ -1,7 +1,7 @@
 import { type Abi, AbiEventSignatureNotFoundError, decodeEventLog, toEventSignature } from 'viem';
 import { trySync } from '../../common/utils.ts';
 import type { AbiEvent } from 'tevm';
-import type { RawLog } from '../types/artifact.ts';
+import type { RawLog } from '../types.ts';
 import { DecodedDataCache } from './DecodedDataCache.ts';
 
 //*************************************** DECODE WITH ABIs ***************************************//

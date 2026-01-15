@@ -1,4 +1,4 @@
-import type { Hex, LensArtifact } from '../types/artifact.ts';
+import type { Hex, LensArtifact } from '../types.ts';
 import { hardhatGetReferencesFQN } from '../../utils/hardhat.ts';
 import type { Abi } from 'viem';
 

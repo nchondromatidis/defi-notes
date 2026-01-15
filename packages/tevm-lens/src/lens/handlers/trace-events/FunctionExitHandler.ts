@@ -1,8 +1,8 @@
-import { HandlerBase } from './HandlerBase.ts';
+import { HandlerBase } from '../HandlerBase.ts';
 
 import type { InterpreterStep } from 'tevm/evm';
-import type { FunctionCallEvent, FunctionResultEvent } from '../tx-tracer/TxTrace.ts';
-import type { RuntimeTraceMetadata } from './trace-metadata.ts';
+import type { FunctionCallEvent, FunctionResultEvent } from '../../CallTrace.ts';
+import { type RuntimeTraceMetadata } from '../trace-metadata.ts';
 
 /*
  * Detects internal function calls returns. <br>

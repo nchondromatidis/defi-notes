@@ -1,4 +1,4 @@
-import type { LensArtifact, LensFunctionIndex } from '../lens/types/artifact.ts';
+import type { LensArtifact, LensFunctionIndex, LensPcLocationIndex } from '../lens/types.ts';
 
 export interface IResourceLoader {
   getArtifact(contractFQN: string): Promise<LensArtifact>;
@@ -10,4 +10,6 @@ export interface IResourceLoader {
   getProtocolArtifacts(protocolName: string): Promise<LensArtifact[]>;
 
   getFunctionIndexes(protocolName: string): Promise<LensFunctionIndex[]>;
+
+  getPcLocationIndexes(protocolName: string): Promise<LensPcLocationIndex[]>;
 }

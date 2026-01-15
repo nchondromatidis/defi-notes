@@ -8,7 +8,7 @@ import {
   decodeAbiParameters,
 } from 'viem';
 import { trySync } from '../../common/utils.ts';
-import type { Hex, LensFunctionIndex } from '../types/artifact.ts';
+import type { Hex, LensFunctionIndex } from '../types.ts';
 import { DecodedDataCache } from './DecodedDataCache.ts';
 
 //*************************************** DECODE WITH FUNCTION INDEXES ***************************************//

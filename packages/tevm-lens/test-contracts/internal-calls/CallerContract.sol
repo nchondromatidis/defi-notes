@@ -25,7 +25,7 @@ contract CallerContract {
     function internalFunction(uint256 input) internal returns (uint256) {
         uint256 result = privateFunction(input);
         emit Log("internalFunction called", 0);
-        return result+ input;
+        return result + input;
     }
 
     function internalFunction2() internal view {
@@ -36,7 +36,6 @@ contract CallerContract {
         emit Log("privateFunction called", 0);
         return input;
     }
-
 
     function publicFunction(uint256 input) public returns (uint256) {
         uint256 a = internalFunction(input);

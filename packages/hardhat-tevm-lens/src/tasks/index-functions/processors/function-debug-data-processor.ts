@@ -30,7 +30,9 @@ declare module 'hardhat/types/solidity' {
 
 /**
  * @deprecated
- * functionDebugData: cannot determine function exit/callsite pc + only available on solidity >= 0.8.0
+ * functionDebugData: only available on solidity >= 0.8.0
+ *
+ * Note: Initially tried to combine creating function index with entry pc, now function PC is a different task
  */
 export function createFunctionDataIndexes(
   buildInfoPair: BuildInfoPair,

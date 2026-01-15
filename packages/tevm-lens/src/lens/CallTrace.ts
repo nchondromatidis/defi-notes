@@ -1,5 +1,5 @@
-import { InvariantError } from '../../common/errors.ts';
-import type { Address, Hex } from '../types/artifact.ts';
+import { InvariantError } from '../common/errors.ts';
+import type { Address, Hex } from './types.ts';
 
 type External = 'EXTERNAL';
 type InternalCallTypes = 'INTERNAL';
@@ -56,7 +56,7 @@ export type LensLog = {
   functionType?: string;
 };
 
-export class TxTrace {
+export class CallTrace {
   public rootFunction?: FunctionCallEvent;
   private stack: FunctionCallEvent[] = [];
 

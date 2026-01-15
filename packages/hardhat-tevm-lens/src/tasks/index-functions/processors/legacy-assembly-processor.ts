@@ -34,8 +34,10 @@ type SrcFnDef = {
 
 /**
  * @deprecated
- * - legacy asm: cannot reliably determine function entry/exit/callsite pc
- * - modern asm: not parseable/stable format, may brake per solidity version
+ * - legacy asm: cannot reliably determine functions
+ * - modern asm: not meant to be parsed, may brake in later solidity versions
+ *
+ * Note: Initially tried to combine creating function index with entry pc, now function PC is a different task
  */
 export function convertToFunctionIndex(
   legacyAssembly: CompilerOutputContract['legacyAssembly'],

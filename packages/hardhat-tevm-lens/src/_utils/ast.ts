@@ -1,8 +1,9 @@
-import type { FunctionDefinition, SourceUnit, VariableDeclaration } from 'solidity-ast';
+import type { ContractDefinition, FunctionDefinition, SourceUnit, VariableDeclaration } from 'solidity-ast';
 import { type ASTDereferencer, findAll } from 'solidity-ast/utils.js'; // force common.js
 import { trySync } from './type-utils';
 import { keccak_256 } from '@noble/hashes/sha3.js';
-import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js'; // force common.js
+import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
+import { toUserSource } from './hardhat';
 
 // ast
 
@@ -18,6 +19,21 @@ export function findContractDefinition(contractFQNSourceUnit: SourceUnit, contra
     throw new Error(`No ContractDefinition for contractName=${contractName}, freeFunction not supported yet`);
   }
   return contractFQNContractAst;
+}
+
+export function getLinearizedBaseContractFQNs(contractDef: ContractDefinition, deref: ASTDereferencer): string[] {
+  const linearizedBaseContractFQNs: string[] = [];
+  for (const baseContractAstId of contractDef.linearizedBaseContracts) {
+    const result = findAstById(deref, baseContractAstId);
+    if (!result.ok) throw new Error(`Could not contract def ast if, ${baseContractAstId}`);
+
+    const baseUserSourceName = toUserSource(result.value.sourceUnit.absolutePath);
+    const baseContractDef = result.value.node as ContractDefinition;
+    const caseContractFQN = `${baseUserSourceName}:${baseContractDef.name}`;
+
+    linearizedBaseContractFQNs.push(caseContractFQN);
+  }
+  return linearizedBaseContractFQNs;
 }
 
 // function selector

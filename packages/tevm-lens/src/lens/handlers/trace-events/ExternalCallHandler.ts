@@ -1,14 +1,14 @@
-import { HandlerBase } from './HandlerBase.ts';
+import { HandlerBase } from '../HandlerBase.ts';
 import type { Message } from 'tevm/actions';
 import { type Abi, bytesToHex } from 'viem';
-import type { FunctionCallEvent } from '../tx-tracer/TxTrace.ts';
-import type { Address } from '../types/artifact.ts';
-import { InvariantError } from '../../common/errors.ts';
+import type { FunctionCallEvent } from '../../CallTrace.ts';
+import type { Address } from '../../types.ts';
+import { InvariantError } from '../../../common/errors.ts';
 import {
   decodeFunctionCallMultipleAbis,
   decodeFunctionCallWithFunctionIndexes,
-} from '../abi-decoders/functionCallDecoder.ts';
-import { QueryBy } from '../indexes/FunctionIndexesRegistry.ts';
+} from '../../abi-decoders/functionCallDecoder.ts';
+import { QueryBy } from '../../indexes/FunctionIndexesRegistry.ts';
 
 /*
  * Detects and decodes external function calls. <br>

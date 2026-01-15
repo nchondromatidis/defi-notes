@@ -1,5 +1,9 @@
 import { type Abi, isHex } from 'viem';
 
+// tracing
+export type TracingId = string;
+export type TxId = Hex;
+
 // hex types
 export type Address = `0x${string}`;
 export type Hex = `0x${string}`;
@@ -48,4 +52,16 @@ export type LensFunctionIndex = {
   visibility: 'external' | 'public' | 'internal' | 'private';
   parameterSlots: number;
   returnSlots: number;
+};
+
+// pc location index
+export type PC = number;
+export type ContractFQN = string;
+export type JumpType = 'i' | 'o' | '-';
+export type Location = [startLine: number, endLine: number, sourceIndex: number];
+
+export type LensPcLocationIndex = {
+  contractFQN: ContractFQN;
+  locationSources: Array<string>;
+  pcLocations: Array<[PC, JumpType, Location]>;
 };

@@ -1,10 +1,9 @@
-import { HandlerBase } from './HandlerBase.ts';
+import { HandlerBase } from '../HandlerBase.ts';
 
 import type { InterpreterStep } from 'tevm/evm';
-import { QueryBy } from '../indexes/FunctionIndexesRegistry.ts';
-import type { FunctionCallEvent } from '../tx-tracer/TxTrace.ts';
-import type { PC, RuntimeTraceMetadata } from './trace-metadata.ts';
-import { safeBigIntToNumber } from '../../common/utils.ts';
+import type { FunctionCallEvent } from '../../CallTrace.ts';
+import { CallStack, type PC, type RuntimeTraceMetadata } from '../trace-metadata.ts';
+import { safeBigIntToNumber } from '../../../common/utils.ts';
 
 /*
  * Detects internal function calls. <br>
@@ -21,7 +20,8 @@ export class FunctionEntryHandler extends HandlerBase {
   public async handle(
     stepEvent: InterpreterStep,
     executionContext: RuntimeTraceMetadata['executionContext'],
-    parentFunctionCallEvent: FunctionCallEvent
+    parentFunctionCallEvent: FunctionCallEvent,
+    callStack: CallStack
   ): Promise<{ functionCallEvent: FunctionCallEvent; functionExitPc: PC } | undefined> {
     if (stepEvent.opcode.name !== 'JUMPDEST') return undefined;
 
@@ -35,7 +35,11 @@ export class FunctionEntryHandler extends HandlerBase {
     const contractFQN = this.addressLabeler.getContractFqnForAddress(contractAddress);
     if (!contractFQN) return undefined;
 
-    const functionData = this.debugMetadata.functions.getBy(QueryBy.contractFqnAndPC(contractFQN, stepEvent.pc));
+    const functionIndex = this.debugMetadata.pcLocations.getFunction(contractFQN, 'i', stepEvent.pc);
+    if (!functionIndex) return undefined;
+
+    const functionData = callStack.push(functionIndex);
+    console.log(functionIndex.name);
     if (!functionData) return undefined;
 
     const stackTop = stepEvent.stack.length - 1;

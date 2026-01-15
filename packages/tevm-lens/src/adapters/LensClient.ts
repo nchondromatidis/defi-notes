@@ -11,11 +11,11 @@ import {
 import type { ContractResult, Message } from 'tevm/actions';
 import type { EvmResult } from 'tevm/evm';
 import { randomId } from '../common/utils.ts';
-import { DebugMetadata } from './indexes/DebugMetadata.ts';
-import { AddressLabeler } from './indexes/AddressLabeler.ts';
-import { TxTracer } from './tx-tracer/TxTracer.ts';
+import { DebugMetadata } from '../lens/indexes/DebugMetadata.ts';
+import { AddressLabeler } from '../lens/indexes/AddressLabeler.ts';
+import { CallTracer } from '../lens/CallTracer.ts';
 import { InvalidArgument, InvariantError } from '../common/errors.ts';
-import type { Address, Hex, LensArtifactsMap } from './types/artifact.ts';
+import type { Address, Hex, LensArtifactsMap } from '../lens/types.ts';
 import type { InterpreterStep } from 'tevm/evm';
 import { hardhatLinkExternalLibToBytecode } from '../utils/hardhat.ts';
 
@@ -29,7 +29,7 @@ export class LensClient<
     public readonly client: Client<TevmTransport>,
     public readonly debugMetadata: DebugMetadata,
     public readonly addressLabeler: AddressLabeler,
-    public readonly txTracer: TxTracer
+    public readonly txTracer: CallTracer
   ) {}
 
   async deploy<ContractFQNT extends keyof LensArtifactsMapT & string>(
@@ -77,16 +77,15 @@ export class LensClient<
       args: args,
       throwOnFail: false,
       onStep: async (event: InterpreterStep, next?: Next) => {
-        if (traceTx) await this.txTracer.handleFunctionEntryHandler(event, tracingId);
-        if (traceTx) await this.txTracer.handleFunctionExitHandler(event, tracingId);
+        if (traceTx) await this.txTracer.route(event, tracingId);
         next?.();
       },
       onBeforeMessage: async (event: Message, next?: Next) => {
-        if (traceTx) await this.txTracer.handleExternalCall(event, tracingId);
+        if (traceTx) await this.txTracer.route(event, tracingId);
         next?.();
       },
       onAfterMessage: async (event: EvmResult, next?: Next) => {
-        if (traceTx) await this.txTracer.handleExternalCallResult(event, tracingId);
+        if (traceTx) await this.txTracer.route(event, tracingId);
         next?.();
       },
     });

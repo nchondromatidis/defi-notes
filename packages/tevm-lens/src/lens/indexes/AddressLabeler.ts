@@ -1,4 +1,4 @@
-import type { Address } from '../types/artifact.ts';
+import type { Address } from '../types.ts';
 
 type DeployedContractFQN = string;
 

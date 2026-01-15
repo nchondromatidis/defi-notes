@@ -1,4 +1,4 @@
-import type { FunctionCallTypes, Hex, LensFunctionIndex } from '../types/artifact.ts';
+import type { FunctionCallTypes, Hex, LensFunctionIndex } from '../types.ts';
 import { InvariantError } from '../../common/errors.ts';
 import {
   type Abi,

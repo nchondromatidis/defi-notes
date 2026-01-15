@@ -1,8 +1,5 @@
-// inherit own contracts
-// inherit third party contracts
-
 import { beforeEach, describe, expect, test } from 'vitest';
-import type { LensClient } from '../src/lens/LensClient.ts';
+import type { LensClient } from '../src/adapters/LensClient.ts';
 import type { ArtifactMap } from './_setup/artifacts';
 import type { GetContractReturnType } from 'viem';
 import { getTracedTxFactory } from './_setup/utils.ts';
@@ -40,3 +37,6 @@ describe('inheritance', () => {
     expect(getTracedTx.success(result)).toMatchSnapshot();
   });
 });
+
+// inherit own contracts
+// inherit third party contracts

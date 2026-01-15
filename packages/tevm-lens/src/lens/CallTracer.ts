@@ -1,36 +1,35 @@
 import type { Message } from 'tevm/actions';
 import type { EvmResult, InterpreterStep } from 'tevm/evm';
-import { InvariantError } from '../../common/errors.ts';
-import { TxTrace } from './TxTrace.ts';
-import { type Hex } from '../types/artifact.ts';
-import { ExternalCallHandler } from '../opcode-handlers/ExternalCallHandler.ts';
-import { ExternalCallResultHandler } from '../opcode-handlers/ExternalCallResultHandler.ts';
-import { FunctionEntryHandler } from '../opcode-handlers/FunctionEntryHandler.ts';
-import { emptyRuntimeTraceMetadata, type RuntimeTraceMetadata } from '../opcode-handlers/trace-metadata.ts';
-import { FunctionExitHandler } from '../opcode-handlers/FunctionExitHandler.ts';
+import { InvariantError } from '../common/errors.ts';
+import { CallTrace } from './CallTrace.ts';
+import { type Hex, type TracingId, type TxId } from './types.ts';
+import { ExternalCallHandler } from './handlers/trace-events/ExternalCallHandler.ts';
+import { ExternalCallResultHandler } from './handlers/trace-events/ExternalCallResultHandler.ts';
+import { FunctionEntryHandler } from './handlers/trace-events/FunctionEntryHandler.ts';
+import { emptyRuntimeTraceMetadata, type RuntimeTraceMetadata } from './handlers/trace-metadata.ts';
+import { FunctionExitHandler } from './handlers/trace-events/FunctionExitHandler.ts';
+import type { FunctionCallMatcher } from './handlers/pattern-matchers/FunctionCallMatcher.ts';
 
-type TracingId = string;
-type TxId = Hex;
-
-export class TxTracer {
-  public readonly tracingTx: Map<string, TxTrace> = new Map();
+export class CallTracer {
+  public readonly tracingTx: Map<TracingId, CallTrace> = new Map();
   public readonly runtimeTraceMetadata: Map<TracingId, RuntimeTraceMetadata> = new Map();
 
-  public readonly succeededTxs: Map<TxId, TxTrace> = new Map();
-  public readonly failedTxs: Map<TxId, TxTrace> = new Map();
+  public readonly succeededTxs: Map<TxId, CallTrace> = new Map();
+  public readonly failedTxs: Map<TxId, CallTrace> = new Map();
 
   constructor(
     private readonly externalCallHandler: ExternalCallHandler,
     private readonly externalCallResultHandler: ExternalCallResultHandler,
     private readonly functionEntryHandler: FunctionEntryHandler,
-    private readonly functionExitHandler: FunctionExitHandler
+    private readonly functionExitHandler: FunctionExitHandler,
+    private readonly functionCallMatcher: FunctionCallMatcher
   ) {}
 
-  //** Start-Stop tracing **/
+  //** Start-Stop Tracing **/
 
   public startTracing(tracingId: string) {
-    const txTrace = new TxTrace();
-    this.tracingTx.set(tracingId, txTrace);
+    const callTrace = new CallTrace();
+    this.tracingTx.set(tracingId, callTrace);
     this.runtimeTraceMetadata.set(tracingId, emptyRuntimeTraceMetadata());
   }
 
@@ -44,12 +43,35 @@ export class TxTracer {
     this.tracingTx.delete(tracingId);
     this.runtimeTraceMetadata.delete(tracingId);
     this.externalCallResultHandler.cleanCache(tracingId);
-    // this.functionEntryHandler.cleanCache(tracingId);
+  }
+
+  //** Router **/
+
+  public async route(event: Message | EvmResult | InterpreterStep, tracingId: string) {
+    // Message
+    if ('value' in event) {
+      await this.handleExternalCall(event as Message, tracingId);
+      return;
+    }
+    // EvmResult
+    if ('execResult' in event) {
+      const evmResult = event as EvmResult;
+      await this.handleExternalCallResult(evmResult, tracingId);
+      return;
+    }
+    // InterpreterStep
+    if ('opcode' in event) {
+      const stepEvent = event as InterpreterStep;
+      await this.handleFunctionCallMatcher(stepEvent, tracingId);
+      // await this.handleFunctionEntryHandler(stepEvent, tracingId);
+      // await this.handleFunctionExitHandler(stepEvent, tracingId);
+      return;
+    }
   }
 
   //** Event Handlers **/
 
-  public async handleExternalCall(callEvent: Message, tracingId: string): Promise<void> {
+  private async handleExternalCall(callEvent: Message, tracingId: string): Promise<void> {
     const functionCallEvent = await this.externalCallHandler.handle(callEvent);
 
     this.tracingTx.get(tracingId)!.addFunctionCall(functionCallEvent);
@@ -59,7 +81,7 @@ export class TxTracer {
       .executionContext.set(functionCallEvent.depth, { functionCallEvent, isJumpDestReached: false });
   }
 
-  public async handleExternalCallResult(resultEvent: EvmResult, tracingId: string) {
+  private async handleExternalCallResult(resultEvent: EvmResult, tracingId: string) {
     const functionCallEvent = this.tracingTx.get(tracingId)!.getLatestFunctionCallEvent();
     if (!functionCallEvent) throw new InvariantError('handleExternalCallResult without call registered');
     const functionResultEvent = await this.externalCallResultHandler.handle(resultEvent, tracingId, functionCallEvent);
@@ -68,14 +90,20 @@ export class TxTracer {
     this.runtimeTraceMetadata.get(tracingId)!.executionContext.delete(functionCallEvent.depth);
   }
 
-  public async handleFunctionEntryHandler(stepEvent: InterpreterStep, tracingId: string) {
+  private async handleFunctionEntryHandler(stepEvent: InterpreterStep, tracingId: string) {
     const parentFunctionCallEvent = this.tracingTx.get(tracingId)!.getLatestFunctionCallEvent();
     if (!parentFunctionCallEvent) {
       throw new InvariantError('handleFunctionEntryHandler called before external call handers');
     }
     const executionContext = this.runtimeTraceMetadata.get(tracingId)!.executionContext;
+    const callStack = this.runtimeTraceMetadata.get(tracingId)!.callstack;
 
-    const result = await this.functionEntryHandler.handle(stepEvent, executionContext, parentFunctionCallEvent);
+    const result = await this.functionEntryHandler.handle(
+      stepEvent,
+      executionContext,
+      parentFunctionCallEvent,
+      callStack
+    );
 
     if (!result) return;
 
@@ -92,12 +120,17 @@ export class TxTracer {
     this.runtimeTraceMetadata.get(tracingId)!.functionExits.get(depth)!.set(functionExitPc, functionCallEvent);
   }
 
-  public async handleFunctionExitHandler(stepEvent: InterpreterStep, tracingId: string) {
+  private async handleFunctionExitHandler(stepEvent: InterpreterStep, tracingId: string) {
     const functionCallEvent = this.tracingTx.get(tracingId)!.getLatestFunctionCallEvent()!;
     const functionExits = this.runtimeTraceMetadata.get(tracingId)!.functionExits;
 
     const functionResultEvent = await this.functionExitHandler.handle(stepEvent, functionCallEvent, functionExits);
 
     if (functionResultEvent) this.tracingTx.get(tracingId)!.addResult(functionResultEvent);
+  }
+
+  private async handleFunctionCallMatcher(stepEvent: InterpreterStep, tracingId: string) {
+    const executionContext = this.runtimeTraceMetadata.get(tracingId)!.executionContext;
+    await this.functionCallMatcher.handle(stepEvent, executionContext);
   }
 }

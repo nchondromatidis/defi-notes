@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { ChevronRight, ChevronDown, AlertTriangle, Maximize2, Minimize2, Activity, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils.ts';
-import type { FunctionCallEvent } from '@defi-notes/tevm-lens/src/lens/tx-tracer/TxTrace.ts';
+import type { FunctionCallEvent } from '@defi-notes/tevm-lens/src/lens/CallTrace.ts';
 
 // --- Helper Functions ---
 

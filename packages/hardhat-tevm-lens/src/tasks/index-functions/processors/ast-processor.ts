@@ -1,12 +1,12 @@
 import { type ASTDereferencer, findAll, type SrcDecoder } from 'solidity-ast/utils.js';
 import type { ContractDefinition } from 'solidity-ast';
-import { toFunctionSelector, toHumanReadableAbi } from '../../_utils/ast';
-import type { FunctionIndex, FunctionIndexes } from './types';
-import { getSrcLocation } from '../../_utils/source-location';
+import { toFunctionSelector, toHumanReadableAbi } from '../../../_utils/ast';
+import type { FunctionIndex, FunctionIndexes } from '../types';
+import { getSrcLocation } from '../../../_utils/source-location';
 import type { Debugger } from 'debug';
-import type { BuildInfoPair } from '../../_utils/build-info';
+import type { BuildInfoPair } from '../../../_utils/build-info';
 import { astDereferencer, srcDecoder } from 'solidity-ast/utils.js';
-import { toUserSource } from '../../_utils/hardhat';
+import { toUserSource } from '../../../_utils/hardhat';
 
 //*************************************** PREPARE ***************************************//
 

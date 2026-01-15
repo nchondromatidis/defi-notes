@@ -1,4 +1,4 @@
-import type { LensArtifact, LensFunctionIndex } from '../../src/lens/types/artifact.ts';
+import type { LensArtifact, LensFunctionIndex, LensPcLocationIndex } from '../../src/lens/types.ts';
 import { promises as fs } from 'fs';
 import type { IResourceLoader } from '../../src/adapters/IResourceLoader.ts';
 import * as path from 'node:path';
@@ -8,6 +8,7 @@ export class TestResourceLoader implements IResourceLoader {
   artifactsContractsPath;
   contractFqnListFileName = 'contract-fqn-list.json';
   sourceFunctionIndexFileName = 'function-indexes.json';
+  pcLocationsIndexFileName = 'pc-locations-indexes.json';
 
   constructor(root: string) {
     this.artifactsContractsPath = path.join(__dirname, 'artifacts', root);
@@ -47,5 +48,15 @@ export class TestResourceLoader implements IResourceLoader {
     );
     const sourceFunctionIndexJson = await fs.readFile(sourceFunctionIndexFilePath, 'utf-8');
     return JSON.parse(sourceFunctionIndexJson) as LensFunctionIndex[];
+  }
+
+  async getPcLocationIndexes(protocolName: string): Promise<LensPcLocationIndex[]> {
+    const sourceFunctionIndexFilePath = path.join(
+      this.artifactsContractsPath,
+      protocolName,
+      this.pcLocationsIndexFileName
+    );
+    const sourceFunctionIndexJson = await fs.readFile(sourceFunctionIndexFilePath, 'utf-8');
+    return JSON.parse(sourceFunctionIndexJson) as LensPcLocationIndex[];
   }
 }

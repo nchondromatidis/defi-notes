@@ -7,7 +7,7 @@ import { getBuildInfoPair, getBuildInfoPairsPath } from '../../_utils/build-info
 import { debug } from './_debug';
 import { groupByPathSegment } from '../../_utils/paths';
 import { getSharedState, setSharedState } from '../tasks-shared-state';
-import { createFunctionDataIndexes } from './ast-processor';
+import { createFunctionDataIndexes } from './processors/ast-processor';
 
 //************************************** COPY TYPES ***************************************//
 
