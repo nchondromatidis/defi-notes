@@ -34,7 +34,7 @@ export type FunctionCallEvent = {
 export type FunctionResultEvent = {
   type: 'FunctionResultEvent';
   isError: boolean;
-  returnValueRaw: unknown;
+  returnValueRaw: Hex;
   isCreate: boolean;
   logs: Array<LensLog>;
   errorType?: unknown;

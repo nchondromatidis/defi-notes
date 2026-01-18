@@ -12,6 +12,7 @@ export type ExternalCallEvmEvent = {
   isStatic: boolean;
   delegatecall: boolean;
   _codeAddress?: Address;
+  opcodeSequenceNum: number;
 };
 
 export type ExternalCallResultEvmEvent = {
@@ -22,16 +23,17 @@ export type ExternalCallResultEvmEvent = {
     logs?: Array<[Uint8Array, Uint8Array[], Uint8Array]>;
   };
   createdAddress?: Address;
+  opcodeSequenceNum: number;
 };
 
 export type OpcodeStepEvent = {
   _type: 'OpcodeStep';
   to: Address;
-  sequenceNum: number;
   pc: number;
   name: string;
   stack: string[];
   depth: number;
+  opcodeSequenceNum: number;
 };
 
 export type LensEvmEvent = ExternalCallEvmEvent | ExternalCallResultEvmEvent | OpcodeStepEvent;

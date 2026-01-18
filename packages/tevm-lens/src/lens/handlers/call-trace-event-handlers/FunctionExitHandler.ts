@@ -1,8 +1,7 @@
 import { HandlerBase } from '../HandlerBase.ts';
 
-import type { InterpreterStep } from 'tevm/evm';
 import type { FunctionCallEvent, FunctionResultEvent } from '../../CallTrace.ts';
-import { type RuntimeTraceMetadata } from '../trace-metadata.ts';
+import type { InternalFunctionCallResultEvent } from '../_events/call-trace-events.ts';
 
 /*
  * Detects internal function calls returns. <br>
@@ -14,33 +13,20 @@ import { type RuntimeTraceMetadata } from '../trace-metadata.ts';
  * </i>
  */
 export class FunctionExitHandler extends HandlerBase {
-  public async handle(
-    stepEvent: InterpreterStep,
-    functionCallEvent: FunctionCallEvent,
-    functionExits: RuntimeTraceMetadata['functionExits']
-  ) {
-    // TODO: maybe check executionContext, like in  FunctionEntryHandler
-    if (stepEvent.opcode.name !== 'JUMPDEST') return undefined;
+  public async handle(_event: InternalFunctionCallResultEvent, functionCallEvent: FunctionCallEvent) {
     if (functionCallEvent.callType !== 'INTERNAL') {
       // already decoded by ExternalCallResultHandler
       return undefined;
     }
 
-    const pc = stepEvent.pc;
-    const depth = stepEvent.depth;
-    if (functionExits.get(depth)?.has(pc)) {
-      const functionResultEvent: FunctionResultEvent = {
-        type: 'FunctionResultEvent',
-        returnValueRaw: '',
-        isError: false,
-        isCreate: false,
-        logs: [],
-      };
-      // console.log('FunctionResultEvent', functionCallEvent.contractFQN, functionCallEvent.functionName);
-      functionExits.get(depth)!.delete(pc);
-      return functionResultEvent;
-    }
+    const functionResultEvent: FunctionResultEvent = {
+      type: 'FunctionResultEvent',
+      returnValueRaw: '0x',
+      isError: false,
+      isCreate: false,
+      logs: [],
+    };
 
-    return undefined;
+    return functionResultEvent;
   }
 }

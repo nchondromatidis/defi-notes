@@ -13,7 +13,7 @@ export class EvmEventsHandler {
   }
 
   async processRegistered() {
-    return await this.opcodeMatcher.match(this.eventsStore.getEvmEvents());
+    return await this.opcodeMatcher.matchFunctionCallOpcodeSequence(this.eventsStore.getEvmEvents());
   }
 
   reset() {

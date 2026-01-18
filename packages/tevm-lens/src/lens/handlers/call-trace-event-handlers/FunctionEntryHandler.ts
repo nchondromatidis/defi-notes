@@ -1,9 +1,7 @@
 import { HandlerBase } from '../HandlerBase.ts';
-
-import type { InterpreterStep } from 'tevm/evm';
 import type { FunctionCallEvent } from '../../CallTrace.ts';
-import { type PC, type RuntimeTraceMetadata } from '../trace-metadata.ts';
-import { safeBigIntToNumber } from '../../../common/utils.ts';
+import { type RuntimeTraceMetadata } from '../trace-metadata.ts';
+import type { InternalFunctionCallEvent } from '../_events/call-trace-events.ts';
 
 /*
  * Detects internal function calls. <br>
@@ -18,15 +16,14 @@ import { safeBigIntToNumber } from '../../../common/utils.ts';
  */
 export class FunctionEntryHandler extends HandlerBase {
   public async handle(
-    stepEvent: InterpreterStep,
+    internalCallEvent: InternalFunctionCallEvent,
     executionContext: RuntimeTraceMetadata['executionContext'],
     parentFunctionCallEvent: FunctionCallEvent
-  ): Promise<{ functionCallEvent: FunctionCallEvent; functionExitPc: PC } | undefined> {
-    if (stepEvent.opcode.name !== 'JUMPDEST') return undefined;
-
+  ): Promise<FunctionCallEvent | undefined> {
     // identify contract and function using contract address and pc
-    let contractAddress = stepEvent.address.toString();
-    const currentDepthExecutionContext = executionContext.get(stepEvent.depth)!;
+    let contractAddress = internalCallEvent.opcodeStepEvent.to;
+    const currentDepthExecutionContext = executionContext.get(internalCallEvent.opcodeStepEvent.depth)!;
+    const depth = internalCallEvent.opcodeStepEvent.depth;
 
     if (currentDepthExecutionContext.functionCallEvent.callType === 'DELEGATECALL')
       contractAddress = currentDepthExecutionContext.functionCallEvent.implAddress!;
@@ -34,26 +31,25 @@ export class FunctionEntryHandler extends HandlerBase {
     const contractFQN = this.addressLabeler.getContractFqnForAddress(contractAddress);
     if (!contractFQN) return undefined;
 
-    const functionIndex = this.debugMetadata.pcLocations.getFunctionIndex(contractFQN, stepEvent.pc);
+    const functionIndex = this.debugMetadata.pcLocations.getFunctionIndex(
+      contractFQN,
+      internalCallEvent.opcodeStepEvent.pc
+    );
     if (!functionIndex) return undefined;
 
     const functionData = functionIndex;
-    console.log(functionIndex.name);
     if (!functionData) return undefined;
 
-    const stackTop = stepEvent.stack.length - 1;
-
     // the first JUMPDEST on a new context must match external call calldata
-    if (!executionContext.get(stepEvent.depth)!.isJumpDestReached) {
+    if (!executionContext.get(depth)!.isJumpDestReached) {
       const isJumpDestReached =
         functionData.contractFQN === parentFunctionCallEvent.contractFQN &&
         functionData.name == parentFunctionCallEvent.functionName &&
         functionData.kind === parentFunctionCallEvent.functionType;
       if (isJumpDestReached) {
-        executionContext.get(stepEvent.depth)!.isJumpDestReached = true;
+        executionContext.get(depth)!.isJumpDestReached = true;
 
-        const functionExitPc = safeBigIntToNumber(stepEvent.stack[stackTop - functionData.parameterSlots]);
-        return { functionCallEvent: parentFunctionCallEvent, functionExitPc };
+        return parentFunctionCallEvent;
       }
       return undefined;
     }
@@ -61,10 +57,10 @@ export class FunctionEntryHandler extends HandlerBase {
     // handle internal calls
     const functionCallEvent: FunctionCallEvent = {
       type: 'FunctionCallEvent',
-      to: stepEvent.address.toString(),
-      from: executionContext.get(stepEvent.depth)!.functionCallEvent.from,
-      depth: stepEvent.depth,
-      rawData: '0x',
+      to: internalCallEvent.opcodeStepEvent.to,
+      from: executionContext.get(depth)!.functionCallEvent.from,
+      depth,
+      rawData: '',
       value: 0n,
       callType: 'INTERNAL',
       precompile: false,
@@ -79,8 +75,7 @@ export class FunctionEntryHandler extends HandlerBase {
       functionCallEvent.implContractFQN = parentFunctionCallEvent.implContractFQN;
       functionCallEvent.implAddress = parentFunctionCallEvent.implAddress;
     }
-    const functionExitPc = safeBigIntToNumber(stepEvent.stack[stackTop - functionData.parameterSlots]);
 
-    return { functionCallEvent, functionExitPc };
+    return functionCallEvent;
   }
 }

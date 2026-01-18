@@ -42,20 +42,32 @@ export class PcLocationIndexesRegistry {
   }
 
   public getFunctionIndex(contractFQN: string, pc: number): LensFunctionIndex | undefined {
-    const pcLocation = this.contactOpcodes.get(contractFQN, pc);
-    if (!pcLocation) return undefined;
-
-    const start = pcLocation[2][0];
-    const sourceIndex = pcLocation[2][2];
-
-    const sourceName = this.contractLocationSources.get(contractFQN, sourceIndex);
-    if (!sourceName) return undefined;
+    const pcLocationIndex = this.getPcLocationIndex(contractFQN, pc);
+    if (!pcLocationIndex) return undefined;
+    const { startLine, sourceName } = pcLocationIndex;
 
     const contractFunctions = this.contactFunctions.get(contractFQN);
     if (!contractFunctions) return undefined;
 
     return contractFunctions.find((it) => {
-      return it.source == sourceName && start >= it.functionLineStart && start <= it.functionLineEnd;
+      return it.source == sourceName && startLine >= it.functionLineStart && startLine <= it.functionLineEnd;
     });
+  }
+
+  public getPcLocationIndex(contractFQN: string, pc: number) {
+    const pcLocation = this.contactOpcodes.get(contractFQN, pc);
+    if (!pcLocation) return undefined;
+
+    const sourceIndex = pcLocation[2][2];
+    const sourceName = this.contractLocationSources.get(contractFQN, sourceIndex);
+    if (!sourceName) return undefined;
+
+    return {
+      pc: pcLocation[0],
+      jumpType: pcLocation[1],
+      startLine: pcLocation[2][0],
+      endLine: pcLocation[2][1],
+      sourceName: sourceName,
+    };
   }
 }

@@ -65,3 +65,11 @@ export type LensPcLocationIndex = {
   locationSources: Array<string>;
   pcLocations: Array<[PC, JumpType, Location]>;
 };
+
+export type PcLocationReadable = {
+  pc: number;
+  jumpType: JumpType;
+  startLine: number;
+  endLine: number;
+  sourceName: string;
+};

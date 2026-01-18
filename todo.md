@@ -39,3 +39,19 @@
     - what if you expect a function1 call, but you get a function2 call?
     - what if you expect a function1 result, but you get a function2 result?
 
+
+// trying to tone down optimizer
+{
+  "viaIR": true,
+  "optimizer": {
+  "enabled": false,
+    "details": {
+      "yul": false,
+      "yulDetails": { "optimizerSteps": ":" },
+      "peephole": false,
+      "jumpdestRemover": false,
+      "inliner": false
+    }
+  }
+}
+

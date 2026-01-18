@@ -5,14 +5,19 @@ import { FunctionExitHandler } from './call-trace-event-handlers/FunctionExitHan
 import { CallTrace } from '../CallTrace.ts';
 import { emptyRuntimeTraceMetadata, type RuntimeTraceMetadata } from './trace-metadata.ts';
 import { InvariantError } from '../../common/errors.ts';
+
+import type { DeepReadonly } from '../../common/utils.ts';
 import {
+  type CallTraceEvents,
+  type InternalFunctionCallEvent,
+  type InternalFunctionCallResultEvent,
+  isInternalFunctionCallEvent,
+  isInternalFunctionCallResultEvent,
+  isExternalCallResultEvmEvent,
+  isExternalCallEvmEvent,
   type ExternalCallEvmEvent,
   type ExternalCallResultEvmEvent,
-  isExternalCallEvmEvent,
-  isExternalCallResultEvmEvent,
-  type LensEvmEvent,
-} from './_events/lens-evm-events.ts';
-import type { DeepReadonly } from '../../common/utils.ts';
+} from './_events/call-trace-events.ts';
 
 export class CallTraceEventHandler {
   private callTrace: CallTrace;
@@ -40,7 +45,7 @@ export class CallTraceEventHandler {
 
   //** Route **/
 
-  public async route(event: LensEvmEvent) {
+  public async route(event: CallTraceEvents) {
     switch (true) {
       case isExternalCallEvmEvent(event): {
         await this.handleExternalCall(event);
@@ -48,6 +53,14 @@ export class CallTraceEventHandler {
       }
       case isExternalCallResultEvmEvent(event): {
         await this.handleExternalCallResult(event);
+        break;
+      }
+      case isInternalFunctionCallEvent(event): {
+        await this.handleFunctionEntryHandler(event);
+        break;
+      }
+      case isInternalFunctionCallResultEvent(event): {
+        await this.handleFunctionExitHandler(event);
         break;
       }
       default:
@@ -77,36 +90,31 @@ export class CallTraceEventHandler {
     this.runtimeTraceMetadata.executionContext.delete(functionCallEvent.depth);
   }
 
-  // private async handleFunctionEntryHandler(stepEvent: OpcodeStepEvent, tracingId: string) {
-  //   const parentFunctionCallEvent = this.tracingTx.get(tracingId)!.getLatestFunctionCallEvent();
-  //   if (!parentFunctionCallEvent) {
-  //     throw new InvariantError('handleFunctionEntryHandler called before external call handers');
-  //   }
-  //   const executionContext = this.runtimeTraceMetadata.get(tracingId)!.executionContext;
-  //
-  //   const result = await this.functionEntryHandler.handle(stepEvent, executionContext, parentFunctionCallEvent);
-  //
-  //   if (!result) return;
-  //
-  //   const { functionCallEvent, functionExitPc } = result;
-  //
-  //   if (functionCallEvent !== executionContext.get(stepEvent.depth)!.functionCallEvent) {
-  //     this.tracingTx.get(tracingId)!.addFunctionCall(functionCallEvent);
-  //   }
-  //
-  //   const depth = stepEvent.depth;
-  //   if (!this.runtimeTraceMetadata.get(tracingId)!.functionExits.has(depth)) {
-  //     this.runtimeTraceMetadata.get(tracingId)!.functionExits.set(depth, new Map());
-  //   }
-  //   this.runtimeTraceMetadata.get(tracingId)!.functionExits.get(depth)!.set(functionExitPc, functionCallEvent);
-  // }
-  //
-  // private async handleFunctionExitHandler(stepEvent: OpcodeStepEvent, tracingId: string) {
-  //   const functionCallEvent = this.tracingTx.get(tracingId)!.getLatestFunctionCallEvent()!;
-  //   const functionExits = this.runtimeTraceMetadata.get(tracingId)!.functionExits;
-  //
-  //   const functionResultEvent = await this.functionExitHandler.handle(stepEvent, functionCallEvent, functionExits);
-  //
-  //   if (functionResultEvent) this.tracingTx.get(tracingId)!.addResult(functionResultEvent);
-  // }
+  private async handleFunctionEntryHandler(internalCallEvent: InternalFunctionCallEvent) {
+    const parentFunctionCallEvent = this.callTrace.getLatestFunctionCallEvent();
+    if (!parentFunctionCallEvent) {
+      throw new InvariantError('handleFunctionEntryHandler called before external call handers');
+    }
+    const executionContext = this.runtimeTraceMetadata.executionContext;
+
+    const functionCallEvent = await this.functionEntryHandler.handle(
+      internalCallEvent,
+      executionContext,
+      parentFunctionCallEvent
+    );
+
+    if (!functionCallEvent) return;
+
+    if (functionCallEvent !== executionContext.get(internalCallEvent.opcodeStepEvent.depth)!.functionCallEvent) {
+      this.callTrace.addFunctionCall(functionCallEvent);
+    }
+  }
+
+  private async handleFunctionExitHandler(internalCallResultEvent: InternalFunctionCallResultEvent) {
+    const functionCallEvent = this.callTrace.getLatestFunctionCallEvent()!;
+
+    const functionResultEvent = await this.functionExitHandler.handle(internalCallResultEvent, functionCallEvent);
+
+    if (functionResultEvent) this.callTrace.addResult(functionResultEvent);
+  }
 }

@@ -1,5 +1,5 @@
 import { type EvmEvent, isEvmResult, isInterpreterStep, isMessage } from '../_events/client-evm-events.ts';
-import type { Address, LensFunctionIndex } from '../../types.ts';
+import type { Address, LensFunctionIndex, PcLocationReadable } from '../../types.ts';
 import type { ExternalCallEvmEvent, ExternalCallResultEvmEvent, OpcodeStepEvent } from '../_events/lens-evm-events.ts';
 import { InvariantError } from '../../../common/errors.ts';
 import { isExternalCallOpcode, isJumpDestOpcode, isJumpOpcode } from '../../opcodes';
@@ -7,8 +7,13 @@ import { HandlerBase } from '../HandlerBase.ts';
 import { bytesToHex } from 'viem';
 
 export type EvmStoreEntry =
-  | { evmEvent: OpcodeStepEvent; functionIndex: LensFunctionIndex }
-  | { evmEvent: ExternalCallResultEvmEvent | ExternalCallEvmEvent };
+  | {
+      _type: 'Opcode';
+      evmEvent: OpcodeStepEvent;
+      functionIndex: LensFunctionIndex;
+      pcLocationIndex: PcLocationReadable;
+    }
+  | { _type: 'ExternalCall'; evmEvent: ExternalCallResultEvmEvent | ExternalCallEvmEvent };
 
 export class EventStore extends HandlerBase {
   private evmEvents: Array<EvmStoreEntry> = [];
@@ -31,9 +36,10 @@ export class EventStore extends HandlerBase {
           delegatecall: event.delegatecall,
           // on delegatecal: callEvent type missing _codeAddress, but implementation has it
           _codeAddress: (event as any)?._codeAddress?.toString() as Address,
+          opcodeSequenceNum: this.currSequenceNum,
         };
         this.delegateCallContractAddress = evmEvent.delegatecall ? evmEvent._codeAddress : undefined;
-        this.evmEvents.push({ evmEvent });
+        this.evmEvents.push({ _type: 'ExternalCall', evmEvent });
         break;
       }
       case isEvmResult(event): {
@@ -45,9 +51,10 @@ export class EventStore extends HandlerBase {
             logs: event.execResult.logs,
           },
           createdAddress: event?.createdAddress?.toString(),
+          opcodeSequenceNum: this.currSequenceNum,
         };
         this.delegateCallContractAddress = undefined;
-        this.evmEvents.push({ evmEvent });
+        this.evmEvents.push({ _type: 'ExternalCall', evmEvent });
         break;
       }
       case isInterpreterStep(event): {
@@ -55,15 +62,20 @@ export class EventStore extends HandlerBase {
           const evmEvent: OpcodeStepEvent = {
             _type: 'OpcodeStep',
             to: event.address.toString(),
-            sequenceNum: this.currSequenceNum,
             pc: event.pc,
             name: event.opcode.name,
-            stack: event.stack.map((s: bigint) => s.toString(16)),
+            stack: event.stack.map((s: bigint) => s.toString()),
             depth: event.depth,
+            opcodeSequenceNum: this.currSequenceNum,
           };
           const contractAddress = this.delegateCallContractAddress ?? evmEvent.to;
-          const functionIndex = this.debugMetadata.pcLocations.getFunctionIndex(contractAddress, evmEvent.pc);
-          if (functionIndex) this.evmEvents.push({ evmEvent, functionIndex });
+          const contractFQN = this.addressLabeler.getContractFqnForAddress(contractAddress);
+          if (!contractFQN) break;
+          const functionIndex = this.debugMetadata.pcLocations.getFunctionIndex(contractFQN, evmEvent.pc);
+          const pcLocationIndex = this.debugMetadata.pcLocations.getPcLocationIndex(contractFQN, evmEvent.pc);
+          if (functionIndex && pcLocationIndex) {
+            this.evmEvents.push({ _type: 'Opcode', evmEvent, functionIndex, pcLocationIndex });
+          }
         }
 
         this.currSequenceNum++;
