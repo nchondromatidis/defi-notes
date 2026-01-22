@@ -11,6 +11,7 @@ describe('external-calls', () => {
   let callerContract: GetContractReturnType<
     ArtifactMap['test-contracts/external-calls/CallerContract.sol:CallerContract']['abi']
   >;
+  let calleeContractAddress: `0x${string}`;
   let getTracedTx: ReturnType<typeof getTracedTxFactory>;
 
   beforeEach(async () => {
@@ -22,9 +23,11 @@ describe('external-calls', () => {
       'test-contracts/external-calls/CalleeContract.sol:CalleeContract',
       []
     );
+    calleeContractAddress = calleeContractDeployment.createdAddress!;
+
     const callerContractDeployment = await lensClient.deploy(
       'test-contracts/external-calls/CallerContract.sol:CallerContract',
-      [calleeContractDeployment.createdAddress!]
+      [calleeContractAddress]
     );
 
     callerContract = lensClient.getContract(
@@ -63,5 +66,24 @@ describe('external-calls', () => {
   test('external call with revert', async () => {
     const result = await lensClient.contract(callerContract, 'callRevert', []);
     expect(getTracedTx.success(result)).toMatchSnapshot();
+  });
+
+  test('revert restores balances after state changes', async () => {
+    // Get initial balance of callee contract
+    const initialBalance = await lensClient.client.getBalance({ address: calleeContractAddress });
+
+    // Send ETH to callee contract via caller (modifies state)
+    await lensClient.contract(callerContract, 'callReceiveFunction', [], ETHER_1);
+
+    // Verify callee balance increased
+    const balanceAfterCall = await lensClient.client.getBalance({ address: calleeContractAddress });
+    expect(balanceAfterCall).toBe(initialBalance + ETHER_1);
+
+    // Revert to snapshot
+    await lensClient.revert();
+
+    // Verify balance restored to initial state
+    const balanceAfterRevert = await lensClient.client.getBalance({ address: calleeContractAddress });
+    expect(balanceAfterRevert).toBe(initialBalance);
   });
 });

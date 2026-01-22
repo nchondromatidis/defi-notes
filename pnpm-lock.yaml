@@ -200,7 +200,7 @@ importers:
     dependencies:
       tevm:
         specifier: ^1.0.0-next.149
-        version: 1.0.0-next.149(@tevm/ts-plugin@1.0.0-next.148(typescript@5.9.3))(@types/debug@4.1.12)(@types/node@24.10.4)(@types/react@19.2.7)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(typescript@5.9.3)(viem@2.42.0(typescript@5.9.3)(zod@4.1.13))(webpack@5.103.0)(yaml@2.8.1)(zod@4.1.13)
+        version: 1.0.0-next.149(@tevm/ts-plugin@1.0.0-next.148(typescript@5.9.3))(@types/debug@4.1.12)(@types/node@24.10.4)(@types/react@19.2.7)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(typescript@5.9.3)(viem@2.42.0(typescript@5.9.3)(zod@4.1.13))(webpack@5.104.1)(yaml@2.8.1)(zod@4.1.13)
       viem:
         specifier: ^2.38.6
         version: 2.42.0(typescript@5.9.3)(zod@4.1.13)
@@ -356,8 +356,8 @@ packages:
   '@adraffy/ens-normalize@1.11.1':
     resolution: {integrity: sha512-nhCBV3quEgesuf7c7KYfperqSS14T8bYuvJ8PcLJp6znkZpFc0AuW4qBtr8eKVyPPe/8RSr7sglCWPU5eaxwKQ==}
 
-  '@alcalzone/ansi-tokenize@0.2.2':
-    resolution: {integrity: sha512-mkOh+Wwawzuf5wa30bvc4nA+Qb6DIrGWgBhRR/Pw4T9nsgYait8izvXkNyU78D6Wcu3Z+KUdwCmLCxlWjEotYA==}
+  '@alcalzone/ansi-tokenize@0.2.3':
+    resolution: {integrity: sha512-jsElTJ0sQ4wHRz+C45tfect76BwbTbgkgKByOzpCN9xG61N5V6u/glvg1CsNJhq2xJIFpKHSwG3D2wPPuEYOrQ==}
     engines: {node: '>=18'}
 
   '@astrojs/compiler@2.13.0':
@@ -1987,11 +1987,11 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7
 
-  '@tanstack/query-core@5.90.12':
-    resolution: {integrity: sha512-T1/8t5DhV/SisWjDnaiU2drl6ySvsHj1bHBCWNXd+/T+Hh1cf6JodyEYMd5sgwm+b/mETT4EV3H+zCVczCU5hg==}
+  '@tanstack/query-core@5.90.19':
+    resolution: {integrity: sha512-GLW5sjPVIvH491VV1ufddnfldyVB+teCnpPIvweEfkpRx7CfUmUGhoh9cdcUKBh/KwVxk22aNEDxeTsvmyB/WA==}
 
-  '@tanstack/react-query@5.90.12':
-    resolution: {integrity: sha512-graRZspg7EoEaw0a8faiUASCyJrqjKPdqJ9EwuDRUF9mEYJ1YPczI9H+/agJ0mOJkPCJDk0lsz5QTrLZ/jQ2rg==}
+  '@tanstack/react-query@5.90.19':
+    resolution: {integrity: sha512-qTZRZ4QyTzQc+M0IzrbKHxSeISUmRB3RPGmao5bT+sI6ayxSRhn0FXEnT5Hg3as8SBFcRosrXXRFB+yAcxVxJQ==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -2720,8 +2720,8 @@ packages:
     resolution: {integrity: sha512-ywqV+5MmyL4E7ybXgKys4DugZbX0FC6LnwrhjuykIjnK9k8OQacQ7axGKnjDXWNhns0xot3bZI5h55H8yo9cJg==}
     engines: {node: '>=6'}
 
-  cli-spinners@3.3.0:
-    resolution: {integrity: sha512-/+40ljC3ONVnYIttjMWrlL51nItDAbBrq2upN8BPyvGU/2n5Oxw3tbNwORCaNuNqLJnxGqOfjUuhsv7l5Q4IsQ==}
+  cli-spinners@3.4.0:
+    resolution: {integrity: sha512-bXfOC4QcT1tKXGorxL3wbJm6XJPDqEnij2gQ2m7ESQuE+/z9YFIWnl/5RpTiKWbMq3EVKR4fRLJGn6DVfu0mpw==}
     engines: {node: '>=18.20'}
 
   cli-truncate@5.1.1:
@@ -3005,6 +3005,9 @@ packages:
   es-module-lexer@1.7.0:
     resolution: {integrity: sha512-jEQoCwk8hyb2AZziIOLhDqpm5+2ww5uIE6lkO/6jcOCusfk6LhMHpXXfBLXTZ7Ydyt0j4VoUQv6uGNYbdW+kBA==}
 
+  es-module-lexer@2.0.0:
+    resolution: {integrity: sha512-5POEcUuZybH7IdmGsD8wlf0AI55wMecM9rVBTI/qEAy2c1kTOm3DjFYjrBdI2K3BaJjJYfYFeRtM0t9ssnRuxw==}
+
   es-object-atoms@1.1.1:
     resolution: {integrity: sha512-FGgH2h8zKNim9ljj7dankFPcICIK9Cp5bm+c2gQSYePhpaG5+esrLODihIorn+Pe6FGJzWhXQotPv73jTaldXA==}
     engines: {node: '>= 0.4'}
@@ -3017,8 +3020,8 @@ packages:
     resolution: {integrity: sha512-w+5mJ3GuFL+NjVtJlvydShqE1eN3h3PbI7/5LAsYJP/2qtuMXjfL2LpHSRqo4b4eSF5K/DH1JXKUAHSB2UW50g==}
     engines: {node: '>= 0.4'}
 
-  es-toolkit@1.43.0:
-    resolution: {integrity: sha512-SKCT8AsWvYzBBuUqMk4NPwFlSdqLpJwmy6AP322ERn8W2YLIB6JBXnwMI2Qsh2gfphT3q7EKAxKb23cvFHFwKA==}
+  es-toolkit@1.44.0:
+    resolution: {integrity: sha512-6penXeZalaV88MM3cGkFZZfOoLGWshWWfdy0tWw/RlVVyhvMaWSBTOvXNeiW3e5FwdS5ePW0LGEu17zT139ktg==}
 
   esast-util-from-estree@2.0.0:
     resolution: {integrity: sha512-4CyanoAudUSBAn5K13H4JhsMH6L9ZP7XbLVe/dKybkxMO7eDyLsT8UHl9TRNrU2Gr9nz+FovfSIjuXWJ81uVwQ==}
@@ -3559,8 +3562,8 @@ packages:
       ink: '>=5'
       react: '>=18'
 
-  ink@6.5.1:
-    resolution: {integrity: sha512-wF3j/DmkM8q5E+OtfdQhCRw8/0ahkc8CUTgEddxZzpEWPslu7YPL3t64MWRoI9m6upVGpfAg4ms2BBvxCdKRLQ==}
+  ink@6.6.0:
+    resolution: {integrity: sha512-QDt6FgJxgmSxAelcOvOHUvFxbIUjVpCH5bx+Slvc5m7IEcpGt3dYwbz/L+oRnqEGeRvwy1tineKK4ect3nW1vQ==}
     engines: {node: '>=20'}
     peerDependencies:
       '@types/react': '>=19.0.0'
@@ -4826,11 +4829,6 @@ packages:
     engines: {node: '>=12.0.0'}
     hasBin: true
 
-  solc@0.8.31:
-    resolution: {integrity: sha512-wpccgDgu/aE/rRcF2F/LeN+4knK0734XTcjppyaQOticjYd/Giq1AJE3XPQZKEViAsY3sNaFKl7QpMRYrK35vg==}
-    engines: {node: '>=12.0.0'}
-    hasBin: true
-
   solidity-ast@0.4.61:
     resolution: {integrity: sha512-OYBJYcYyG7gLV0VuXl9CUrvgJXjV/v0XnR4+1YomVe3q+QyENQXJJxAEASUz4vN6lMAl+C8RSRSr5MBAz09f6w==}
 
@@ -5446,8 +5444,8 @@ packages:
       jsdom:
         optional: true
 
-  watchpack@2.4.4:
-    resolution: {integrity: sha512-c5EGNOiyxxV5qmTtAB7rbiXxi1ooX1pQKMLX/MIabJjRA0SJBQOjKF+KSVfHkr9U1cADPon0mRiVe/riyaiDUA==}
+  watchpack@2.5.1:
+    resolution: {integrity: sha512-Zn5uXdcFNIA1+1Ei5McRd+iRzfhENPCe7LeABkJtNulSxjma+l7ltNx55BWZkRlwRnpOgHqxnjyaDgJnNXnqzg==}
     engines: {node: '>=10.13.0'}
 
   web-namespaces@2.0.1:
@@ -5460,8 +5458,8 @@ packages:
   webpack-virtual-modules@0.6.2:
     resolution: {integrity: sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==}
 
-  webpack@5.103.0:
-    resolution: {integrity: sha512-HU1JOuV1OavsZ+mfigY0j8d1TgQgbZ6M+J75zDkpEAwYeXjWSqrGJtgnPblJjd/mAyTNQ7ygw0MiKOn6etz8yw==}
+  webpack@5.104.1:
+    resolution: {integrity: sha512-Qphch25abbMNtekmEGJmeRUhLDbe+QfiWTiqpKYkpCOWY64v9eyl+KRRLmqOFA2AvKPpc9DC6+u2n76tQLBoaA==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     peerDependencies:
@@ -5594,8 +5592,8 @@ packages:
   zod@4.1.13:
     resolution: {integrity: sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==}
 
-  zustand@5.0.9:
-    resolution: {integrity: sha512-ALBtUj0AfjJt3uNRQoL1tL2tMvj6Gp/6e39dnfT6uzpelGru8v1tPOGBzayOWbPJvujM8JojDk3E1LxeFisBNg==}
+  zustand@5.0.10:
+    resolution: {integrity: sha512-U1AiltS1O9hSy3rul+Ub82ut2fqIAefiSuwECWt6jlMVUGejvf+5omLcRBSzqbRagSM3hQZbtzdeRc6QVScXTg==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
       '@types/react': '>=18.0.0'
@@ -5619,7 +5617,7 @@ snapshots:
 
   '@adraffy/ens-normalize@1.11.1': {}
 
-  '@alcalzone/ansi-tokenize@0.2.2':
+  '@alcalzone/ansi-tokenize@0.2.3':
     dependencies:
       ansi-styles: 6.2.3
       is-fullwidth-code-point: 5.1.0
@@ -6324,13 +6322,13 @@ snapshots:
   '@img/sharp-win32-x64@0.34.5':
     optional: true
 
-  '@inkjs/ui@2.0.0(ink@6.5.1(@types/react@19.2.7)(react@19.2.3))':
+  '@inkjs/ui@2.0.0(ink@6.6.0(@types/react@19.2.7)(react@19.2.3))':
     dependencies:
       chalk: 5.6.2
-      cli-spinners: 3.3.0
+      cli-spinners: 3.4.0
       deepmerge: 4.3.1
       figures: 6.1.0
-      ink: 6.5.1(@types/react@19.2.7)(react@19.2.3)
+      ink: 6.6.0(@types/react@19.2.7)(react@19.2.3)
 
   '@isaacs/balanced-match@4.0.1': {}
 
@@ -7172,11 +7170,11 @@ snapshots:
       tailwindcss: 4.1.18
       vite: 7.2.7(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.1)
 
-  '@tanstack/query-core@5.90.12': {}
+  '@tanstack/query-core@5.90.19': {}
 
-  '@tanstack/react-query@5.90.12(react@19.2.3)':
+  '@tanstack/react-query@5.90.19(react@19.2.3)':
     dependencies:
-      '@tanstack/query-core': 5.90.12
+      '@tanstack/query-core': 5.90.19
       react: 19.2.3
 
   '@tevm/actions@1.0.0-next.149(typescript@5.9.3)(viem@2.42.0(typescript@5.9.3)(zod@4.1.13))(zod@4.1.13)':
@@ -7279,7 +7277,7 @@ snapshots:
 
   '@tevm/cli@1.0.0-next.148(@types/debug@4.1.12)(@types/node@24.10.4)(@types/react@19.2.7)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.1)':
     dependencies:
-      '@tanstack/react-query': 5.90.12(react@19.2.3)
+      '@tanstack/react-query': 5.90.19(react@19.2.3)
       '@tevm/actions': 1.0.0-next.149(typescript@5.9.3)(viem@2.42.0(typescript@5.9.3)(zod@4.1.13))(zod@4.1.13)
       '@tevm/base-bundler': 1.0.0-next.149
       '@tevm/bundler-cache': 1.0.0-next.148
@@ -7294,19 +7292,19 @@ snapshots:
       effect: 3.18.1
       figures: 6.1.0
       glob: 11.1.0
-      ink: 6.5.1(@types/react@19.2.7)(react@19.2.3)
-      ink-big-text: 2.0.0(ink@6.5.1(@types/react@19.2.7)(react@19.2.3))(react@19.2.3)
-      ink-gradient: 3.0.0(ink@6.5.1(@types/react@19.2.7)(react@19.2.3))
-      ink-select-input: 6.2.0(ink@6.5.1(@types/react@19.2.7)(react@19.2.3))(react@19.2.3)
-      ink-spinner: 5.0.0(ink@6.5.1(@types/react@19.2.7)(react@19.2.3))(react@19.2.3)
-      ink-text-input: 6.0.0(ink@6.5.1(@types/react@19.2.7)(react@19.2.3))(react@19.2.3)
+      ink: 6.6.0(@types/react@19.2.7)(react@19.2.3)
+      ink-big-text: 2.0.0(ink@6.6.0(@types/react@19.2.7)(react@19.2.3))(react@19.2.3)
+      ink-gradient: 3.0.0(ink@6.6.0(@types/react@19.2.7)(react@19.2.3))
+      ink-select-input: 6.2.0(ink@6.6.0(@types/react@19.2.7)(react@19.2.3))(react@19.2.3)
+      ink-spinner: 5.0.0(ink@6.6.0(@types/react@19.2.7)(react@19.2.3))(react@19.2.3)
+      ink-text-input: 6.0.0(ink@6.6.0(@types/react@19.2.7)(react@19.2.3))(react@19.2.3)
       json-bigint: 1.0.0
-      pastel: 3.0.0(ink@6.5.1(@types/react@19.2.7)(react@19.2.3))(react@19.2.3)(zod@4.1.13)
+      pastel: 3.0.0(ink@6.6.0(@types/react@19.2.7)(react@19.2.3))(react@19.2.3)(zod@4.1.13)
       react: 19.2.3
-      solc: 0.8.31
+      solc: 0.8.30
       viem: 2.42.0(typescript@5.9.3)(zod@4.1.13)
       zod: 4.1.13
-      zustand: 5.0.9(@types/react@19.2.7)(react@19.2.3)
+      zustand: 5.0.10(@types/react@19.2.7)(react@19.2.3)
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@types/debug'
@@ -7811,10 +7809,10 @@ snapshots:
       - typescript
       - zod
 
-  '@tevm/webpack-plugin@1.0.0-next.148(webpack@5.103.0)':
+  '@tevm/webpack-plugin@1.0.0-next.148(webpack@5.104.1)':
     dependencies:
       '@tevm/unplugin': 1.0.0-next.148
-      webpack: 5.103.0
+      webpack: 5.104.1
     transitivePeerDependencies:
       - debug
 
@@ -8505,7 +8503,7 @@ snapshots:
 
   cli-spinners@2.9.2: {}
 
-  cli-spinners@3.3.0: {}
+  cli-spinners@3.4.0: {}
 
   cli-truncate@5.1.1:
     dependencies:
@@ -8796,6 +8794,8 @@ snapshots:
 
   es-module-lexer@1.7.0: {}
 
+  es-module-lexer@2.0.0: {}
+
   es-object-atoms@1.1.1:
     dependencies:
       es-errors: 1.3.0
@@ -8813,7 +8813,7 @@ snapshots:
       is-date-object: 1.1.0
       is-symbol: 1.1.1
 
-  es-toolkit@1.43.0: {}
+  es-toolkit@1.44.0: {}
 
   esast-util-from-estree@2.0.0:
     dependencies:
@@ -9553,44 +9553,44 @@ snapshots:
 
   inherits@2.0.4: {}
 
-  ink-big-text@2.0.0(ink@6.5.1(@types/react@19.2.7)(react@19.2.3))(react@19.2.3):
+  ink-big-text@2.0.0(ink@6.6.0(@types/react@19.2.7)(react@19.2.3))(react@19.2.3):
     dependencies:
       cfonts: 3.3.1
-      ink: 6.5.1(@types/react@19.2.7)(react@19.2.3)
+      ink: 6.6.0(@types/react@19.2.7)(react@19.2.3)
       prop-types: 15.8.1
       react: 19.2.3
 
-  ink-gradient@3.0.0(ink@6.5.1(@types/react@19.2.7)(react@19.2.3)):
+  ink-gradient@3.0.0(ink@6.6.0(@types/react@19.2.7)(react@19.2.3)):
     dependencies:
       '@types/gradient-string': 1.1.6
       gradient-string: 2.0.2
-      ink: 6.5.1(@types/react@19.2.7)(react@19.2.3)
+      ink: 6.6.0(@types/react@19.2.7)(react@19.2.3)
       prop-types: 15.8.1
       strip-ansi: 7.1.2
 
-  ink-select-input@6.2.0(ink@6.5.1(@types/react@19.2.7)(react@19.2.3))(react@19.2.3):
+  ink-select-input@6.2.0(ink@6.6.0(@types/react@19.2.7)(react@19.2.3))(react@19.2.3):
     dependencies:
       figures: 6.1.0
-      ink: 6.5.1(@types/react@19.2.7)(react@19.2.3)
+      ink: 6.6.0(@types/react@19.2.7)(react@19.2.3)
       react: 19.2.3
       to-rotated: 1.0.0
 
-  ink-spinner@5.0.0(ink@6.5.1(@types/react@19.2.7)(react@19.2.3))(react@19.2.3):
+  ink-spinner@5.0.0(ink@6.6.0(@types/react@19.2.7)(react@19.2.3))(react@19.2.3):
     dependencies:
       cli-spinners: 2.9.2
-      ink: 6.5.1(@types/react@19.2.7)(react@19.2.3)
+      ink: 6.6.0(@types/react@19.2.7)(react@19.2.3)
       react: 19.2.3
 
-  ink-text-input@6.0.0(ink@6.5.1(@types/react@19.2.7)(react@19.2.3))(react@19.2.3):
+  ink-text-input@6.0.0(ink@6.6.0(@types/react@19.2.7)(react@19.2.3))(react@19.2.3):
     dependencies:
       chalk: 5.6.2
-      ink: 6.5.1(@types/react@19.2.7)(react@19.2.3)
+      ink: 6.6.0(@types/react@19.2.7)(react@19.2.3)
       react: 19.2.3
       type-fest: 4.41.0
 
-  ink@6.5.1(@types/react@19.2.7)(react@19.2.3):
+  ink@6.6.0(@types/react@19.2.7)(react@19.2.3):
     dependencies:
-      '@alcalzone/ansi-tokenize': 0.2.2
+      '@alcalzone/ansi-tokenize': 0.2.3
       ansi-escapes: 7.2.0
       ansi-styles: 6.2.3
       auto-bind: 5.0.1
@@ -9599,7 +9599,7 @@ snapshots:
       cli-cursor: 4.0.0
       cli-truncate: 5.1.1
       code-excerpt: 4.0.0
-      es-toolkit: 1.43.0
+      es-toolkit: 1.44.0
       indent-string: 5.0.0
       is-in-ci: 2.0.0
       patch-console: 2.0.0
@@ -10642,12 +10642,12 @@ snapshots:
     dependencies:
       entities: 6.0.1
 
-  pastel@3.0.0(ink@6.5.1(@types/react@19.2.7)(react@19.2.3))(react@19.2.3)(zod@4.1.13):
+  pastel@3.0.0(ink@6.6.0(@types/react@19.2.7)(react@19.2.3))(react@19.2.3)(zod@4.1.13):
     dependencies:
-      '@inkjs/ui': 2.0.0(ink@6.5.1(@types/react@19.2.7)(react@19.2.3))
+      '@inkjs/ui': 2.0.0(ink@6.6.0(@types/react@19.2.7)(react@19.2.3))
       commander: 12.1.0
       decamelize: 6.0.1
-      ink: 6.5.1(@types/react@19.2.7)(react@19.2.3)
+      ink: 6.6.0(@types/react@19.2.7)(react@19.2.3)
       plur: 5.1.0
       react: 19.2.3
       read-package-up: 11.0.0
@@ -11263,18 +11263,6 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  solc@0.8.31:
-    dependencies:
-      command-exists: 1.2.9
-      commander: 8.3.0
-      follow-redirects: 1.15.11
-      js-sha3: 0.8.0
-      memorystream: 0.3.1
-      semver: 5.7.2
-      tmp: 0.0.33
-    transitivePeerDependencies:
-      - debug
-
   solidity-ast@0.4.61: {}
 
   sonic-boom@4.2.0:
@@ -11436,14 +11424,14 @@ snapshots:
 
   tapable@2.3.0: {}
 
-  terser-webpack-plugin@5.3.16(webpack@5.103.0):
+  terser-webpack-plugin@5.3.16(webpack@5.104.1):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       serialize-javascript: 6.0.2
       terser: 5.44.1
-      webpack: 5.103.0
+      webpack: 5.104.1
 
   terser@5.44.1:
     dependencies:
@@ -11452,7 +11440,7 @@ snapshots:
       commander: 2.20.3
       source-map-support: 0.5.21
 
-  tevm@1.0.0-next.149(@tevm/ts-plugin@1.0.0-next.148(typescript@5.9.3))(@types/debug@4.1.12)(@types/node@24.10.4)(@types/react@19.2.7)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(typescript@5.9.3)(viem@2.42.0(typescript@5.9.3)(zod@4.1.13))(webpack@5.103.0)(yaml@2.8.1)(zod@4.1.13):
+  tevm@1.0.0-next.149(@tevm/ts-plugin@1.0.0-next.148(typescript@5.9.3))(@types/debug@4.1.12)(@types/node@24.10.4)(@types/react@19.2.7)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(typescript@5.9.3)(viem@2.42.0(typescript@5.9.3)(zod@4.1.13))(webpack@5.104.1)(yaml@2.8.1)(zod@4.1.13):
     dependencies:
       '@tevm/actions': 1.0.0-next.149(typescript@5.9.3)(viem@2.42.0(typescript@5.9.3)(zod@4.1.13))(zod@4.1.13)
       '@tevm/address': 1.0.0-next.148(typescript@5.9.3)(viem@2.42.0(typescript@5.9.3)(zod@4.1.13))(zod@4.1.13)
@@ -11491,11 +11479,11 @@ snapshots:
       '@tevm/viem': 1.0.0-next.148(typescript@5.9.3)(viem@2.42.0(typescript@5.9.3)(zod@4.1.13))(zod@4.1.13)
       '@tevm/vite-plugin': 1.0.0-next.148
       '@tevm/vm': 1.0.0-next.148(typescript@5.9.3)(viem@2.42.0(typescript@5.9.3)(zod@4.1.13))(zod@4.1.13)
-      '@tevm/webpack-plugin': 1.0.0-next.148(webpack@5.103.0)
+      '@tevm/webpack-plugin': 1.0.0-next.148(webpack@5.104.1)
       commander: 14.0.2
       effect: 3.18.1
       glob: 11.1.0
-      solc: 0.8.31
+      solc: 0.8.30
       viem: 2.42.0(typescript@5.9.3)(zod@4.1.13)
     transitivePeerDependencies:
       - '@edge-runtime/vm'
@@ -11941,7 +11929,7 @@ snapshots:
       - tsx
       - yaml
 
-  watchpack@2.4.4:
+  watchpack@2.5.1:
     dependencies:
       glob-to-regexp: 0.4.1
       graceful-fs: 4.2.11
@@ -11952,7 +11940,7 @@ snapshots:
 
   webpack-virtual-modules@0.6.2: {}
 
-  webpack@5.103.0:
+  webpack@5.104.1:
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.8
@@ -11965,7 +11953,7 @@ snapshots:
       browserslist: 4.28.1
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.18.4
-      es-module-lexer: 1.7.0
+      es-module-lexer: 2.0.0
       eslint-scope: 5.1.1
       events: 3.3.0
       glob-to-regexp: 0.4.1
@@ -11976,8 +11964,8 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.0
-      terser-webpack-plugin: 5.3.16(webpack@5.103.0)
-      watchpack: 2.4.4
+      terser-webpack-plugin: 5.3.16(webpack@5.104.1)
+      watchpack: 2.5.1
       webpack-sources: 3.3.3
     transitivePeerDependencies:
       - '@swc/core'
@@ -12105,7 +12093,7 @@ snapshots:
 
   zod@4.1.13: {}
 
-  zustand@5.0.9(@types/react@19.2.7)(react@19.2.3):
+  zustand@5.0.10(@types/react@19.2.7)(react@19.2.3):
     optionalDependencies:
       '@types/react': 19.2.7
       react: 19.2.3

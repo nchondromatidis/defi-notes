@@ -1,15 +1,33 @@
-import { createTevmTransport, tevmReady, type TevmTransport } from 'tevm';
-import { type Account, createTestClient, type TestClient } from 'viem';
+import { createClient, createTevmTransport, tevmReady, type TevmTransport } from 'tevm';
+import {
+  type Account,
+  testActions,
+  publicActions,
+  type Client,
+  type PublicActions,
+  type TestActions,
+  type Transport,
+  type Chain,
+} from 'viem';
+import { localhost } from 'viem/chains';
 
-export async function buildClient(nodeAccount: Account): Promise<TestClient<'anvil', TevmTransport>> {
+export type PublicTestClient<
+  TTransport extends Transport = Transport,
+  TChain extends Chain = Chain,
+  TAccount extends Account = Account,
+> = Client<TTransport, TChain, TAccount, undefined, PublicActions & TestActions>;
+
+export async function buildClient(nodeAccount: Account): Promise<PublicTestClient<TevmTransport>> {
   const tevmTransport = createTevmTransport({
     miningConfig: { type: 'auto' },
   });
-  const client = createTestClient({
+  const client = createClient({
     account: nodeAccount,
+    chain: localhost,
     transport: tevmTransport,
-    mode: 'anvil',
-  });
+  })
+    .extend(publicActions) // adds getBalance, getBlock, etc.
+    .extend(testActions({ mode: 'anvil' })); // adds mine, setBalance, etc.;
   await tevmReady(client);
 
   return client;

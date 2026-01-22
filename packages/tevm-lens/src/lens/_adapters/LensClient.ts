@@ -3,10 +3,10 @@ import { tevmContract, tevmDeploy } from 'tevm';
 import {
   type Abi,
   type AbiStateMutability,
-  type Client,
   type ContractConstructorArgs,
   type ContractFunctionArgs,
   getContract,
+  type PrivateKeyAccount,
 } from 'viem';
 import type { ContractResult, Message } from 'tevm/actions';
 import type { EvmResult } from 'tevm/evm';
@@ -17,6 +17,7 @@ import { InvalidArgument, InvariantError } from '../_common/errors.ts';
 import type { Address, Hex, LensArtifactsMap } from '../types.ts';
 import type { InterpreterStep } from 'tevm/evm';
 import { hardhatLinkExternalLibToBytecode } from '../utils/hardhat-utils.ts';
+import { buildClient, type PublicTestClient } from './client.ts';
 
 export type Next = () => void;
 
@@ -25,7 +26,8 @@ export class LensClient<
   LensArtifactsMapT extends LensArtifactsMap<ArtifactMapT> = LensArtifactsMap<ArtifactMapT>,
 > {
   constructor(
-    public readonly client: Client<TevmTransport>,
+    public deployerAccount: PrivateKeyAccount,
+    public client: PublicTestClient<TevmTransport>,
     public readonly debugMetadata: DebugMetadata,
     public readonly addressLabeler: AddressLabeler,
     public readonly callTracer: CallTracer
@@ -108,5 +110,10 @@ export class LensClient<
       abi: contractAbi,
       client: this.client,
     });
+  }
+
+  async revert() {
+    // TODO: snapshots are not supported by tevm yet, so there is complete reset
+    this.client = await buildClient(this.deployerAccount);
   }
 }

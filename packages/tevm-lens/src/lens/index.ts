@@ -48,7 +48,7 @@ export async function buildCallTracer<
 
   const tracer = new CallTracer(evmEventsHandler, callTraceEventHandler);
 
-  const lensClient = new LensClient<LensArtifactsMapT>(client, debugMetadata, addressLabeler, tracer);
+  const lensClient = new LensClient<LensArtifactsMapT>(deployerAccount, client, debugMetadata, addressLabeler, tracer);
 
   return {
     deployerAccount,

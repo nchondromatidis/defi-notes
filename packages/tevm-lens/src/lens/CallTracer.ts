@@ -11,20 +11,21 @@ export class CallTracer {
   public readonly failedTxs: Map<TxId, DeepReadonly<CallTrace>> = new Map();
 
   constructor(
-    private readonly evmEventsProcessor: EvmEventsHandler,
+    private readonly evmEventsHandler: EvmEventsHandler,
     private readonly callTraceEventHandler: CallTraceEventHandler
   ) {}
 
   public async register(event: EvmEvent) {
-    await this.evmEventsProcessor.register(event);
+    await this.evmEventsHandler.register(event);
   }
 
   public async process() {
-    const callTraceEvents = await this.evmEventsProcessor.processRegistered();
+    const callTraceEvents = await this.evmEventsHandler.processRegistered();
     for (const callTraceEvent of callTraceEvents) {
       await this.callTraceEventHandler.route(callTraceEvent);
     }
   }
+
   public save(txHash: Hex, status: 'success' | 'failed') {
     const callTrace = this.callTraceEventHandler.getCallTrace();
 
@@ -33,7 +34,7 @@ export class CallTracer {
   }
 
   public reset() {
-    this.evmEventsProcessor.reset();
+    this.evmEventsHandler.reset();
     this.callTraceEventHandler.reset();
   }
 }
