@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { ChevronRight, ChevronDown, AlertTriangle, Maximize2, Minimize2, Activity, ArrowRight } from 'lucide-react';
-import { cn } from '@/lib/utils.ts';
+import { cn, scrollbarsDark } from '@/lib/utils.ts';
 import type { FunctionCallEvent } from '@defi-notes/tevm-lens/src/lens/CallTrace.ts';
 
 // --- Helper Functions ---
@@ -255,7 +255,7 @@ export const FunctionTraceViewer: React.FC<TransactionTraceViewerProps> = ({ fun
       </div>
 
       {/* Main Content Area with Custom Scrollbar */}
-      <div className="flex-1 overflow-auto p-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-zinc-600">
+      <div className={cn('flex-1 overflow-auto p-2', scrollbarsDark)}>
         <div className="min-w-max pb-10">
           <TraceNode
             event={functionTrace}
