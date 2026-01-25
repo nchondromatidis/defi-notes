@@ -1,4 +1,4 @@
-import { TestResourceLoader } from './TestResourceLoader.ts';
+import { TEST_ARTIFACTS_PATH, TestResourceLoader } from './TestResourceLoader.ts';
 import { tevmSetAccount } from 'tevm';
 import { ETHER_1 } from './utils/constants.ts';
 import type { LensArtifact, LensArtifactsMap } from '../../src/lens/types.ts';
@@ -28,13 +28,15 @@ type ExtractProject<MapT extends LensArtifactsMap<any>, RootT extends string> = 
     : never;
 }[keyof MapT];
 
-export function createLensTracerTestSetup<MapT extends LensArtifactsMap<any>>() {
+export function createLensTracerTestSetup<MapT extends LensArtifactsMap<any>>(
+  artifactsPath: string = TEST_ARTIFACTS_PATH
+) {
   return async function lensTracerTestSetup<
     RootT extends ExtractRoot<MapT>,
     ProjectNameT extends ExtractProject<MapT, RootT>,
   >(root: RootT, projectName: ProjectNameT) {
-    const resourceLoader = new TestResourceLoader(root);
-    const { lensClient, debugMetadata, deployerAccount } =
+    const resourceLoader = new TestResourceLoader(artifactsPath, root);
+    const { lensClient, debugMetadata, deployerAccount, client } =
       await buildCallTracer<LensArtifactsMapSlice<MapT, RootT, ProjectNameT>>();
 
     const artifacts = await resourceLoader.getProtocolArtifacts(projectName);
@@ -51,6 +53,6 @@ export function createLensTracerTestSetup<MapT extends LensArtifactsMap<any>>() 
       balance: ETHER_1,
     });
 
-    return { lensClient };
+    return { lensClient, resourceLoader, client };
   };
 }

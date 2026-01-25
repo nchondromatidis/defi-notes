@@ -1,3 +1,5 @@
+import { type Hex, isHex } from 'viem';
+
 type Ok<T> = { ok: true; value: T };
 type Err<E = unknown> = { ok: false; error: E };
 type Result<T, E = unknown> = Ok<T> | Err<E>;
@@ -25,3 +27,8 @@ export type DeepReadonly<T> =
     : T extends object
       ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
       : T;
+
+export function safeCastToHex(value: string): Hex {
+  if (!isHex(value)) throw new Error(`Invalid hex string: ${value}`);
+  return value;
+}

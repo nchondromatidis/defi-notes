@@ -16,11 +16,11 @@ export class FunctionIndexesRegistry {
   public async register(functionIndexes: LensFunctionIndex[]) {
     for (const fnIndex of functionIndexes) {
       // create index2
-      this.index1.setNotDuplicate(fnIndex.contractFQN, fnIndex.nameOrKind, fnIndex);
+      this.index1.set(fnIndex.contractFQN, fnIndex.nameOrKind, fnIndex);
 
       // create index3
       if (fnIndex.selector) {
-        this.index2.setNotDuplicate(fnIndex.contractFQN, fnIndex.selector, fnIndex);
+        this.index2.set(fnIndex.contractFQN, fnIndex.selector, fnIndex);
       }
     }
   }

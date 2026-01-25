@@ -1,7 +1,6 @@
 import { type Abi } from 'viem';
 
 // tracing
-export type TracingId = string;
 export type TxId = Hex;
 
 // hex types

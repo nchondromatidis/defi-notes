@@ -3,15 +3,20 @@ import { promises as fs } from 'fs';
 import type { IResourceLoader } from '../../src/lens/_adapters/IResourceLoader.ts';
 import * as path from 'node:path';
 
+export const TEST_ARTIFACTS_PATH = path.join(__dirname, 'artifacts');
+export const PROTOCOLS_ARTIFACTS_PATH = path.join(__dirname, '..', '..', '..', 'protocols', 'artifacts');
+
 export class TestResourceLoader implements IResourceLoader {
-  artifactsPath = path.join(__dirname, 'artifacts');
   artifactsContractsPath;
   contractFqnListFileName = 'contract-fqn-list.json';
   sourceFunctionIndexFileName = 'function-indexes.json';
   pcLocationsIndexFileName = 'pc-locations-indexes.json';
 
-  constructor(root: string) {
-    this.artifactsContractsPath = path.join(__dirname, 'artifacts', root);
+  constructor(
+    private artifactsPath: string,
+    root: string
+  ) {
+    this.artifactsContractsPath = path.join(artifactsPath, root);
   }
 
   async getArtifact(contractFQN: string): Promise<LensArtifact> {

@@ -23,20 +23,20 @@ export class PcLocationIndexesRegistry {
       for (const locationSource of pcLocationIndex.locationSources) {
         contractFQNFunctions.push(...(functionsPerSource.get(locationSource) ?? []));
       }
-      this.contactFunctions.set(pcLocationIndex.contractFQN, contractFQNFunctions);
+      this.contactFunctions.setNotDuplicate(pcLocationIndex.contractFQN, contractFQNFunctions);
     }
 
     // contactOpcodes index
     for (const pcLocationIndex of pcLocationIndexes) {
       for (const pcLocation of pcLocationIndex.pcLocations) {
-        this.contactOpcodes.set(pcLocationIndex.contractFQN, pcLocation[0], pcLocation);
+        this.contactOpcodes.setNotDuplicate(pcLocationIndex.contractFQN, pcLocation[0], pcLocation);
       }
     }
 
     // contractLocationSources index
     for (const pcLocationIndex of pcLocationIndexes) {
       for (const [index, locationSource] of pcLocationIndex.locationSources.entries()) {
-        this.contractLocationSources.set(pcLocationIndex.contractFQN, index, locationSource);
+        this.contractLocationSources.setNotDuplicate(pcLocationIndex.contractFQN, index, locationSource);
       }
     }
   }
