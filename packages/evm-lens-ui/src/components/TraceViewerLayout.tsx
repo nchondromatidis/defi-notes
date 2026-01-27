@@ -1,5 +1,5 @@
 import { Group, Panel, Separator } from 'react-resizable-panels';
-import type { FunctionCallEvent } from '@defi-notes/tevm-lens/src/lens/CallTrace.ts';
+import type { FunctionCallEvent } from '@defi-notes/evm-lens/src/lens/CallTrace.ts';
 import { FunctionTraceViewer } from '@/components/FunctionTraceViewer.tsx';
 import { SourceCodeViewer } from '@/components/SourceCodeViewer.tsx';
 import ProjectFilesViewer from '@/components/ProjectFilesViewer.tsx';

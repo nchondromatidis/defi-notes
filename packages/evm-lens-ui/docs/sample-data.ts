@@ -1,4 +1,4 @@
-import type { FunctionCallEvent } from '@defi-notes/tevm-lens/src/lens/CallTrace.ts';
+import type { FunctionCallEvent } from '@defi-notes/evm-lens/src/lens/CallTrace.ts';
 
 export const sample1: FunctionCallEvent = {
   type: 'FunctionCallEvent',

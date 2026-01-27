@@ -1,6 +1,6 @@
 # TODO
 
-- temv-lens
+- emv-lens
   - Features
     - Next milestones:
       - FunctionEntryHandler
@@ -21,17 +21,17 @@
       - break decoding function call: function call, fallback handlers
       - break decoding result: error, result
       - convert anemic to a rich domain model
-      - Replace tevm objects for external calls and results with raw data (opcodes, stack, memory)
+      - Replace evm objects for external calls and results with raw data (opcodes, stack, memory)
       - Rethink ArtifactMap generics
 - hardhat-temv-lens
   - add support for find reference and go to definition
     - compilation unit: use slang reference <-> definition
     - cross compilation unit: manual import
-- tevm-lens-ui
+- evm-lens-ui
     - txTrace -> components
 - analysis
     - Add dependency on protocols
-    - while using analysis: fix tevm-lens when needed
+    - while using analysis: fix evm-lens when needed
 
 
 # Thoughts
