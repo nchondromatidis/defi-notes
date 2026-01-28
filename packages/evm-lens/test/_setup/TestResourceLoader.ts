@@ -1,6 +1,6 @@
 import type { LensArtifact, LensFunctionIndex, LensPcLocationIndex } from '../../src/lens/types.ts';
 import { promises as fs } from 'fs';
-import type { IResourceLoader } from '../../src/lens/_adapters/IResourceLoader.ts';
+import type { IResourceLoader } from '../../src/adapters/IResourceLoader.ts';
 import * as path from 'node:path';
 
 export const TEST_ARTIFACTS_PATH = path.join(__dirname, 'artifacts');

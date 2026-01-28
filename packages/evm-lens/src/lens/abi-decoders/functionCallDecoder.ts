@@ -1,5 +1,5 @@
 import type { FunctionCallTypes, Hex, LensFunctionIndex } from '../types.ts';
-import { InvariantError } from '../_common/errors.ts';
+import { InvariantError } from '../../_common/errors.ts';
 import {
   type Abi,
   AbiFunctionSignatureNotFoundError,
@@ -7,7 +7,7 @@ import {
   decodeFunctionData,
   parseAbiItem,
 } from 'viem';
-import { trySync } from '../_common/type-utils.ts';
+import { trySync } from '../../_common/type-utils.ts';
 
 //*************************************** DECODE WITH FUNCTION INDEXES ***************************************//
 

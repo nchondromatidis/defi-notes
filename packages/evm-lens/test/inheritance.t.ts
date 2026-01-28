@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from 'vitest';
-import type { LensClient } from '../src/lens/_adapters/LensClient.ts';
+import type { LensClient } from '../src/lens/LensClient.ts';
 import type { ArtifactMap } from './_setup/artifacts';
 import type { GetContractReturnType } from 'viem';
 import { getTracedTxFactory } from './_setup/utils.ts';

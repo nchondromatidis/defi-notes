@@ -1,7 +1,7 @@
 import { type EvmEvent, isEvmResult, isInterpreterStep, isMessage } from '../_events/client-evm-events.ts';
 import type { Address, LensFunctionIndex, PcLocationReadable } from '../../types.ts';
 import type { ExternalCallEvmEvent, ExternalCallResultEvmEvent, OpcodeStepEvent } from '../_events/lens-evm-events.ts';
-import { InvariantError } from '../../_common/errors.ts';
+import { InvariantError } from '../../../_common/errors.ts';
 import { isExternalCallOpcode, isJumpDestOpcode, isJumpOpcode } from '../../opcodes';
 import { HandlerBase } from '../HandlerBase.ts';
 import { bytesToHex } from 'viem';

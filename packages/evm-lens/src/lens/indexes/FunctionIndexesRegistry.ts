@@ -1,5 +1,5 @@
 import type { LensFunctionIndex } from '../types.ts';
-import { NestedMap } from '../_common/NestedMap.ts';
+import { NestedMap } from '../../_common/NestedMap.ts';
 
 export const QueryBy = {
   contractAndNameOrKind: (contractFQN: string, name: string, orKind: string) =>

@@ -6,6 +6,6 @@ export { FunctionTraceViewer } from './components/FunctionTraceViewer.tsx';
 export { ThemeProvider, useTheme } from './providers/theme-provider.tsx';
 
 // Re-export types for convenience
-export type { FunctionCallEvent } from '@defi-notes/evm-lens/src/lens/CallTrace.ts';
+export type { FunctionCallEvent } from '@defi-notes/evm-lens/src/lens/call-tracer/CallTrace.ts';
 
 // Note: CSS must be imported separately: import 'tevm-lens-ui/styles'

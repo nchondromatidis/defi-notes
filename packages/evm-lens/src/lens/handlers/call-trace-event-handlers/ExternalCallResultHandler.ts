@@ -1,7 +1,7 @@
 import { HandlerBase } from '../HandlerBase.ts';
 import type { ExternalCallResultEvmEvent } from '../_events/lens-evm-events.ts';
 import { bytesToHex } from 'viem';
-import type { FunctionCallEvent, FunctionResultEvent, LensLog } from '../../CallTrace.ts';
+import type { FunctionCallEvent, FunctionResultEvent, LensLog } from '../../call-tracer/CallTrace.ts';
 import {
   type ContractLogDecodingData,
   DecodedLogsCache,
@@ -13,7 +13,7 @@ import {
   decodeFunctionResultMultipleAbisWithCache,
   decodeFunctionReturnWithFunctionIndex,
 } from '../../abi-decoders/functionResultDecoder.ts';
-import { InvariantError } from '../../_common/errors.ts';
+import { InvariantError } from '../../../_common/errors.ts';
 import { QueryBy } from '../../indexes/FunctionIndexesRegistry.ts';
 import type { RawLog } from '../../types.ts';
 

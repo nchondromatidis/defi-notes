@@ -1,5 +1,5 @@
 import { type Address, type Hex, keccak256, toHex } from 'viem';
-import { InvalidArgument } from '../_common/errors.ts';
+import { InvalidArgument } from '../../_common/errors.ts';
 
 export function hardhatLinkExternalLibToBytecode(bytecode: Hex, libraryFqn: string, libraryAddress: Address) {
   const hash = keccak256(toHex(hardhatToCompilerSourceInput(libraryFqn)));

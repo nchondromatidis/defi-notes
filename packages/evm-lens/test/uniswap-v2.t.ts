@@ -1,6 +1,6 @@
 import { test, beforeEach, describe } from 'vitest';
-import type { LensClient } from '../src/lens/_adapters/LensClient.ts';
-import { buildClient } from '../src/lens/_adapters/client.ts';
+import type { LensClient } from '../src/lens/LensClient.ts';
+import { buildClient } from '../src/adapters/client.ts';
 import { type GetContractReturnType, keccak256, encodePacked, getContractAddress } from 'viem';
 import { inspect } from './_setup/utils/inspect.ts';
 import type { ArtifactMap } from '@defi-notes/protocols/artifacts';
@@ -9,8 +9,8 @@ import type { LensArtifactsMap } from '../src/lens/types.ts';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { getTracedTxFactory } from './_setup/utils.ts';
 import { ZERO_ADDRESS } from './_setup/utils/constants.ts';
-import type { IResourceLoader } from '../src/lens/_adapters/IResourceLoader.ts';
-import { safeCastToHex } from '../src/lens/_common/type-utils.ts';
+import type { IResourceLoader } from '../src/adapters/IResourceLoader.ts';
+import { safeCastToHex } from '../src/_common/type-utils.ts';
 import { PROTOCOLS_ARTIFACTS_PATH } from './_setup/TestResourceLoader.ts';
 
 describe('uniswap-v2', () => {

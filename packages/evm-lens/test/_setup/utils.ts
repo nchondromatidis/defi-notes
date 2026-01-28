@@ -1,4 +1,4 @@
-import type { LensClient } from '../../src/lens/_adapters/LensClient.ts';
+import type { LensClient } from '../../src/lens/LensClient.ts';
 import type { ContractResult } from 'tevm/actions';
 import { inspect } from './utils/inspect.ts';
 

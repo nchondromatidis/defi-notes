@@ -1,9 +1,9 @@
 import { HandlerBase } from '../HandlerBase.ts';
 import type { ExternalCallEvmEvent } from '../_events/lens-evm-events.ts';
 import { type Abi, bytesToHex } from 'viem';
-import type { FunctionCallEvent } from '../../CallTrace.ts';
+import type { FunctionCallEvent } from '../../call-tracer/CallTrace.ts';
 import type { Address } from '../../types.ts';
-import { InvariantError } from '../../_common/errors.ts';
+import { InvariantError } from '../../../_common/errors.ts';
 import {
   decodeFunctionCallMultipleAbis,
   decodeFunctionCallWithFunctionIndexes,

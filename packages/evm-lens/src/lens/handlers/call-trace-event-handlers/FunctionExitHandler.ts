@@ -1,6 +1,6 @@
 import { HandlerBase } from '../HandlerBase.ts';
 
-import type { FunctionCallEvent, FunctionResultEvent } from '../../CallTrace.ts';
+import type { FunctionCallEvent, FunctionResultEvent } from '../../call-tracer/CallTrace.ts';
 import type { InternalFunctionCallResultEvent } from '../_events/call-trace-events.ts';
 
 /*

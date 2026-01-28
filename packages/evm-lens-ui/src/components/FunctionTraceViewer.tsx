@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { ChevronRight, ChevronDown, AlertTriangle, Maximize2, Minimize2, Activity, ArrowRight } from 'lucide-react';
 import { cn, scrollbarsDark } from '@/lib/utils.ts';
-import type { FunctionCallEvent } from '@defi-notes/evm-lens/src/lens/CallTrace.ts';
+import type { FunctionCallEvent } from '@defi-notes/evm-lens/src/lens/call-tracer/CallTrace.ts';
 import { getContractName } from '@defi-notes/evm-lens/src/client-utils';
 
 // --- Helper Functions ---

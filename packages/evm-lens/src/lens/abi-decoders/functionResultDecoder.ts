@@ -7,7 +7,7 @@ import {
   parseAbiItem,
   decodeAbiParameters,
 } from 'viem';
-import { trySync } from '../_common/type-utils.ts';
+import { trySync } from '../../_common/type-utils.ts';
 import type { Hex, LensFunctionIndex } from '../types.ts';
 import { DecodedDataCache } from './DecodedDataCache.ts';
 

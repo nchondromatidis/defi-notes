@@ -1,5 +1,5 @@
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
-import { buildClient } from './_adapters/client.ts';
+import { buildClient } from '../adapters/client.ts';
 import { ArtifactsProvider } from './indexes/ArtifactsProvider.ts';
 import { FunctionIndexesRegistry } from './indexes/FunctionIndexesRegistry.ts';
 import { DebugMetadata } from './indexes/DebugMetadata.ts';
@@ -8,8 +8,8 @@ import { ExternalCallHandler } from './handlers/call-trace-event-handlers/Extern
 import { ExternalCallResultHandler } from './handlers/call-trace-event-handlers/ExternalCallResultHandler.ts';
 import { FunctionEntryHandler } from './handlers/call-trace-event-handlers/FunctionEntryHandler.ts';
 import { FunctionExitHandler } from './handlers/call-trace-event-handlers/FunctionExitHandler.ts';
-import { CallTracer } from './CallTracer.ts';
-import { LensClient } from './_adapters/LensClient.ts';
+import { CallTracer } from './call-tracer/CallTracer.ts';
+import { LensClient } from './LensClient.ts';
 import type { LensArtifactsMap } from './types.ts';
 import { PcLocationIndexesRegistry } from './indexes/PcLocationIndexesRegistry.ts';
 import { OpcodeMatcher } from './handlers/evm-events-handlers/OpcodeMatcher.ts';

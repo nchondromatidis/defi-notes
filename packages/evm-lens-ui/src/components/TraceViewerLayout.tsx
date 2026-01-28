@@ -1,5 +1,5 @@
 import { Group, Panel, Separator } from 'react-resizable-panels';
-import type { FunctionCallEvent } from '@defi-notes/evm-lens/src/lens/CallTrace.ts';
+import type { FunctionCallEvent } from '@defi-notes/evm-lens/src/lens/call-tracer/CallTrace.ts';
 import { FunctionTraceViewer } from '@/components/FunctionTraceViewer.tsx';
 import { SourceCodeViewer } from '@/components/SourceCodeViewer.tsx';
 import ProjectFilesViewer from '@/components/ProjectFilesViewer.tsx';
@@ -15,7 +15,7 @@ export function TraceViewerLayout({ functionTrace, sourceCode }: TraceViewerLayo
     <Group orientation="vertical" className="h-screen">
       <Panel defaultSize={60} className="overflow-hidden px-4 pt-4 border">
         <Group orientation="horizontal" className="h-full">
-          <Panel defaultSize={30} minSize={10} className="overflow-hidden h-full pr-4 border-r">
+          <Panel defaultSize="30%" maxSize={350} className="overflow-hidden h-full pr-4 border-r">
             <ProjectFilesViewer
               items={DEFAULT_ITEMS}
               indent={DEFAULT_INDENT}
@@ -23,7 +23,7 @@ export function TraceViewerLayout({ functionTrace, sourceCode }: TraceViewerLayo
               rootItemId={'company'}
             ></ProjectFilesViewer>
           </Panel>
-          <Panel defaultSize={70} minSize={20} className="overflow-hidden ml-4 h-full">
+          <Panel defaultSize="70%" className="overflow-hidden ml-4 h-full">
             <SourceCodeViewer sourceCode={sourceCode} />
           </Panel>
         </Group>

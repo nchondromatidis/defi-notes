@@ -1,5 +1,5 @@
 import { test, beforeEach, describe, expect } from 'vitest';
-import { LensClient } from '../src/lens/_adapters/LensClient.ts';
+import { LensClient } from '../src/lens/LensClient.ts';
 
 import { createLensTracerTestSetup, type LensArtifactsMapSlice } from './_setup/lensTracerTestSetup.ts';
 import { getTracedTxFactory } from './_setup/utils.ts';

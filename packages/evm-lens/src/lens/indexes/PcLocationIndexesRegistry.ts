@@ -1,5 +1,5 @@
 import type { LensFunctionIndex, LensPcLocationIndex } from '../types.ts';
-import { NestedMap } from '../_common/NestedMap.ts';
+import { NestedMap } from '../../_common/NestedMap.ts';
 
 export class PcLocationIndexesRegistry {
   protected contactFunctions = new NestedMap<[contractFQN: string], LensFunctionIndex[]>();
