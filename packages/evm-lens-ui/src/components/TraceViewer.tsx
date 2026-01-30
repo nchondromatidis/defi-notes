@@ -2,7 +2,8 @@ import { Group, Panel, Separator } from 'react-resizable-panels';
 import type { FunctionCallEvent } from '@defi-notes/evm-lens/src/lens/call-tracer/CallTrace.ts';
 import { FunctionTraceViewer } from '@/components/FunctionTraceViewer.tsx';
 import { SourceCodeViewer } from '@/components/SourceCodeViewer.tsx';
-import ProjectFilesViewer, { type Item } from '@/components/ProjectFilesViewer.tsx';
+import { ProjectFilesViewer, type Item } from '@/components/ProjectFilesViewer.tsx';
+import React from 'react';
 
 interface TraceViewerLayoutProps {
   functionTrace: FunctionCallEvent;
@@ -11,7 +12,11 @@ interface TraceViewerLayoutProps {
   initialFileOpened?: string;
 }
 
-export function TraceViewerLayout({ functionTrace, projectFiles, initialExpandedFolders }: TraceViewerLayoutProps) {
+export const TraceViewer: React.FC<TraceViewerLayoutProps> = ({
+  functionTrace,
+  projectFiles,
+  initialExpandedFolders,
+}: TraceViewerLayoutProps) => {
   const sourceCode = undefined;
   const rootItemId = 'company';
 
@@ -37,4 +42,4 @@ export function TraceViewerLayout({ functionTrace, projectFiles, initialExpanded
       </Panel>
     </Group>
   );
-}
+};

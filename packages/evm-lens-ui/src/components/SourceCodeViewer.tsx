@@ -1,12 +1,13 @@
 import CodeMirror from '@uiw/react-codemirror';
 import { solidity } from '@replit/codemirror-lang-solidity';
 import { oneDark } from '@codemirror/theme-one-dark';
+import React from 'react';
 
 interface SourceCodeViewerProps {
   sourceCode?: string;
 }
 
-export function SourceCodeViewer({ sourceCode }: SourceCodeViewerProps) {
+export const SourceCodeViewer: React.FC<SourceCodeViewerProps> = ({ sourceCode }: SourceCodeViewerProps) => {
   if (!sourceCode) return null;
 
   const extensions = [solidity];
@@ -28,4 +29,4 @@ export function SourceCodeViewer({ sourceCode }: SourceCodeViewerProps) {
       />
     </div>
   );
-}
+};

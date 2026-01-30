@@ -7,5 +7,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "docs", "playground.tsx"]
+  "include": ["src", "docs", "playground/main.tsx"]
 }

@@ -11,7 +11,7 @@ import {
 } from '@headless-tree/core';
 import { useTree } from '@headless-tree/react';
 import { FileIcon, FolderIcon, FolderOpenIcon, SearchIcon } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { Input } from '@/components/ui/input.tsx';
 import { Tree, TreeItem, TreeItemLabel } from '@/components/ui/tree.tsx';
@@ -30,12 +30,12 @@ export interface ProjectFilesViewerProps {
   indent?: number;
 }
 
-export default function ProjectFilesViewer({
+export const ProjectFilesViewer: React.FC<ProjectFilesViewerProps> = ({
   items,
   rootItemId,
   initialExpandedItems,
   indent = DEFAULT_INDENT,
-}: ProjectFilesViewerProps) {
+}: ProjectFilesViewerProps) => {
   const [state, setState] = useState<Partial<TreeState<Item>>>({});
 
   const tree = useTree<Item>({
@@ -118,4 +118,4 @@ export default function ProjectFilesViewer({
       </Tree>
     </div>
   );
-}
+};
