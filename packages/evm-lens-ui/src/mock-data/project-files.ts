@@ -29,5 +29,5 @@ export const DEFAULT_ITEMS: Record<string, Item> = {
   tokens: { name: 'Tokens' },
   'web-platform': { name: 'Web Platform' },
 };
-export const DEFAULT_INDENT = 20;
+
 export const DEFAULT_INITIAL_EXPANDED_ITEMS: string[] = ['engineering', 'frontend', 'design-system'];

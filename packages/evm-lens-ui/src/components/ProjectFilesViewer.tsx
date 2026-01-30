@@ -16,6 +16,8 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input.tsx';
 import { Tree, TreeItem, TreeItemLabel } from '@/components/ui/tree.tsx';
 
+export const DEFAULT_INDENT = 20;
+
 export interface Item {
   name: string;
   children?: string[];
@@ -25,14 +27,14 @@ export interface ProjectFilesViewerProps {
   items: Record<string, Item>;
   rootItemId: string;
   initialExpandedItems: string[];
-  indent: number;
+  indent?: number;
 }
 
 export default function ProjectFilesViewer({
   items,
   rootItemId,
   initialExpandedItems,
-  indent,
+  indent = DEFAULT_INDENT,
 }: ProjectFilesViewerProps) {
   const [state, setState] = useState<Partial<TreeState<Item>>>({});
 
