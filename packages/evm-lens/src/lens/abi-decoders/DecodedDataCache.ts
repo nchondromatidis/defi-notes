@@ -17,6 +17,7 @@ export class DecodedDataCache<RawDataT, DecodedDataT> {
     // NOTE: JSON.stringify must produce the same string from rawData
     const msgBuffer = new TextEncoder().encode(JSON.stringify(rawData));
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    return Buffer.from(hashBuffer).toString('hex');
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
   }
 }
