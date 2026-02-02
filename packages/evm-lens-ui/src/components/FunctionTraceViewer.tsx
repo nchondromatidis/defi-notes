@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { ChevronRight, ChevronDown, AlertTriangle, Maximize2, Minimize2, ArrowRight, ListTree } from 'lucide-react';
 import { cn } from '@/lib/utils.ts';
-import type { FunctionCallEvent } from '@defi-notes/evm-lens/src/lens/call-tracer/CallTrace.ts';
+import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/call-tracer/CallTrace.ts';
 import { getContractName } from '@defi-notes/evm-lens/src/client-utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -11,7 +11,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 // --- Helper Functions ---
 
 const getAllPaths = (
-  node: FunctionCallEvent,
+  node: ReadOnlyFunctionCallEvent,
   currentPath: string = 'root',
   paths: Set<string> = new Set()
 ): Set<string> => {
@@ -68,7 +68,7 @@ const getBadgeClassName = (callType: string, isError: boolean) => {
 // --- Sub-components ---
 
 interface TraceNodeProps {
-  event: FunctionCallEvent;
+  event: ReadOnlyFunctionCallEvent;
   path: string;
   depth: number;
   expandedPaths: Set<string>;
@@ -199,7 +199,7 @@ const TraceNode: React.FC<TraceNodeProps> = ({ event, path, depth, expandedPaths
 // --- Main Export Component ---
 
 interface TransactionTraceViewerProps {
-  functionTrace: FunctionCallEvent;
+  functionTrace: ReadOnlyFunctionCallEvent;
   className?: string;
 }
 

@@ -1,4 +1,4 @@
 {
   "extends": "@defi-notes/config/tsconfig.node.json",
-  "include": ["./vite.config.ts", "eslint.config.js", "prettier.config.js"]
+  "include": ["./vite.config.ts", "./vitest.config.js", "eslint.config.js", "prettier.config.js", "docs"]
 }
