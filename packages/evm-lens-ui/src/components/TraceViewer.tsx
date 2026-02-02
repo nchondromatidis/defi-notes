@@ -10,7 +10,8 @@ interface TraceViewerLayoutProps {
   projectFiles: Record<string, Item>;
   rootItemId: string;
   initialExpandedItems: string[];
-  initialFileOpened?: string;
+  onSelectFileFromTree: (fileId: string) => void;
+  sourceCode?: string;
 }
 
 export const TraceViewer: React.FC<TraceViewerLayoutProps> = ({
@@ -18,9 +19,9 @@ export const TraceViewer: React.FC<TraceViewerLayoutProps> = ({
   projectFiles,
   rootItemId,
   initialExpandedItems,
+  onSelectFileFromTree,
+  sourceCode,
 }: TraceViewerLayoutProps) => {
-  const sourceCode = undefined;
-
   return (
     <Group orientation="vertical" className="h-screen">
       <Panel defaultSize={60} className="overflow-hidden   border">
@@ -30,7 +31,8 @@ export const TraceViewer: React.FC<TraceViewerLayoutProps> = ({
               items={projectFiles}
               initialExpandedItems={initialExpandedItems}
               rootItemId={rootItemId}
-            ></ProjectFilesViewer>
+              onSelectFileFromTree={onSelectFileFromTree}
+            />
           </Panel>
           <Panel defaultSize="70%" className="overflow-hidden ml-4 px-4 py-4 h-full">
             <SourceCodeViewer sourceCode={sourceCode} />

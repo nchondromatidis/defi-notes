@@ -27,6 +27,7 @@ export interface ProjectFilesViewerProps {
   items: Record<string, Item>;
   rootItemId: string;
   initialExpandedItems: string[];
+  onSelectFileFromTree: (fileId: string) => void;
   indent?: number;
 }
 
@@ -35,6 +36,7 @@ export const ProjectFilesViewer: React.FC<ProjectFilesViewerProps> = ({
   rootItemId,
   initialExpandedItems,
   indent = DEFAULT_INDENT,
+  onSelectFileFromTree,
 }: ProjectFilesViewerProps) => {
   const [state, setState] = useState<Partial<TreeState<Item>>>({});
 
@@ -98,7 +100,16 @@ export const ProjectFilesViewer: React.FC<ProjectFilesViewerProps> = ({
         {tree.getItems().map((item) => {
           return (
             <TreeItem item={item} key={item.getId()}>
-              <TreeItemLabel className="py-1">
+              <TreeItemLabel
+                className="py-1"
+                {...(!item.isFolder() && onSelectFileFromTree
+                  ? {
+                      onClick: () => {
+                        onSelectFileFromTree(item.getId());
+                      },
+                    }
+                  : {})}
+              >
                 <span className="flex items-center gap-2">
                   {item.isFolder() ? (
                     item.isExpanded() ? (
