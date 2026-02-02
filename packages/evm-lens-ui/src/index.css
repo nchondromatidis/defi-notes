@@ -147,3 +147,32 @@ html, body {
     text-box-edge: cap alphabetic;
   }
 }
+
+/* CodeMirror height and scrollbar styling */
+.cm-editor {
+  height: 100%;
+}
+
+.cm-editor .cm-scroller {
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(63 63 70) transparent;
+}
+
+.cm-editor .cm-scroller::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.cm-editor .cm-scroller::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cm-editor .cm-scroller::-webkit-scrollbar-thumb {
+  background: rgb(63 63 70);
+  border-radius: 9999px;
+}
+
+.cm-editor .cm-scroller::-webkit-scrollbar-thumb:hover {
+  background: rgb(82 82 91);
+}
