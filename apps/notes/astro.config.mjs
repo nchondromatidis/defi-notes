@@ -3,27 +3,17 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import starlightThemeNext from 'starlight-theme-next';
 
-// https://astro.build/config
 export default defineConfig({
-	integrations: [
-		starlight({
+  integrations: [
+    starlight({
       plugins: [starlightThemeNext()],
-			title: 'My Docs',
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
-			sidebar: [
-				{
-					label: 'Guides',
-					items: [
-						// Each item here is one entry in the navigation menu.
-						{ label: 'Example Guide', slug: 'guides/example' },
-					],
-				},
-				{
-					label: 'Reference',
-					autogenerate: { directory: 'reference' },
-				},
-			],
-            customCss: ['./src/styles/custom.css'],
-		}),
-	],
+      title: 'DeFi Notes',
+      routeMiddleware: './src/routeData.ts',
+      sidebar: [
+        { label: 'Uniswap v2', autogenerate: { directory: 'exchanges/uniswap-v2' } },
+        { label: 'Uniswap v3', autogenerate: { directory: 'exchanges/uniswap-v3' } },
+        { label: 'Cureve', autogenerate: { directory: 'exchanges/curve' } },
+      ],
+    }),
+  ],
 });
