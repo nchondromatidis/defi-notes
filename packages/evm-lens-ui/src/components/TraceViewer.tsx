@@ -1,5 +1,4 @@
-import { Group, Panel, Separator } from 'react-resizable-panels';
-import type { Layout } from 'react-resizable-panels';
+import { ResizablePanelGroup, ResizablePanel, type Layout } from '@/components/ui/resizable.tsx';
 import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/call-tracer/CallTrace.ts';
 import { FunctionTraceViewer } from '@/components/FunctionTraceViewer.tsx';
 import { SourceCodeViewer } from '@/components/SourceCodeViewer.tsx';
@@ -51,22 +50,22 @@ export const TraceViewer: React.FC<TraceViewerLayoutProps> = ({
   highlightedLine,
 }: TraceViewerLayoutProps) => {
   return (
-    <Group
+    <ResizablePanelGroup
       id="trace-viewer-main"
       orientation="vertical"
       className="h-screen"
       defaultLayout={getSavedLayout(MAIN_LAYOUT_KEY, { top: 60, bottom: 40 })}
       onLayoutChanged={(layout) => saveLayout(MAIN_LAYOUT_KEY, layout)}
     >
-      <Panel id="top" className="overflow-hidden border">
-        <Group
+      <ResizablePanel id="top" className="overflow-hidden">
+        <ResizablePanelGroup
           id="trace-viewer-top"
           orientation="horizontal"
           className="h-full"
           defaultLayout={getSavedLayout(TOP_LAYOUT_KEY, { files: 30, source: 70 })}
           onLayoutChanged={(layout) => saveLayout(TOP_LAYOUT_KEY, layout)}
         >
-          <Panel id="files" className="overflow-hidden h-full px-4 py-4 border-r">
+          <ResizablePanel id="files" className="overflow-hidden h-full px-4 py-4 border-r">
             <ProjectFilesViewer
               items={projectFiles}
               initialExpandedItems={initialExpandedItems}
@@ -75,16 +74,15 @@ export const TraceViewer: React.FC<TraceViewerLayoutProps> = ({
               onScrollToFile={onScrollToFile}
               scrollToFileId={scrollToFileId}
             />
-          </Panel>
-          <Panel id="source" className="overflow-hidden ml-4 pr-4 py-4 h-full">
+          </ResizablePanel>
+          <ResizablePanel id="source" className="overflow-hidden ml-4 pr-4 py-4 h-full">
             <SourceCodeViewer sourceCode={sourceCode} highlightedLine={highlightedLine} />
-          </Panel>
-        </Group>
-      </Panel>
-      <Separator />
-      <Panel id="bottom" className="overflow-auto p-4 border">
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </ResizablePanel>
+      <ResizablePanel id="bottom" className="overflow-auto p-4 border-t">
         <FunctionTraceViewer functionTrace={functionTrace} onSelectTraceNode={onSelectTraceNode} />
-      </Panel>
-    </Group>
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 };
