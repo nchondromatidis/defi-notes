@@ -30,7 +30,7 @@ interface TraceViewerLayoutProps {
   rootItemId: string;
   initialExpandedItems: string[];
   onSelectFileFromTree: (fileId: string) => void;
-  onSelectTraceNode: (event: ReadOnlyFunctionCallEvent) => void;
+  onSelectFileFromTraceNode: (event: ReadOnlyFunctionCallEvent) => void;
   onScrollToFile: (fileId: string) => void;
   scrollToFileId?: string;
   sourceCode?: string;
@@ -43,7 +43,7 @@ export const TraceViewer: React.FC<TraceViewerLayoutProps> = ({
   rootItemId,
   initialExpandedItems,
   onSelectFileFromTree,
-  onSelectTraceNode,
+  onSelectFileFromTraceNode,
   onScrollToFile,
   scrollToFileId,
   sourceCode,
@@ -81,7 +81,7 @@ export const TraceViewer: React.FC<TraceViewerLayoutProps> = ({
         </ResizablePanelGroup>
       </ResizablePanel>
       <ResizablePanel id="bottom" className="overflow-auto p-4 border-t">
-        <FunctionTraceViewer functionTrace={functionTrace} onSelectTraceNode={onSelectTraceNode} />
+        <FunctionTraceViewer functionTrace={functionTrace} onSelectTraceNode={onSelectFileFromTraceNode} />
       </ResizablePanel>
     </ResizablePanelGroup>
   );

@@ -2,7 +2,7 @@
 
 import type { ItemInstance } from '@headless-tree/core';
 import { ChevronDownIcon } from 'lucide-react';
-import { Slot } from 'radix-ui';
+import { Root } from '@radix-ui/react-slot';
 import * as React from 'react';
 
 import { cn, scrollbarsDark } from '@/lib/utils.ts';
@@ -28,33 +28,31 @@ interface TreeProps extends React.HTMLAttributes<HTMLDivElement> {
   tree?: any;
 }
 
-const Tree = React.forwardRef<HTMLDivElement, TreeProps>(
-  ({ indent = 20, tree, className, ...props }, ref) => {
-    const containerProps = tree && typeof tree.getContainerProps === 'function' ? tree.getContainerProps() : {};
-    const mergedProps = { ...props, ...containerProps };
+const Tree = React.forwardRef<HTMLDivElement, TreeProps>(({ indent = 20, tree, className, ...props }, ref) => {
+  const containerProps = tree && typeof tree.getContainerProps === 'function' ? tree.getContainerProps() : {};
+  const mergedProps = { ...props, ...containerProps };
 
-    // Extract style from mergedProps to merge with our custom styles
-    const { style: propStyle, ...otherProps } = mergedProps;
+  // Extract style from mergedProps to merge with our custom styles
+  const { style: propStyle, ...otherProps } = mergedProps;
 
-    // Merge styles
-    const mergedStyle = {
-      ...propStyle,
-      '--tree-indent': `${indent}px`,
-    } as React.CSSProperties;
+  // Merge styles
+  const mergedStyle = {
+    ...propStyle,
+    '--tree-indent': `${indent}px`,
+  } as React.CSSProperties;
 
-    return (
-      <TreeContext.Provider value={{ indent, tree }}>
-        <div
-          ref={ref}
-          className={cn('flex flex-col overflow-y-auto min-h-0', scrollbarsDark, className)}
-          data-slot="tree"
-          style={mergedStyle}
-          {...otherProps}
-        />
-      </TreeContext.Provider>
-    );
-  }
-);
+  return (
+    <TreeContext.Provider value={{ indent, tree }}>
+      <div
+        ref={ref}
+        className={cn('flex flex-col overflow-y-auto min-h-0', scrollbarsDark, className)}
+        data-slot="tree"
+        style={mergedStyle}
+        {...otherProps}
+      />
+    </TreeContext.Provider>
+  );
+});
 Tree.displayName = 'Tree';
 
 interface TreeItemProps<T = any> extends React.HTMLAttributes<HTMLButtonElement> {
@@ -78,7 +76,7 @@ function TreeItem<T = any>({ item, className, asChild, children, ...props }: Omi
     '--tree-padding': `${item.getItemMeta().level * indent}px`,
   } as React.CSSProperties;
 
-  const Comp = asChild ? Slot.Root : 'button';
+  const Comp = asChild ? Root : 'button';
 
   return (
     <TreeContext.Provider value={{ currentItem: item, indent }}>

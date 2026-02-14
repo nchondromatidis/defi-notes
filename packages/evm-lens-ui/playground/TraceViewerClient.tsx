@@ -48,10 +48,11 @@ export function TraceViewerClient() {
       const source = await resourceLoaderRef.current.getSource(fileId);
       setSourceCode(source);
       setHighlightedLine(undefined);
+      setScrollToFileId(undefined);
     }
   }, []);
 
-  const handleSelectTraceNode = useCallback(async (event: ReadOnlyFunctionCallEvent) => {
+  const handleSelectFileFromTraceNode = useCallback(async (event: ReadOnlyFunctionCallEvent) => {
     // Extract file path from contract FQN
     const contractFqn = event.implContractFQN || event.contractFQN;
     if (!contractFqn) return;
@@ -88,7 +89,7 @@ export function TraceViewerClient() {
       rootItemId={projectFiles.rootItemId}
       initialExpandedItems={projectFiles.firstLevelFolderNames}
       onSelectFileFromTree={handleSelectFileFromTree}
-      onSelectTraceNode={handleSelectTraceNode}
+      onSelectFileFromTraceNode={handleSelectFileFromTraceNode}
       onScrollToFile={handleScrollToFile}
       scrollToFileId={scrollToFileId}
       sourceCode={sourceCode}
