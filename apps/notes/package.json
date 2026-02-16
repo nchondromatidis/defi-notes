@@ -9,7 +9,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "lint:fix": "eslint --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
@@ -29,7 +30,6 @@
     "starlight-theme-next": "^0.3.3"
   },
   "devDependencies": {
-    "@astrojs/tailwind": "^6.0.2",
     "@defi-notes/config": "workspace:*",
     "@eslint/markdown": "^7.5.1",
     "@tailwindcss/vite": "^4.1.18",
