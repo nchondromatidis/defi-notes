@@ -2,12 +2,12 @@ import '@/index.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from '@/index';
-import { TraceViewerClient } from './TraceViewerClient.tsx';
+import { UniswapV2TraceClient } from './UniswapV2TraceClient.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider>
-      <TraceViewerClient />
+      <UniswapV2TraceClient />
     </ThemeProvider>
   </StrictMode>
 );

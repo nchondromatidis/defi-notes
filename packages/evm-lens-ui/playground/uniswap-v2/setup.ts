@@ -5,6 +5,8 @@ import type { ArtifactMap } from '@defi-notes/protocols/artifacts';
 import { buildCallTracer } from '@defi-notes/evm-lens/src/lens';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { HardhatEvmLensHttpRL } from '@defi-notes/evm-lens/src/adapters/resource-loader/HardhatEvmLensHttpRL.ts';
+import type { SetupResult } from '@/components/TraceViewerClient.tsx';
+import { contractFQNListToProjectFiles } from '@/adapters/project-files-mapper.ts';
 
 const ETHER_1 = 1n * 10n ** 18n;
 
@@ -50,5 +52,34 @@ export async function setupUniswapV2(): Promise<UniswapV2Setup> {
     factory,
     client,
     resourceLoader,
+  };
+}
+
+export async function createPair(): Promise<SetupResult> {
+  const { lensClient, factory, resourceLoader } = await setupUniswapV2();
+
+  const contractFqns = await resourceLoader.getProtocolContractsFqn('uniswap-v2');
+  const projectFiles = contractFQNListToProjectFiles(contractFqns);
+
+  const token1 = await lensClient.deploy(
+    'contracts/uniswap-v2/v2-core/contracts/UniswapV2ERC20.sol:UniswapV2ERC20',
+    []
+  );
+  const token2 = await lensClient.deploy(
+    'contracts/uniswap-v2/v2-core/contracts/UniswapV2ERC20.sol:UniswapV2ERC20',
+    []
+  );
+
+  const result = await lensClient.contract(factory, 'createPair', [token1.createdAddress!, token2.createdAddress!]);
+
+  const trace = lensClient.getSucceeded(result);
+  if (!trace) {
+    throw new Error('Failed to get trace from transaction');
+  }
+
+  return {
+    resourceLoader,
+    trace,
+    projectFiles,
   };
 }

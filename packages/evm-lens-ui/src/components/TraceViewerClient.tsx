@@ -1,14 +1,24 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { TraceViewer } from '@/index';
-import { setupUniswapV2 } from './uniswap-v2/setup';
 import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/call-tracer/CallTrace.ts';
 import { contractFQNListToProjectFiles } from '@/adapters/project-files-mapper.ts';
 import type { HardhatEvmLensHttpRL } from '@defi-notes/evm-lens/src/adapters/resource-loader/HardhatEvmLensHttpRL.ts';
 
-export function TraceViewerClient() {
+export interface SetupResult {
+  resourceLoader: HardhatEvmLensHttpRL;
+  trace: ReadOnlyFunctionCallEvent;
+  projectFiles: ReturnType<typeof contractFQNListToProjectFiles>;
+}
+
+export interface TraceViewerClientProps {
+  setup: () => Promise<SetupResult>;
+}
+
+export function TraceViewerClient({ setup }: TraceViewerClientProps) {
   const [functionTrace, setFunctionTrace] = useState<ReadOnlyFunctionCallEvent | null>(null);
   const [projectFiles, setProjectFiles] = useState<ReturnType<typeof contractFQNListToProjectFiles> | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
   const [sourceCode, setSourceCode] = useState<string | undefined>(undefined);
   const [highlightedLine, setHighlightedLine] = useState<number | undefined>(undefined);
   const [scrollToFileId, setScrollToFileId] = useState<string | undefined>(undefined);
@@ -16,32 +26,22 @@ export function TraceViewerClient() {
 
   useEffect(() => {
     async function init() {
-      const { lensClient, factory, resourceLoader } = await setupUniswapV2();
-      resourceLoaderRef.current = resourceLoader;
+      try {
+        setLoading(true);
+        setError(null);
 
-      const contractFqns = await resourceLoader.getProtocolContractsFqn('uniswap-v2');
-      const projectFiles = contractFQNListToProjectFiles(contractFqns);
-      setProjectFiles(projectFiles);
-
-      const token1 = await lensClient.deploy(
-        'contracts/uniswap-v2/v2-core/contracts/UniswapV2ERC20.sol:UniswapV2ERC20',
-        []
-      );
-      const token2 = await lensClient.deploy(
-        'contracts/uniswap-v2/v2-core/contracts/UniswapV2ERC20.sol:UniswapV2ERC20',
-        []
-      );
-
-      const result = await lensClient.contract(factory, 'createPair', [token1.createdAddress!, token2.createdAddress!]);
-
-      const trace = lensClient.getSucceeded(result);
-      if (trace) {
+        const { resourceLoader, trace, projectFiles } = await setup();
+        resourceLoaderRef.current = resourceLoader;
+        setProjectFiles(projectFiles);
         setFunctionTrace(trace);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Failed to initialize'));
+      } finally {
         setLoading(false);
       }
     }
     init();
-  }, []);
+  }, [setup]);
 
   const handleSelectFileFromTree = useCallback(async (fileId: string) => {
     if (resourceLoaderRef.current) {
@@ -53,23 +53,19 @@ export function TraceViewerClient() {
   }, []);
 
   const handleSelectFileFromTraceNode = useCallback(async (event: ReadOnlyFunctionCallEvent) => {
-    // Extract file path from contract FQN
     const contractFqn = event.implContractFQN || event.contractFQN;
     if (!contractFqn) return;
 
     const fileId = contractFqn.split(':')[0];
     if (!fileId) return;
 
-    // Fetch source code if not already loaded
     if (resourceLoaderRef.current) {
       const source = await resourceLoaderRef.current.getSource(fileId);
       setSourceCode(source);
     }
 
-    // Scroll to file in tree
     setScrollToFileId(fileId);
 
-    // Highlight the function start line
     if (event.functionLineStart) {
       setHighlightedLine(event.functionLineStart);
     }
@@ -80,6 +76,7 @@ export function TraceViewerClient() {
   }, []);
 
   if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
   if (!functionTrace || !projectFiles) return <div>No trace</div>;
 
   return (
