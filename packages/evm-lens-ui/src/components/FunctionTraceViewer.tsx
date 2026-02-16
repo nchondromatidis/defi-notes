@@ -67,6 +67,26 @@ const getBadgeClassName = (callType: string, isError: boolean) => {
 
 // --- Sub-components ---
 
+interface ExpandCollapseIconProps {
+  isError: boolean;
+  hasChildren: boolean;
+  isExpanded: boolean;
+}
+
+const ExpandCollapseIcon: React.FC<ExpandCollapseIconProps> = ({ isError, hasChildren, isExpanded }) => {
+  if (isError) {
+    return <AlertTriangle className="w-4 h-4 text-destructive" />;
+  }
+  if (!hasChildren) {
+    return <div className="w-4 h-4" />;
+  }
+  return isExpanded ? (
+    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+  ) : (
+    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+  );
+};
+
 interface TraceNodeProps {
   event: ReadOnlyFunctionCallEvent;
   path: string;
@@ -74,12 +94,11 @@ interface TraceNodeProps {
   expandedPaths: Set<string>;
   onToggle: (path: string) => void;
   onSelectTraceNode?: (event: ReadOnlyFunctionCallEvent) => void;
-  isLastChild?: boolean;
 }
 
 const TraceNode: React.FC<TraceNodeProps> = ({ event, path, depth, expandedPaths, onToggle, onSelectTraceNode }) => {
   const isExpanded = expandedPaths.has(path);
-  const hasChildren = event.called && event.called.length > 0;
+  const hasChildren = !!(event.called && event.called.length > 0);
   const isError = event.result?.isError || false;
 
   // Layout Constants
@@ -135,17 +154,7 @@ const TraceNode: React.FC<TraceNodeProps> = ({ event, path, depth, expandedPaths
           className="flex items-center justify-center w-5 h-5 shrink-0 hover:bg-accent rounded"
           onClick={handleExpandClick}
         >
-          {isError ? (
-            <AlertTriangle className="w-4 h-4 text-destructive" />
-          ) : hasChildren ? (
-            isExpanded ? (
-              <ChevronDown className="w-4 h-4 text-muted-foreground" />
-            ) : (
-              <ChevronRight className="w-4 h-4 text-muted-foreground" />
-            )
-          ) : (
-            <div className="w-4 h-4" />
-          )}
+          <ExpandCollapseIcon isError={isError} hasChildren={hasChildren} isExpanded={isExpanded} />
         </div>
 
         {/* 4. Content */}
@@ -189,7 +198,6 @@ const TraceNode: React.FC<TraceNodeProps> = ({ event, path, depth, expandedPaths
               expandedPaths={expandedPaths}
               onToggle={onToggle}
               onSelectTraceNode={onSelectTraceNode}
-              isLastChild={idx === event.called!.length - 1}
             />
           ))}
         </div>
@@ -257,8 +265,6 @@ export const FunctionTraceViewer: React.FC<TransactionTraceViewerProps> = ({
       <CardContent className="flex-1 p-0 overflow-hidden">
         <ScrollArea className="h-full w-full">
           <div className="p-4 min-w-max">
-            {' '}
-            {/* Add min-w-max or fixed wide width to trigger horizontal */}
             <TraceNode
               event={functionTrace}
               path="root"

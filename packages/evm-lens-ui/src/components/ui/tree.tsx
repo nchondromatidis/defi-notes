@@ -1,6 +1,6 @@
 'use client';
 
-import type { ItemInstance } from '@headless-tree/core';
+import type { ItemInstance, TreeInstance } from '@headless-tree/core';
 import { ChevronDownIcon } from 'lucide-react';
 import { Root } from '@radix-ui/react-slot';
 import * as React from 'react';
@@ -10,7 +10,7 @@ import { cn, scrollbarsDark } from '@/lib/utils.ts';
 interface TreeContextValue<T = any> {
   indent: number;
   currentItem?: ItemInstance<T>;
-  tree?: any;
+  tree?: TreeInstance<T>;
 }
 
 const TreeContext = React.createContext<TreeContextValue>({
@@ -23,9 +23,9 @@ function useTreeContext<T = any>() {
   return React.useContext(TreeContext) as TreeContextValue<T>;
 }
 
-interface TreeProps extends React.HTMLAttributes<HTMLDivElement> {
+interface TreeProps<T = any> extends React.HTMLAttributes<HTMLDivElement> {
   indent?: number;
-  tree?: any;
+  tree?: TreeInstance<T>;
 }
 
 const Tree = React.forwardRef<HTMLDivElement, TreeProps>(({ indent = 20, tree, className, ...props }, ref) => {
@@ -109,9 +109,16 @@ interface TreeItemLabelProps<T = any> extends React.HTMLAttributes<HTMLSpanEleme
 function TreeItemLabel<T = any>({ item: propItem, children, className, ...props }: TreeItemLabelProps<T>) {
   const { currentItem } = useTreeContext<T>();
   const item = propItem || currentItem;
+  const hasWarned = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!item && !hasWarned.current) {
+      hasWarned.current = true;
+      console.warn('TreeItemLabel: No item provided via props or context');
+    }
+  }, [item]);
 
   if (!item) {
-    console.warn('TreeItemLabel: No item provided via props or context');
     return null;
   }
 
@@ -134,9 +141,16 @@ function TreeItemLabel<T = any>({ item: propItem, children, className, ...props 
 
 function TreeDragLine({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const { tree } = useTreeContext();
+  const hasWarned = React.useRef(false);
+
+  React.useEffect(() => {
+    if ((!tree || typeof tree.getDragLineStyle !== 'function') && !hasWarned.current) {
+      hasWarned.current = true;
+      console.warn('TreeDragLine: No tree provided via context or tree does not have getDragLineStyle method');
+    }
+  }, [tree]);
 
   if (!tree || typeof tree.getDragLineStyle !== 'function') {
-    console.warn('TreeDragLine: No tree provided via context or tree does not have getDragLineStyle method');
     return null;
   }
 

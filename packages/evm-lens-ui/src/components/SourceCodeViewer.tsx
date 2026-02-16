@@ -1,7 +1,7 @@
 import CodeMirror from '@uiw/react-codemirror';
 import { solidity } from '@replit/codemirror-lang-solidity';
 import { oneDark } from '@codemirror/theme-one-dark';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { EditorView } from '@codemirror/view';
 import { EditorSelection } from '@codemirror/state';
 
@@ -12,11 +12,12 @@ interface SourceCodeViewerProps {
   highlightedLine?: number;
 }
 
-export const SourceCodeViewer: React.FC<SourceCodeViewerProps> = ({
-  sourceCode,
-  highlightedLine,
-}: SourceCodeViewerProps) => {
+const SOLIDITY_EXTENSIONS = [solidity];
+
+export const SourceCodeViewer: React.FC<SourceCodeViewerProps> = ({ sourceCode, highlightedLine }) => {
   const editorRef = useRef<EditorView | null>(null);
+
+  const extensions = useMemo(() => SOLIDITY_EXTENSIONS, []);
 
   useEffect(() => {
     if (editorRef.current && highlightedLine && highlightedLine > 0) {
@@ -33,8 +34,6 @@ export const SourceCodeViewer: React.FC<SourceCodeViewerProps> = ({
   }, [highlightedLine]);
 
   if (!sourceCode) return null;
-
-  const extensions = [solidity];
 
   return (
     <div className="h-full w-full overflow-hidden">
