@@ -18,7 +18,10 @@
     "globals": "^17.2.0",
     "prettier": "3.8.1",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.54.0"
+    "typescript-eslint": "^8.54.0",
+    "vite": "^6.4.0",
+    "vitest": "^4.0.18",
+    "@vitejs/plugin-react-swc": "^4.2.2"
   },
   "devDependencies": {
     "@eslint/markdown": "^7.5.1"
