@@ -1,6 +1,7 @@
 {
   "extends": "@defi-notes/config/tsconfig.web.json",
   "compilerOptions": {
+    "noEmit": false,
     "types": ["vite/client"],
     "include": ["src/**/*", "playground/**/*"]
   }

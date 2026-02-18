@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import { DynamicPublicDirectory } from 'vite-multiple-assets';
 import dts from 'vite-plugin-dts';
+import { resolve } from 'node:path';
 
 const dynamicPublicDir = (command: string) =>
   command !== 'build'
@@ -15,6 +16,7 @@ export default defineConfig(({ command }) => ({
     react(),
     tailwindcss(),
     dts({
+      tsconfigPath: resolve(__dirname, 'tsconfig.web.json'),
       insertTypesEntry: true, // generates index.d.ts at root of dist
       include: ['src'],
       exclude: ['src/**/*.test.*', 'src/**/*.stories.*'],
