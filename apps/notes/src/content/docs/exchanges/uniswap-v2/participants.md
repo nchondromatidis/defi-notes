@@ -1,7 +1,7 @@
 ---
 title: Participants
 sidebar:
-  order: 2000
+  order: 1100
 ---
 
 ## Liquidity Providers (LPs)
@@ -25,7 +25,6 @@ protocol's price feeds.
 
 External smart contracts use Uniswap as a foundational DeFi primitive for price discovery (oracles) or to provide
 liquidity for their own applications.
-
 
 ## Fee Beneficiary (Governance)
 

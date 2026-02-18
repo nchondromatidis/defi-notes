@@ -5,8 +5,6 @@ sidebar:
   order: 1000
 ---
 
-## Overview
-
 Uniswap v2 exists as a **decentralized alternative to traditional order book exchanges**, which require a "coincidence
 of wants" and centralized intermediaries to match buyers and sellers.
 

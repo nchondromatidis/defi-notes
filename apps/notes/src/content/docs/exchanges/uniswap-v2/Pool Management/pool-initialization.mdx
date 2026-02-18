@@ -1,0 +1,59 @@
+---
+title: Pool Initialization
+description: Uniswap V2 workflows
+sidebar:
+  order: 5011
+---
+
+## 2. Setting the Initial Price
+
+### First Liquidity Provider (LP)
+
+When a pool is created, its balances are zero. The first person to deposit tokens sets the initial price.
+
+### Economic Incentive
+
+The first LP is incentivized to deposit an **equal value** of both tokens. If the ratio they provide deviates from the
+global market rate, it creates an immediate arbitrage opportunity, leading to a loss for the LP as external parties
+trade the pool back to the market price.
+
+## 3. Mathematical Initialization of LP Tokens
+
+When the first deposit is made, the protocol must determine how many **liquidity tokens** (representing the LP's share)
+to mint.
+
+### Geometric Mean Formula
+
+For the initial deposit, the number of minted shares ($s_{minted}$) is calculated as the geometric mean of the deposited
+amounts ($x$ and $y$):
+
+$$s_{minted} = \sqrt{x_{deposited} \cdot y_{deposited}}$$
+
+### Rationale
+
+This formula ensures that the value of a single liquidity share is independent of the initial ratio provided by the
+first LP. For example, depositing 2 ABC and 800 XYZ (1:400 ratio) yields 40 shares, which remain mathematically
+consistent with the underlying value even if the ratio was arbitrary.
+
+## 4. Minimum Liquidity Lock (The "Burn")
+
+To prevent a specific type of economic attack, Uniswap v2 introduces a permanent "burn" of initial liquidity:
+
+### The Problem
+
+An attacker could potentially "donate" tokens to the pool to inflate the value of the smallest unit of a liquidity share
+($10^{-18}$ shares), making it too expensive for small LPs to provide liquidity.
+
+### The Solution
+
+Upon the first deposit, the protocol permanently locks the first **1,000 units** (equivalent to $10^{-15}$ shares) of
+liquidity by sending them to the "zero address".
+
+### Resulting Math
+
+The amount of liquidity tokens actually sent to the first provider is:
+
+$$Liquidity = \sqrt{x_{deposited} \cdot y_{deposited}} - 1,000$$
+
+This ensures that the total supply of liquidity tokens for any active pool is always at least 1,000, making the cost of
+inflating the share value prohibitively expensive for attackers.

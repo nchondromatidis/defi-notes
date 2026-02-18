@@ -1,0 +1,99 @@
+---
+title: Pool Creation
+description: Uniswap V2 workflows
+sidebar:
+  order: 5010
+---
+
+import { DesmosChart } from '@/components/DesmosChart.tsx';
+import { Code } from '@astrojs/starlight/components';
+import { extractMethod } from '../../../../../utils/method-extractor.ts';
+import { UniswapV2Workflows } from '../../../../../workflows/UniswapV2Workflows.ts';
+import { TraceViewerClient } from '@defi-notes/evm-lens-ui';
+
+
+export const createPair = async () => {
+  try {
+    const uniswapV2Workflows = await UniswapV2Workflows.create('http://localhost:4321', 'contracts');
+    return await uniswapV2Workflows.createPair();
+  } catch (e) {
+    if (e instanceof Error) return { error: e.message };
+    return { error: 'Error loading trace' };
+  }
+};
+
+export const cratePairResult = await createPair();
+
+The theory behind a Uniswap pool, also known as a pair, is rooted in the concept of an **Automated Market Maker (AMM)**. Below is a detailed breakdown of how these protocols function, with a focus on the constant product model.
+
+## Fundamental Concepts
+
+### Automated Market Makers (AMMs)
+
+AMMs are the underlying protocols used by decentralized exchanges (DEXs) to enable **permissionless, middleman-free trading**.
+
+#### Replacing Order Books
+
+Traditional order books require intermediaries to match "coincidences of wants" and are economically inefficient on-chain due to the **high gas costs** of creating or canceling individual limit orders.
+
+#### Mathematical Pricing
+
+In an AMM, prices are not determined by a central entity but by **mathematical formulae** written into the open-source code of the protocol.
+
+#### Instant Liquidity
+
+AMMs provide **instant feedback on rates and slippage**, allowing for immediate execution regardless of whether a specific buyer or seller is present at that moment.
+
+### The Constant Product Market Maker (CPMM)
+
+The specific type of AMM used by Uniswap v2 is the **Constant Product Market Maker**, which is governed by the formula
+
+<p className="text-center">$x \cdot y = k$ </p>
+
+#### The Invariant ($k$)
+
+In this formula, $x$ and $y$ represent the reserve balances of the two tokens in the pool, and $k$ is the **invariant**. The protocol requires that $k$ remains constant during a trade (ignoring fees).
+
+#### The Price Mechanism
+
+The **spot price** is determined by the ratio of the tokens in the pool
+
+<p className="text-center"> $p = y/x$ </p>
+
+When a trader buys (withdraws) token $x$, they must deposit a proportional amount of token $y$ to ensure the product $x \cdot y$ remains equal to $k$.
+
+<DesmosChart graphId="vmuxf1pj9a" height="500px" client:load />
+
+#### Arbitrage and Market Alignment
+
+The pool price follows global market rates because **external arbitrageurs** monitor price discrepancies.
+
+If the pool price is "incorrect" compared to the market, arbitrageurs will trade against the pool until the internal ratio matches the global rate, earning a profit while realigning the pool's price.
+
+## Uniswap V2 concepts
+
+### The Uniswap V2 a Liquidity Pool (Pair)
+
+A Uniswap liquidity pool is a **smart contract that holds balances of two unique ERC-20 tokens** and enforces rules for swapping, depositing, and withdrawing them.
+
+### Arbitrary Pairs
+
+Uniswap v2 allows for the creation of liquidity pools for any two arbitrary ERC-20 tokens, removing the requirement from v1 that every pair includes ETH.
+
+### WETH Requirement
+
+Because the core codebase is designed for arbitrary ERC-20 pairs, native ETH is not supported; it must be wrapped into WETH to interact with the protocol
+
+### Deterministic Addressing
+
+Pair contracts are instantiated by a single **factory contract**.
+
+It uses the Ethereum `CREATE2` opcode to generate a deterministic address for the pair contract based on the addresses of the two tokens, allowing the address to be calculated off-chain without querying the blockchain state.
+
+## Creating a pair
+
+<Code code={extractMethod('UniswapV2Workflows.ts', 'UniswapV2Workflows', 'createPair')} lang="ts" />
+
+Trace:
+
+<TraceViewerClient trace={cratePairResult} client:only="react" />
