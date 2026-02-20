@@ -8,4 +8,3 @@ export {
   type TraceResultSuccess,
   type TraceViewerClientProps,
 } from './components/TraceViewerClient.tsx';
-export { ThemeProvider, useTheme } from './providers/theme-provider.tsx';
