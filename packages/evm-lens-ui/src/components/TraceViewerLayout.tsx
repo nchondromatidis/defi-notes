@@ -49,7 +49,7 @@ interface TraceViewerLayoutProps {
 const DEFAULT_MAIN_LAYOUT: Layout = { top: 60, bottom: 40 };
 const DEFAULT_TOP_LAYOUT: Layout = { files: 30, source: 70 };
 
-export const TraceViewer: React.FC<TraceViewerLayoutProps> = ({
+export const TraceViewerLayout: React.FC<TraceViewerLayoutProps> = ({
   functionTrace,
   projectFiles,
   rootItemId,
@@ -98,7 +98,7 @@ export const TraceViewer: React.FC<TraceViewerLayoutProps> = ({
               scrollToFileId={scrollToFileId}
             />
           </ResizablePanel>
-          <ResizablePanel id="source" className="overflow-hidden ml-4 pr-4 py-4 h-full">
+          <ResizablePanel id="source" className="overflow-hidden px-4 py-4 h-full">
             <SourceCodeViewer sourceCode={sourceCode} highlightedLine={highlightedLine} />
           </ResizablePanel>
         </ResizablePanelGroup>

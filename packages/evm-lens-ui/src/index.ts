@@ -1,6 +1,6 @@
 import './styles/index.css';
 
-export { TraceViewer } from './components/TraceViewer.tsx';
+export { TraceViewerLayout } from './components/TraceViewerLayout.tsx';
 export { FunctionTraceViewer } from './components/FunctionTraceViewer.tsx';
 export {
   TraceViewerClient,
