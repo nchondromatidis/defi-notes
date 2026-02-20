@@ -22,12 +22,7 @@ export default defineConfig({
         { label: 'Uniswap v3', autogenerate: { directory: 'exchanges/uniswap-v3' } },
         { label: 'Curve', autogenerate: { directory: 'exchanges/curve' } },
       ],
-      customCss: [
-        '@defi-notes/evm-lens-ui/index.css',
-        './src/styles/global.css',
-        './src/styles/custom.css',
-        './node_modules/katex/dist/katex.min.css',
-      ],
+      customCss: ['./src/styles/global.css', './src/styles/custom.css'],
     }),
     mdx(),
     react(),
