@@ -7,7 +7,13 @@ const __dirname = path.dirname(__filename);
 
 const WORKFLOWS_DIR = path.join(__dirname, '..', 'workflows', 'protocols');
 
-export function extractMethod(fileName: string, className: string, methodName: string): string | null {
+export function extractMethod(
+  fileName: string,
+  className: string,
+  methodName: string,
+  trimFirstSpaces = true,
+  trimCount = 2
+): string | null {
   const project = new Project({
     skipFileDependencyResolution: true,
   });
@@ -25,5 +31,11 @@ export function extractMethod(fileName: string, className: string, methodName: s
     return null;
   }
 
-  return method.getFullText();
+  let methodText = method.getFullText();
+  if (trimFirstSpaces) {
+    const regex = new RegExp(`^ {${trimCount}}`, 'gm');
+    methodText = methodText.replace(regex, '');
+  }
+
+  return methodText;
 }
