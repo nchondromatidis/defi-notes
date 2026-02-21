@@ -126,3 +126,7 @@
     @apply bg-background text-foreground;
     }
 }
+
+.sl-markdown-content p {
+    text-align: justify;
+}
