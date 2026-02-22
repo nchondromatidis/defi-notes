@@ -5,7 +5,7 @@ import type { ArtifactMap } from '@defi-notes/protocols/artifacts';
 import { buildCallTracer } from '@defi-notes/evm-lens/src/lens';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { HardhatEvmLensHttpRL } from '@defi-notes/evm-lens/src/adapters/resource-loader/HardhatEvmLensHttpRL.ts';
-import type { TraceResult } from '../../src/components/TraceViewerClient.tsx';
+import type { TraceResult } from '../../src';
 
 const ETHER_1 = 1n * 10n ** 18n;
 
