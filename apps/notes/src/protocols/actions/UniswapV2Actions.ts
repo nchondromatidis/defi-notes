@@ -1,16 +1,16 @@
 import type { ArtifactMap } from '@defi-notes/protocols/*';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
-import { ProtocolWorkflowBaseBase } from '@/workflows/protocols/ProtocolWorkflowBase.ts';
+import { ProtocolActionsBase } from '@/protocols/actions/ProtocolActionsBase.ts';
 import type { IResourceLoader } from '@defi-notes/evm-lens/src/lens/_ports/IResourceLoader.ts';
 
 export type UniswapV2Artifacts = {
   [K in keyof ArtifactMap as K extends `contracts/uniswap-v2/${string}` ? K : never]: ArtifactMap[K];
 };
 
-export class UniswapV2Workflows extends ProtocolWorkflowBaseBase<UniswapV2Artifacts> {
+export class UniswapV2Actions extends ProtocolActionsBase<UniswapV2Artifacts> {
   static async create(resourceLoader: IResourceLoader) {
-    const lensClient = await ProtocolWorkflowBaseBase.buildLens<UniswapV2Artifacts>(resourceLoader);
-    return new UniswapV2Workflows(lensClient, resourceLoader);
+    const lensClient = await ProtocolActionsBase.buildLens<UniswapV2Artifacts>(resourceLoader);
+    return new UniswapV2Actions(lensClient, resourceLoader);
   }
 
   async deploy() {

@@ -7,16 +7,16 @@ import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui
 import { X } from 'lucide-react';
 import { type MethodArgs } from '@/utils/run-method.ts';
 import {
-  protocolWorkflowRegistry,
-  type ProtocolWorkflowRegistry,
+  protocolActionsRegistry,
+  type ProtocolActionsRegistry,
   runWorkflow,
-  type WorkflowMethodKeys,
-} from '@/workflows/protocol-workflow-registry.ts';
+  type ProtocolActionsMethodKeys,
+} from '@/protocols/protocol-actions-registry.ts';
 
-type ProtocolWorkflowProps<
-  R extends Record<string, object> = ProtocolWorkflowRegistry,
+type ProtocolActionProps<
+  R extends Record<string, object> = ProtocolActionsRegistry,
   P extends keyof R = keyof R,
-  M extends WorkflowMethodKeys<R[P]> = WorkflowMethodKeys<R[P]>,
+  M extends ProtocolActionsMethodKeys<R[P]> = ProtocolActionsMethodKeys<R[P]>,
   A extends MethodArgs<R[P], M> = MethodArgs<R[P], M>,
 > = {
   protocol: P;
@@ -25,7 +25,7 @@ type ProtocolWorkflowProps<
   header: string;
 };
 
-export const ProtocolWorkflow: React.FC<ProtocolWorkflowProps<ProtocolWorkflowRegistry>> = ({
+export const ProtocolActionTrace: React.FC<ProtocolActionProps<ProtocolActionsRegistry>> = ({
   protocol,
   workflow,
   args,
@@ -43,8 +43,8 @@ export const ProtocolWorkflow: React.FC<ProtocolWorkflowProps<ProtocolWorkflowRe
       try {
         setLoading(true);
         setError(null);
-        const trace = await runWorkflow(protocolWorkflowRegistry, protocol, workflow, args);
-        const result = await protocolWorkflowRegistry[protocol].toTraceResult(trace);
+        const trace = await runWorkflow(protocolActionsRegistry, protocol, workflow, args);
+        const result = await protocolActionsRegistry[protocol].toTraceResult(trace);
         setTraceResult(result ?? null);
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch trace'));

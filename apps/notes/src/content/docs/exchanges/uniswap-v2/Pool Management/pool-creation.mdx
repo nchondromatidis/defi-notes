@@ -6,10 +6,9 @@ sidebar:
 ---
 
 import { DesmosChart } from '@/components/DesmosChart.tsx';
-import { ProtocolWorkflow } from '@/components/ProtocolWorkflow.tsx';
+import { ProtocolActionTrace } from '@/components/ProtocolActionTrace.tsx';
+import {extractActionCode} from "@/protocols/extract-action-code.ts";
 import { Code } from '@astrojs/starlight/components';
-import { extractMethod } from '../../../../../utils/method-extractor.ts';
-import { createPair } from '../../../../../workflows/protocols/UniswapV2Workflows.ts';
 
 The theory behind a Uniswap pool, also known as a pair, is rooted in the concept of an **Automated Market Maker (AMM)**. Below is a detailed breakdown of how these protocols function, with a focus on the constant product model.
 
@@ -79,6 +78,6 @@ It uses the Ethereum `CREATE2` opcode to generate a deterministic address for th
 
 ## Creating a pair
 
-<Code code={extractMethod('UniswapV2Workflows.ts', 'UniswapV2Workflows', 'createPair')} lang="ts" />
+<Code code={extractActionCode( 'UniswapV2Actions', 'createPair')} lang="ts" />
 
-<ProtocolWorkflow protocol="uniswapV2" workflow="createPair" args="{[]}" header='Create Pair Workflow' client:load />
+<ProtocolActionTrace protocol="uniswapV2" workflow="createPair" args="{[]}" header='Create Pair Workflow' client:load />

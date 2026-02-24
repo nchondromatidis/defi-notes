@@ -3,10 +3,9 @@ import type { TraceResult } from '@defi-notes/evm-lens-ui';
 import type { LensClient } from '@defi-notes/evm-lens/src/lens/LensClient.ts';
 import type { IResourceLoader } from '@defi-notes/evm-lens/src/lens/_ports/IResourceLoader.ts';
 import { buildCallTracer } from '@defi-notes/evm-lens/src/lens';
+import { ETHER_1 } from '@/protocols/_constants.ts';
 
-export abstract class ProtocolWorkflowBaseBase<T extends object> {
-  static ETHER_1 = 1n * 10n ** 18n;
-
+export abstract class ProtocolActionsBase<T extends object> {
   protected protocolsFqnListCache: string[] | undefined;
 
   constructor(
@@ -17,7 +16,7 @@ export abstract class ProtocolWorkflowBaseBase<T extends object> {
   static async buildLens<T extends object>(resourceLoader: IResourceLoader) {
     const { lensClient, deployerAccount } = await buildCallTracer<T>();
     await lensClient.registerIndexes(resourceLoader, 'uniswap-v2');
-    await lensClient.fundAccount(deployerAccount.address, ProtocolWorkflowBaseBase.ETHER_1);
+    await lensClient.fundAccount(deployerAccount.address, ETHER_1);
 
     return lensClient;
   }
