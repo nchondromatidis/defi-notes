@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { X } from 'lucide-react';
-import { type MethodArgs } from '@/workflows/_utils.ts';
+import { type MethodArgs } from '@/utils/run-method.ts';
 import {
   protocolWorkflowRegistry,
   type ProtocolWorkflowRegistry,

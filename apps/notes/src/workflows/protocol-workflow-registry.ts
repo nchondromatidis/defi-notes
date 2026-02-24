@@ -1,5 +1,5 @@
 import { UniswapV2Workflows } from '@/workflows/protocols/UniswapV2Workflows.ts';
-import { type MethodArgs, type MethodKeys, type MethodReturn, runMethod } from '@/workflows/_utils.ts';
+import { type MethodArgs, type MethodKeys, type MethodReturn, runMethod } from '@/utils/run-method.ts';
 import { HardhatEvmLensHttpRL } from '@defi-notes/evm-lens/src/adapters/resource-loader/HardhatEvmLensHttpRL.ts';
 import { ProtocolWorkflowBaseBase } from '@/workflows/protocols/ProtocolWorkflowBase.ts';
 
