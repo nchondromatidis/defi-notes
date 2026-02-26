@@ -8,7 +8,11 @@ export const protocolActionsRegistry = {
 
 export type ProtocolActionsRegistry = typeof protocolActionsRegistry;
 
-export type ProtocolActionsMethodKeys<T> = Exclude<MethodKeys<T>, 'deploy' | 'getProjectFiles' | 'toTraceResult'>;
+// TODO: this needs refactoring
+export type ProtocolActionsMethodKeys<T> = Exclude<
+  MethodKeys<T>,
+  'deploy' | 'getProjectFiles' | 'toTraceResult' | 'maxUint256' | 'deployErc20WithInitAmounts'
+>;
 
 export function runWorkflow<
   R extends Record<string, object> = ProtocolActionsRegistry,
