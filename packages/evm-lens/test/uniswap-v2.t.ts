@@ -4,12 +4,13 @@ import { buildClient } from '../src/adapters/client.ts';
 import { type GetContractReturnType, keccak256, encodePacked, getContractAddress } from 'viem';
 import { inspect } from './_setup/utils/inspect.ts';
 import type { ArtifactMap } from '@defi-notes/protocols/artifacts';
-import { createLensTracerTestSetup, type LensArtifactsMapSlice } from './_setup/lensTracerTestSetup.ts';
+import { createLensTracerTestSetup } from './_setup/lensTracerTestSetup.ts';
 import type { LensArtifactsMap } from '../src/lens/types.ts';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { ZERO_ADDRESS } from './_setup/utils/constants.ts';
 import type { IResourceLoader } from '../src/lens/_ports/IResourceLoader.ts';
 import { safeCastToHex } from '../src/_common/type-utils.ts';
+import type { LensArtifactsMapSlice } from '../src/client-utils/type-helpers.ts';
 import { PROTOCOLS_RESOURCES_PATH } from './_setup/HardhatEvmLensFileRL.ts';
 
 describe('uniswap-v2', () => {

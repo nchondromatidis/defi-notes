@@ -1,6 +1,6 @@
 import type { LensArtifact, LensFunctionIndex, LensPcLocationIndex } from '../../src/lens/types.ts';
 import { promises as fs } from 'fs';
-import * as path from 'node:path';
+import path from 'node:path';
 import { BaseHardhatEvmLensRL } from '../../src/adapters/resource-loader/BaseHardhatEvmLensRL.ts';
 
 export const TEST_RESOURCES_PATH = path.join(__dirname);

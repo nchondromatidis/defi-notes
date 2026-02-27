@@ -1,9 +1,10 @@
 import { test, beforeEach, describe, expect } from 'vitest';
 import { LensClient } from '../src/lens/LensClient.ts';
 import type { Hex, LensArtifactsMap } from '../src/lens/types.ts';
-import { createLensTracerTestSetup, type LensArtifactsMapSlice } from './_setup/lensTracerTestSetup.ts';
+import { createLensTracerTestSetup } from './_setup/lensTracerTestSetup.ts';
 import type { ArtifactMap } from './_setup/artifacts';
 import type { GetContractReturnType } from 'viem';
+import type { LensArtifactsMapSlice } from '../src/client-utils/type-helpers.ts';
 
 describe('create-functions', () => {
   let lensClient: LensClient<

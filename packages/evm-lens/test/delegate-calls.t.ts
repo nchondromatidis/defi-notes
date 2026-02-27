@@ -1,10 +1,11 @@
 import { test, beforeEach, describe, expect } from 'vitest';
 import { LensClient } from '../src/lens/LensClient.ts';
 
-import { createLensTracerTestSetup, type LensArtifactsMapSlice } from './_setup/lensTracerTestSetup.ts';
+import { createLensTracerTestSetup } from './_setup/lensTracerTestSetup.ts';
 import type { ArtifactMap } from './_setup/artifacts';
 import type { GetContractReturnType } from 'viem';
 import type { LensArtifactsMap } from '../src/lens/types.ts';
+import type { LensArtifactsMapSlice } from '../src/client-utils/type-helpers.ts';
 
 describe('delegate-calls', () => {
   let lensClient: LensClient<LensArtifactsMapSlice<LensArtifactsMap<ArtifactMap>, 'test-contracts', 'delegate-calls'>>;
