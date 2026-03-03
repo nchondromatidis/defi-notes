@@ -1,6 +1,6 @@
 import type { ArtifactMap } from '@defi-notes/protocols/*';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
-import { ProtocolActionsBase } from '@/protocols/actions/ProtocolActionsBase.ts';
+import { ProtocolWorkflowsBase } from '@/protocols/workflows/ProtocolWorkflowsBase.ts';
 import type { IResourceLoader } from '@defi-notes/evm-lens/src/lens/_ports/IResourceLoader.ts';
 import { _1e18, USER_0, USER_1 } from '@/protocols/_constants.ts';
 import type { Account } from 'viem';
@@ -9,10 +9,10 @@ export type UniswapV2Artifacts = {
   [K in keyof ArtifactMap as K extends `contracts/uniswap-v2/${string}` ? K : never]: ArtifactMap[K];
 };
 
-export class UniswapV2Actions extends ProtocolActionsBase<UniswapV2Artifacts> {
+export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts> {
   static async create(resourceLoader: IResourceLoader) {
-    const lensClient = await ProtocolActionsBase.buildLens<UniswapV2Artifacts>(resourceLoader, USER_0);
-    return new UniswapV2Actions(lensClient, resourceLoader);
+    const lensClient = await ProtocolWorkflowsBase.buildLens<UniswapV2Artifacts>(resourceLoader, USER_0);
+    return new UniswapV2Workflows(lensClient, resourceLoader);
   }
 
   async deploy() {
@@ -85,7 +85,7 @@ export class UniswapV2Actions extends ProtocolActionsBase<UniswapV2Artifacts> {
     const ercTokenDeployResult = await this.lensClient.deploy(
       'contracts/uniswap-v2/v2-periphery/contracts/test/ERC20.sol:ERC20',
       [
-        1000000n * _1e18, // 1M ERC20 with 18 dec
+        1_000_000n * _1e18, // 1M ERC20 with 18 dec
       ],
       [],
       USER_0.address

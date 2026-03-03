@@ -6,9 +6,9 @@ import { trimFirstSpaces } from '@/utils/trim-first-spaces.ts';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const ACTIONS_DIR = path.join(__dirname, '..', 'actions');
+export const ACTIONS_DIR = path.join(__dirname, '..', 'workflows');
 
-export function extractProtocolActionCode(protocolClass: string, actionName: string) {
+export function extractProtocolWorkflowCode(protocolClass: string, actionName: string) {
   const filePath = path.join(ACTIONS_DIR, `${protocolClass}.ts`);
   const result = extractMethod(filePath, protocolClass, actionName, true, 2);
 

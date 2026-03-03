@@ -5,8 +5,8 @@ sidebar:
   order: 3000
 ---
 import { DesmosChart } from '@/components/DesmosChart.tsx';
-import { ProtocolActionTrace } from '@/components/ProtocolActionTrace.tsx';
-import { extractProtocolActionCode } from "@/protocols/extract-code/protocol-actions.ts";
+import { ProtocolWorkflowTrace } from '@/components/ProtocolWorkflowTrace.tsx';
+import { extractProtocolWorkflowCode } from "@/protocols/extract-code/protocol-workflow.ts";
 import { extractProtocolCodeSlice } from "@/protocols/extract-code/protocol-sources.ts";
 import { Code } from '@astrojs/starlight/components';
 import { Aside } from '@astrojs/starlight/components';
@@ -140,8 +140,8 @@ Each folder in the chart represents a concept that you can show or hide.
 This is the code that runs to produce the function trace
 
 <Code
-  code={extractProtocolActionCode('UniswapV2Actions', 'initialLiquidity')}
+  code={extractProtocolWorkflowCode('UniswapV2Workflows', 'initialLiquidity')}
   lang="ts"
 />
 
-<ProtocolActionTrace protocol="uniswapV2" workflow="initialLiquidity" args="{[]}" header='Initial Liquidity' client:load />
+<ProtocolWorkflowTrace protocol="uniswapV2" workflow="initialLiquidity" args="{[]}" header='Initial Liquidity' client:load />

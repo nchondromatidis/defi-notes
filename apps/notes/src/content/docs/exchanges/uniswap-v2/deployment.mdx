@@ -4,7 +4,7 @@ sidebar:
   order: 2100
 ---
 import { Code } from '@astrojs/starlight/components';
-import {extractProtocolActionCode} from "@/protocols/extract-code/protocol-actions.ts";
+import { extractProtocolWorkflowCode } from "@/protocols/extract-code/protocol-workflow.ts";
 
 ## Architecture
 
@@ -39,4 +39,4 @@ This architectural separation means the Core handles safety and the preservation
 - `UniswapV2Router01`: replaced by `UniswapV2Router02` because of a low severity bug
 
 
-<Code code={extractProtocolActionCode( 'UniswapV2Actions', 'deploy')} lang="ts" />
+<Code code={extractProtocolWorkflowCode( 'UniswapV2Workflows', 'deploy')} lang="ts" />

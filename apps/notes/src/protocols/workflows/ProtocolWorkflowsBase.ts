@@ -6,7 +6,7 @@ import { buildCallTracer } from '@defi-notes/evm-lens/src/lens';
 import { _1e18 } from '@/protocols/_constants.ts';
 import type { Account } from 'viem';
 
-export abstract class ProtocolActionsBase<T extends object> {
+export abstract class ProtocolWorkflowsBase<T extends object> {
   // CACHE
   protected protocolsFqnListCache: string[] | undefined;
 
