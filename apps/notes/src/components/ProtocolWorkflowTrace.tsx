@@ -5,18 +5,18 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { X } from 'lucide-react';
-import { type MethodArgs } from '@/utils/run-method.ts';
 import {
   protocolWorkflowsRegistry,
   type ProtocolWorkflowsRegistry,
   runWorkflow,
-  type ProtocolActionsMethodKeys,
-} from '@/protocols/protocol-workflows-registry.ts';
+  type MethodArgs,
+  type WorkflowNames,
+} from '@/protocols/run-workflow.ts';
 
 type ProtocolActionProps<
   R extends Record<string, object> = ProtocolWorkflowsRegistry,
   P extends keyof R = keyof R,
-  M extends ProtocolActionsMethodKeys<R[P]> = ProtocolActionsMethodKeys<R[P]>,
+  M extends WorkflowNames<R[P]> = WorkflowNames<R[P]>,
   A extends MethodArgs<R[P], M> = MethodArgs<R[P], M>,
 > = {
   protocol: P;

@@ -3,7 +3,7 @@ import type { TraceResult } from '@defi-notes/evm-lens-ui';
 import type { LensClient } from '@defi-notes/evm-lens/src/lens/LensClient.ts';
 import type { IResourceLoader } from '@defi-notes/evm-lens/src/lens/_ports/IResourceLoader.ts';
 import { buildCallTracer } from '@defi-notes/evm-lens/src/lens';
-import { _1e18 } from '@/protocols/_constants.ts';
+import { _1e18 } from '@/protocols/workflows/_constants.ts';
 import type { Account } from 'viem';
 
 export abstract class ProtocolWorkflowsBase<T extends object> {
