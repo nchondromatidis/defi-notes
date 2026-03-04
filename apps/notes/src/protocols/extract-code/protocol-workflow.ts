@@ -12,8 +12,10 @@ export function extractProtocolWorkflowCode(protocolWorkflowClassName: string, m
   const result = [];
   for (const methodName of methodNames) {
     const filePath = path.join(ACTIONS_DIR, `${protocolWorkflowClassName}.ts`);
-    const extractedMethod = extractMethod(filePath, protocolWorkflowClassName, methodName, true, 2);
-
+    let extractedMethod = extractMethod(filePath, protocolWorkflowClassName, methodName, false, true, 2);
+    if (!extractedMethod) {
+      extractedMethod = extractMethod(filePath, protocolWorkflowClassName, methodName, true, true, 2);
+    }
     if (!extractedMethod) return undefined;
 
     const { methodText, startLine, endLine } = extractedMethod;
@@ -32,6 +34,7 @@ function extractMethod(
   filePath: string,
   className: string,
   methodName: string,
+  isStatic: boolean,
   shouldTrimFirstSpaces: boolean,
   trimCount: number
 ): { methodText: string; startLine: number; endLine: number } | undefined {
@@ -44,7 +47,8 @@ function extractMethod(
   const classDeclaration = sourceFile.getClass(className);
   if (!classDeclaration) return undefined;
 
-  const method = classDeclaration.getMethod(methodName);
+  const method = isStatic ? classDeclaration.getStaticMethod(methodName) : classDeclaration.getMethod(methodName);
+
   if (!method) return undefined;
 
   let methodText = method.getFullText();
