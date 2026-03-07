@@ -40,6 +40,7 @@
   - FEAT: code is too long even on full screen (horizontal scrolling)
   - FEAT: tooltip to explain how the trace is generated
   - FEAT: a green circle that should enforce the intuition that this thing is live
+  - FEAT: code slices, add github repo link and function name
 
 // trying to tone down optimizer
 {
