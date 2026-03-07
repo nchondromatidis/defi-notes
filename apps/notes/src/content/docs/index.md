@@ -8,7 +8,7 @@ Welcome to the DeFi Notes.
 
 Each protocol will be analyzed per workflows combining `source code`, `workflow function trace`, `whitepaper concepts` and `math`.
 
-Prerequisites: Ethereum, Solidity, ERC20, ERC721, ERC1155
+[How to read this guide](/how-to-read)
 
 ## Fundamentals
 - [DeFi](/fundamentals/defi/) - Fundamental DeFi Concepts

@@ -1,0 +1,40 @@
+---
+title: How to read this guide
+sidebar:
+  order: 500
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## Prerequisites
+
+- This guide expects the viewer to have some experience
+  - Ethereum, Solidity, ERC20, ERC721, ERC1155
+
+## Protocol analysis
+
+- Each protocol is analyzed per workflow.
+- For each workflow there will be sections covering
+  - top: workflow-specific white-paper concepts
+  - bottom: workflow interaction function trace and source code
+- Workflows are categorized
+- Workflows explicitly note which workflow knowledge is a prerequisite
+
+## Function traces
+
+- The workflow code actually runs in-browser using `ethereumsjs`
+- Workflow opcodes are decoded into function trace using `evm-lens`
+
+## Charts
+
+- In most pages there will be interactive desmos charts to better understand white-paper concepts
+- When you expand the chart, you can
+  - access the folders in the sidebar
+  - each folder is a separate concept you can show/hide
+  - inside the folder there are notes to guide you
+  - some concepts need to be shown together to make sense
+
+
+<Aside title="Visualize the Math">
+  Keep the interactive open in a side window to interact with concept math
+</Aside>
