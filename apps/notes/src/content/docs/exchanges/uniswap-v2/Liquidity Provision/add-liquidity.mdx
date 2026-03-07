@@ -5,7 +5,86 @@ sidebar:
   order: 3100
 ---
 
+import { DesmosChart } from '@/components/DesmosChart.tsx';
+import { ProtocolWorkflowTrace } from '@/components/ProtocolWorkflowTrace.tsx';
+import { extractProtocolWorkflowCode } from "@/protocols/extract-code/protocol-workflow.ts";
+import { extractProtocolCodeSlice } from "@/protocols/extract-code/protocol-sources.ts";
+import { Code } from '@astrojs/starlight/components';
+
+This page covers the necessary concepts for the reader to understand the **add liquidity flow in Uniswap V2**,
+after initial liquidity is set.
 
 
-## References
-https://docs.uniswap.org/contracts/v2/guides/smart-contract-integration/providing-liquidity
+
+### Mint
+
+Let's analyze the formula that calculates LP tokens to the LP.
+
+<Code
+  code={extractProtocolCodeSlice([
+    ['contracts/uniswap-v2/v2-core/contracts/UniswapV2Pair.sol:UniswapV2Pair', 123  , 123]
+  ])}
+  lang="solidity"
+/>
+
+It calculates the pro-rata shares and sends them to the LP using the formula:
+
+<div className='flex justify-center'>
+  $s_{minted} = \min \left( \frac{x_{in}}{x_{reserve}} \cdot s_{total}, \frac{y_{in}}{y_{reserve}} \cdot s_{total} \right)$
+</div>
+
+- **Only deposits in proportion to the reserve ratio are accepted**
+  - which means both token changes will be the same proportion
+- **The formula enforces the above by accepting the minimum % change for both tokens.**
+
+Look at an next example to better understand.
+
+| Item                         |         Balanced deposit |      Unbalanced deposit |
+|:-----------------------------|-------------------------:|------------------------:|
+| Pool reserves                |   100 ETH + 200,000 USDC |  100 ETH + 200,000 USDC |
+| Total LP shares              |                    1,000 |                   1,000 |
+| Deposit                      |     10 ETH + 20,000 USDC |    10 ETH + 10,000 USDC |
+| Implied increase from X side |             10/100 = 10% |            10/100 = 10% |
+| Implied increase from Y side |     20,000/200,000 = 10% |     10,000/200,000 = 5% |
+| Shares minted                | $\min(10\%,10\%) = 10\%$ | $\min(10\%,5\%)  = 5\%$ |
+
+
+### Amounts
+
+The router computes the maximum amount of tokens A and B that the LP can deposit to preserve the pool proportions,
+before passing to mint:
+
+<div className='flex justify-center'>
+  $\frac{ \normalsize{\text{deposited tokenA amount}} } { \normalsize{\text{deposited tokenB amount}} } =
+  \frac{ \normalsize{\text{current tokenA reserves}} } { \normalsize{\text{current tokenB reserves}} }$
+</div>
+
+<Code
+  code={extractProtocolCodeSlice([
+    ['contracts/uniswap-v2/v2-periphery/contracts/libraries/UniswapV2Library.sol:UniswapV2Pair', 37 , 39]
+  ])}
+  lang="solidity"
+/>
+
+### Chart
+
+<DesmosChart graphId="iyevv8l7wf" height="500px" client:load />
+
+## Function Trace
+
+In this example we will increase the pool liquidity
+
+- deposited -> $tokenA=100$, $tokenB=200$
+- price remains the same -> $p=\frac{B}{A}=\frac{600}{300}=2$
+
+This is the code that runs to produce the function trace
+
+<Code
+  code={extractProtocolWorkflowCode([
+    ['UniswapV2Workflows', 'addLiquidity'],
+    ['UniswapV2Workflows', '_addLiquidity']
+  ])}
+  lang="ts"
+/>
+
+<ProtocolWorkflowTrace protocol="uniswapV2" workflow="addLiquidity" header='Add Liquidity' client:load />
