@@ -1,0 +1,124 @@
+---
+title: Price Oracle
+sidebar:
+  order: 4000
+---
+
+import { Code } from '@astrojs/starlight/components';
+import { extractProtocolCodeSlice } from "@/protocols/extract-code/protocol-sources.ts";
+
+Uniswap V2's price oracle mechanism is designed to provide highly decentralized, manipulation-resistant on-chain price feeds by shifting from spot price lookups to Time-Weighted Average Prices (TWAP)
+
+## Uniswap V1 Issue
+
+Uniswap V1 normal AMM behavior: if you buy a lot from a thin pool, the reserve ratio changes and the quoted spot price moves sharply.
+
+The problem appears when another contract treats that instantly movable spot price as a **reliable oracle for collateral valuation, borrowing limits, minting, or liquidation decisions**.
+
+The victim is the protocol that trusted the manipulated price, not the Uniswap V1 pool simply for existing and repricing after a big trade.
+
+Attack pattern: manipulate Uniswap price (especially in thin markets), call the victim contract while the price is distorted, then profit from the victim’s bad accounting.
+
+### Attack Example
+
+REP/ETH Oracle Manipulation (from uniswapV2 white-paper)
+
+| Step | Action                            | Protocol Touched   | Key Numbers                                                      | Pair Price (REP/ETH)                       | Why It Matters                                                                              |
+|:-----|:----------------------------------|:-------------------|:-----------------------------------------------------------------|:-------------------------------------------|:--------------------------------------------------------------------------------------------|
+| 1    | Check REP/ETH spot price          | Uniswap V1 + Kyber | Pool holds 8,856.10 REP                                          | **0.057621 ETH per REP**                   | This is the honest baseline price before any manipulation                                   |
+| 2    | Buy 7,970.49 REP from pool        | Uniswap V1         | 7,970.49 REP bought (~90% of pool liquidity)                     | Price starts rising sharply                | Draining 90% of REP reserves forces the constant-product formula to reprice drastically     |
+| 3    | Check REP/ETH spot price again    | Uniswap V1 + Kyber | Slippage-adjusted quote = 5.486688 ETH for 10 REP                | **5.656380 ETH per REP** (manipulated)     | Price is now ~98.2x inflated vs. step 1 — the oracle sees a fake market                     |
+| 4    | Deposit REP as collateral         | bZx (lending pool) | collateral_required = 702.265284; interest_required = 205.433213 | **5.656380 ETH per REP** (manipulated)     | bZx reads the Kyber/Uniswap price and accepts REP as if it were worth 98x more than reality |
+| 5    | Borrow ETH against REP collateral | bZx (lending pool) | Loan sized based on inflated collateral value                    | **5.656380 ETH per REP** (manipulated)     | Protocol issues far more ETH than REP is truly worth — now undercollateralized              |
+| 6    | Unwind: sell REP back into pool   | Uniswap V1         | REP returned to pool, reserves normalize                         | **~0.057621 ETH per REP** (back to normal) | The manipulated price only needed to exist for the duration of steps 3–5                    |
+| 7    | Pocket the profit                 | —                  | Final profit = **2,425.71 ETH**                                  | —                                          | Attacker borrowed real ETH against fake collateral value and keeps the difference           |
+
+## Uniswap V2 Solution
+
+V2 mitigates this by
+- Uniswap v2 measures the price before the first trade of each block, which is effectively the previous block’s closing price.
+  - This makes one-transaction price manipulation much less effective against the oracle.
+    - To manipulate the measured price, two things must happen:
+      - The attacker executes a bad trade **near the end of one block**, taking on slippage and fees.
+      - **the first state-changing interaction with the pair in the next block** updates the oracle price using the manipulated carried-over reserves carried over from the previous block.
+        - The attacker would prefer to commit the first tx in the next block, which is highly unlikely unless they controls ordering or consecutive blocks,
+        - During that time, arbitrageurs can trade against the mispricing.
+    - (Optional) The attacker may then exploit a victim protocol.
+    - (Optional) The attacker may then unwind / recovery trade
+    - (Optional) During that extended time, arbitrageurs can trade against the mispricing.
+- Shifting from spot price lookups to Time-Weighted Average Prices (TWAP)
+  - Smooths short-lived spikes, so a brief manipulation usually affects the average much less than it affects the instantaneous spot price.
+
+
+## Mechanics
+
+Let's see how it achieves those defenses
+
+<Code
+  code={extractProtocolCodeSlice([
+    ['contracts/uniswap-v2/v2-core/contracts/UniswapV2Pair.sol:UniswapV2Pair', 22 , 24],
+    ['contracts/uniswap-v2/v2-core/contracts/UniswapV2Pair.sol:UniswapV2Pair', 73 , 86]
+  ])}
+  lang="solidity"
+/>
+
+### Fixed point binary numbers
+
+Reference [Fixed Point Binary Numbers](/fundamentals/defi/fixed-point-numbers/#binary-fixed-point-libraries)
+
+I uses Q112.112 to store TWAP
+
+| Property   | Value                                       |
+|------------|---------------------------------------------|
+| Total bits | 224                                         |
+| Min value  | $−2^{111} \approx −2.596×1033-2^{111}$      |
+| Max value  | $2^{111} − 2^{−112} \approx +2.596×10^{33}$ |
+| Resolution | $2^{−112} \approx 1.926×10^{-34}$           |
+
+This is an enormous format
+- it gives you a range on the scale of $10^{33}$
+- while simultaneously resolving differences as small as $10^{-34}$
+
+### Update per block
+
+- Every time an interaction (mint, swap, burn) occurs `_update()` is called
+- Contract updates its internal accumulator on the first interaction in block $N+1$
+  - changes the reserves immediately on block $N$,
+  - price is added into the oracle accumulator in block $N+1$ based on reserves on block $N$
+  - `block.timestamp` increases when block increases
+  - it updates its price only when `block.timestamp` increases
+  - blockTimestamp stored is crops `block.timestamp` (`uint256`) to a `uint32` to achieve `storage packing`
+    - $2^{32} = 4,294,967,296$ seconds after the Unix epoch (January 1, 1970)
+    - $4,294,967,296$ seconds after epoch = February 7, 2106, at 06:28:16 UTC
+
+### TWAP
+- Contract does not store historical prices
+- Contract tracks a single cumulative sum of the price for every second in the entire history of the contract
+- Each pair tracks `price0CumulativeLast` and `price1CumulativeLast`
+- There might be cases when a block did not have any interaction; therefore, the price is not updated
+
+
+#### TWAP Definition
+<div className="codeBlock">
+$\text{TWAP} = \frac{P_1T_1 + P_2T_2 + \cdots + P_nT_n} {\sum_{i=1}^{n} T_i}$
+
+$\text{priceXCumulativeLast} = P_1T_1 + P_2T_2 + P_3T_3 + P_4T_4 + P_5T_5 + P_6T_6$
+
+$T_i$ is a **duration** from **block N** to **the first interaction from block N+1** (`timeElapsed`)
+</div>
+
+#### Calculate the average price for block M
+<div className="codeBlock">
+$N$ = prior block, $M$ = target block
+
+$\Delta\texttt{price0Cumulative} = \texttt{price0CumulativeLast}_M - \texttt{price0CumulativeLast}_N$
+
+$\text{timeElapsed} = (\texttt{blockTimestampLast}_M \mod 2^{32}) - (\texttt{blockTimestampLast}_N \mod 2^{32})$
+
+$\text{TWAP}_0 = \frac{\Delta\texttt{price0Cumulative}}{\text{timeElapsed}} \times 2^{112}$
+
+</div>
+Notes:
+- $M-N \approx 180$ blocks ($\sim$30min): gives manipulation-resistant average
+- $\mod 2^{32}$: Modulo handles Solidity's 32-bit timestamp wrapping
+- $2^{112}$: Decoding converts fixed-point to decimal

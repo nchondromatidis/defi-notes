@@ -1,3 +1,5 @@
+@reference "tailwindcss";
+
 @layer custom {
     :root {
         --sl-nav-pad-x: 1.5rem;
@@ -14,5 +16,9 @@
             padding-right: 0;
         }
 
+    }
+
+    .codeBlock {
+        @apply p-4 bg-[#121212] border rounded-[9px]
     }
 }
