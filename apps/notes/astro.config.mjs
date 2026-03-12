@@ -13,6 +13,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   integrations: [
+    react(),
     starlight({
       plugins: [starlightThemeNext()],
       title: 'DeFi Notes',
@@ -24,7 +25,6 @@ export default defineConfig({
       customCss: ['./src/styles/global.css', './src/styles/custom.css'],
     }),
     mdx(),
-    react(),
     astroMultipleAssets([
       '../../packages/protocols/{\x01,artifacts}/**',
       '../../packages/protocols/{\x01,contracts}/**',
