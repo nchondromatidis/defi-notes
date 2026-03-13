@@ -11,13 +11,13 @@ import type { ContractResult, Message } from 'tevm/actions';
 import type { EvmResult, InterpreterStep } from 'tevm/evm';
 import { DebugMetadata } from './indexes/DebugMetadata.ts';
 import { AddressLabeler } from './indexes/AddressLabeler.ts';
-import { CallTracer } from './call-tracer/CallTracer.ts';
+import { FunctionTracer } from './handlers/FunctionTracer.ts';
 import { InvalidArgument, InvariantError } from '../_common/errors.ts';
 import type { Address, Hex, LensArtifactsMap } from './types.ts';
 import { hardhatLinkExternalLibToBytecode } from './utils/hardhat-utils.ts';
 import { buildClient, type PublicTestClient } from '../adapters/client.ts';
 import type { IResourceLoader } from './_ports/IResourceLoader.ts';
-import type { ReadOnlyFunctionCallEvent } from './call-tracer/CallTrace.ts';
+import type { ReadOnlyFunctionCallEvent } from './handlers/FunctionTrace.ts';
 
 export type Next = () => void;
 
@@ -30,7 +30,7 @@ export class LensClient<
     public client: PublicTestClient<TevmTransport>,
     public readonly debugMetadata: DebugMetadata,
     public readonly addressLabeler: AddressLabeler,
-    public readonly callTracer: CallTracer
+    public readonly functionTracer: FunctionTracer
   ) {}
 
   // tracing functions
@@ -72,7 +72,7 @@ export class LensClient<
     value?: bigint,
     traceTx = true
   ): Promise<ContractResult<TAbi, TFunctionName>> {
-    if (traceTx) this.callTracer.reset();
+    if (traceTx) this.functionTracer.reset();
     const contractTxResult = await tevmContract(this.client, {
       to: contract.address,
       code: undefined,
@@ -84,24 +84,24 @@ export class LensClient<
       throwOnFail: false,
       from,
       onStep: async (event: InterpreterStep, next?: Next) => {
-        if (traceTx) await this.callTracer.register(event);
+        if (traceTx) await this.functionTracer.register(event);
         next?.();
       },
       onBeforeMessage: async (event: Message, next?: Next) => {
-        if (traceTx) await this.callTracer.register(event);
+        if (traceTx) await this.functionTracer.register(event);
         next?.();
       },
       onAfterMessage: async (event: EvmResult, next?: Next) => {
-        if (traceTx) await this.callTracer.register(event);
+        if (traceTx) await this.functionTracer.register(event);
         next?.();
       },
     });
-    await this.callTracer.process();
+    await this.functionTracer.process();
     if (contractTxResult.errors) {
       console.error(contractTxResult.errors);
-      if (traceTx) this.callTracer.save(contractTxResult.txHash!, 'failed');
+      if (traceTx) this.functionTracer.save(contractTxResult.txHash!, 'failed');
     } else {
-      if (traceTx) this.callTracer.save(contractTxResult.txHash!, 'success');
+      if (traceTx) this.functionTracer.save(contractTxResult.txHash!, 'success');
     }
 
     return contractTxResult;
@@ -121,13 +121,13 @@ export class LensClient<
   getSucceeded(contractTxResult: ContractResult): ReadOnlyFunctionCallEvent | undefined {
     if (!contractTxResult?.txHash) return undefined;
 
-    return this.callTracer.succeededTxs.get(contractTxResult.txHash);
+    return this.functionTracer.succeededTxs.get(contractTxResult.txHash);
   }
 
   getFailed(contractTxResult: ContractResult): ReadOnlyFunctionCallEvent | undefined {
     if (!contractTxResult?.txHash) return undefined;
 
-    return this.callTracer.failedTxs.get(contractTxResult.txHash);
+    return this.functionTracer.failedTxs.get(contractTxResult.txHash);
   }
 
   // helper functions

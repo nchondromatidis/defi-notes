@@ -1,14 +1,14 @@
-import { EventsHandlerBase } from '../EventsHandlerBase.ts';
-import type { ExternalCallEvmEvent } from '../_events/lens-evm-events.ts';
+import { EventsHandlerBase } from '../../EventsHandlerBase.ts';
+import type { ExternalCallEvmEvent } from '../../evm-events/events/evm-events.ts';
 import { type Abi, bytesToHex } from 'viem';
-import type { FunctionCallEvent } from '../../call-tracer/CallTrace.ts';
-import type { Address } from '../../types.ts';
-import { InvariantError } from '../../../_common/errors.ts';
+import type { FunctionCallEvent } from '../../FunctionTrace.ts';
+import type { Address } from '../../../types.ts';
+import { InvariantError } from '../../../../_common/errors.ts';
 import {
   decodeFunctionCallMultipleAbis,
   decodeFunctionCallWithFunctionIndexes,
-} from '../../abi-decoders/functionCallDecoder.ts';
-import { QueryBy } from '../../indexes/FunctionIndexesRegistry.ts';
+} from '../../../abi-decoders/functionCallDecoder.ts';
+import { QueryBy } from '../../../indexes/FunctionIndexesRegistry.ts';
 
 /*
  * Detects and decodes external function calls. <br>

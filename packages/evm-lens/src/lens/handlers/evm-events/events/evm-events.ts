@@ -1,4 +1,4 @@
-import type { Address, Hex } from '../../types.ts';
+import type { Address, Hex } from '../../../types.ts';
 
 export type ExternalCallEvmEvent = {
   _type: 'ExternalCallEvmEvent';
@@ -36,16 +36,16 @@ export type OpcodeStepEvent = {
   opcodeSequenceNum: number;
 };
 
-export type LensEvmEvent = ExternalCallEvmEvent | ExternalCallResultEvmEvent | OpcodeStepEvent;
+export type EvmEvent = ExternalCallEvmEvent | ExternalCallResultEvmEvent | OpcodeStepEvent;
 
-export function isExternalCallEvmEvent(event: LensEvmEvent): event is ExternalCallEvmEvent {
+export function isExternalCallEvmEvent(event: EvmEvent): event is ExternalCallEvmEvent {
   return event._type === 'ExternalCallEvmEvent';
 }
 
-export function isExternalCallResultEvmEvent(event: LensEvmEvent): event is ExternalCallResultEvmEvent {
+export function isExternalCallResultEvmEvent(event: EvmEvent): event is ExternalCallResultEvmEvent {
   return event._type === 'ExternalCallResultEvmEvent';
 }
 
-export function isOpcodeStepEvent(event: LensEvmEvent): event is OpcodeStepEvent {
+export function isOpcodeStepEvent(event: EvmEvent): event is OpcodeStepEvent {
   return event._type === 'OpcodeStep';
 }

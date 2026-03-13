@@ -1,13 +1,13 @@
-import { ExternalCallHandler } from './call-trace-event-handlers/ExternalCallHandler.ts';
-import { ExternalCallResultHandler } from './call-trace-event-handlers/ExternalCallResultHandler.ts';
-import { FunctionEntryHandler } from './call-trace-event-handlers/FunctionEntryHandler.ts';
-import { FunctionExitHandler } from './call-trace-event-handlers/FunctionExitHandler.ts';
-import { CallTrace, type ReadOnlyFunctionCallEvent } from '../call-tracer/CallTrace.ts';
+import { ExternalCallHandler } from './handlers/ExternalCallHandler.ts';
+import { ExternalCallResultHandler } from './handlers/ExternalCallResultHandler.ts';
+import { FunctionEntryHandler } from './handlers/FunctionEntryHandler.ts';
+import { FunctionExitHandler } from './handlers/FunctionExitHandler.ts';
+import { FunctionTrace, type ReadOnlyFunctionCallEvent } from '../FunctionTrace.ts';
 import { emptyRuntimeTraceMetadata, type RuntimeTraceMetadata } from './trace-metadata.ts';
-import { InvariantError } from '../../_common/errors.ts';
+import { InvariantError } from '../../../_common/errors.ts';
 
 import {
-  type CallTraceEvents,
+  type FunctionCallEvent,
   type InternalFunctionCallEvent,
   type InternalFunctionCallResultEvent,
   isInternalFunctionCallEvent,
@@ -16,10 +16,10 @@ import {
   isExternalCallEvmEvent,
   type ExternalCallEvmEvent,
   type ExternalCallResultEvmEvent,
-} from './_events/call-trace-events.ts';
+} from './events/function-call-events.ts';
 
-export class CallTraceEventsHandler {
-  private callTrace: CallTrace;
+export class FunctionCallEventHandler {
+  private callTrace: FunctionTrace;
   private runtimeTraceMetadata: RuntimeTraceMetadata;
 
   constructor(
@@ -28,7 +28,7 @@ export class CallTraceEventsHandler {
     private readonly functionEntryHandler: FunctionEntryHandler,
     private readonly functionExitHandler: FunctionExitHandler
   ) {
-    this.callTrace = new CallTrace();
+    this.callTrace = new FunctionTrace();
     this.runtimeTraceMetadata = emptyRuntimeTraceMetadata();
   }
 
@@ -37,14 +37,14 @@ export class CallTraceEventsHandler {
   }
 
   public reset() {
-    this.callTrace = new CallTrace();
+    this.callTrace = new FunctionTrace();
     this.runtimeTraceMetadata = emptyRuntimeTraceMetadata();
     this.externalCallResultHandler.reset();
   }
 
   //** Route **/
 
-  public async route(event: CallTraceEvents) {
+  public async route(event: FunctionCallEvent) {
     switch (true) {
       case isExternalCallEvmEvent(event): {
         await this.handleExternalCall(event);

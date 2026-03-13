@@ -1,6 +1,9 @@
-import type { EvmStoreEntry } from '../EventStore.ts';
-import type { OpcodeStepEvent } from '../../_events/lens-evm-events.ts';
-import type { InternalFunctionCallEvent, InternalFunctionCallResultEvent } from '../../_events/call-trace-events.ts';
+import type { EvmStoreEntry } from '../EvmEventStore.ts';
+import type { OpcodeStepEvent } from '../events/evm-events.ts';
+import type {
+  InternalFunctionCallEvent,
+  InternalFunctionCallResultEvent,
+} from '../../function-call-events/events/function-call-events.ts';
 
 export type OpcodeStepEventEntry = Extract<EvmStoreEntry, { evmEvent: OpcodeStepEvent }>;
 

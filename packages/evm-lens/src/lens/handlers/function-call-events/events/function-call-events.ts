@@ -1,4 +1,8 @@
-import { type ExternalCallEvmEvent, type ExternalCallResultEvmEvent, type OpcodeStepEvent } from './lens-evm-events.ts';
+import {
+  type ExternalCallEvmEvent,
+  type ExternalCallResultEvmEvent,
+  type OpcodeStepEvent,
+} from '../../evm-events/events/evm-events.ts';
 
 export type InternalFunctionCallEvent = {
   _type: 'InternalFunctionCallEvent';
@@ -30,24 +34,24 @@ export type InternalFunctionCallResultEvent = {
   returnData: string[];
 };
 
-export type CallTraceEvents =
+export type FunctionCallEvent =
   | ExternalCallEvmEvent
   | ExternalCallResultEvmEvent
   | InternalFunctionCallEvent
   | InternalFunctionCallResultEvent;
 
-export function isExternalCallEvmEvent(event: CallTraceEvents): event is ExternalCallEvmEvent {
+export function isExternalCallEvmEvent(event: FunctionCallEvent): event is ExternalCallEvmEvent {
   return event._type === 'ExternalCallEvmEvent';
 }
 
-export function isExternalCallResultEvmEvent(event: CallTraceEvents): event is ExternalCallResultEvmEvent {
+export function isExternalCallResultEvmEvent(event: FunctionCallEvent): event is ExternalCallResultEvmEvent {
   return event._type === 'ExternalCallResultEvmEvent';
 }
 
-export function isInternalFunctionCallEvent(event: CallTraceEvents): event is InternalFunctionCallEvent {
+export function isInternalFunctionCallEvent(event: FunctionCallEvent): event is InternalFunctionCallEvent {
   return event._type === 'InternalFunctionCallEvent';
 }
-export function isInternalFunctionCallResultEvent(event: CallTraceEvents): event is InternalFunctionCallEvent {
+export function isInternalFunctionCallResultEvent(event: FunctionCallEvent): event is InternalFunctionCallEvent {
   return event._type === 'InternalFunctionCallResultEvent';
 }
 

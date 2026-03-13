@@ -145,7 +145,7 @@ describe('uniswap-v2', () => {
 
     // act
     await lensClient.contract(factory, 'createPair', [token1.createdAddress!, token2.createdAddress!]);
-    const txHash = lensClient.callTracer.succeededTxs.keys().next().value;
+    const txHash = lensClient.functionTracer.succeededTxs.keys().next().value;
     const callTraceResult = await client.transport.tevm.request({
       method: 'debug_traceTransaction',
       params: [

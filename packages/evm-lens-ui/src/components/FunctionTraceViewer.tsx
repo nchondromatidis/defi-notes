@@ -3,7 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import { ChevronRight, ChevronDown, AlertTriangle, Maximize2, Minimize2, ArrowRight, ListTree } from 'lucide-react';
 import { cn } from './lib/utils.ts';
-import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/call-tracer/CallTrace.ts';
+import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/handlers/FunctionTrace.ts';
 import { getContractName } from '@defi-notes/evm-lens/src/client-utils/names.ts';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader } from './ui/card';

@@ -1,6 +1,6 @@
 import { UniswapV2Workflows } from '@/protocols/workflows/UniswapV2Workflows.ts';
 import { HardhatEvmLensHttpRL } from '@defi-notes/evm-lens/src/adapters/resource-loader/HardhatEvmLensHttpRL.ts';
-import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/call-tracer/CallTrace.ts';
+import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/handlers/FunctionTrace.ts';
 
 // TODO: remove singleton, not an issue yet because of astros-js-islands
 export const protocolWorkflowsRegistry = {

@@ -59,7 +59,7 @@ export type LensLog = {
 
 export type ReadOnlyFunctionCallEvent = DeepReadonly<FunctionCallEvent>;
 
-export class CallTrace {
+export class FunctionTrace {
   public rootFunction?: FunctionCallEvent;
   private stack: FunctionCallEvent[] = [];
 

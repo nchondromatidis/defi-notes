@@ -1,4 +1,4 @@
-import type { FunctionCallEvent } from '../call-tracer/CallTrace.ts';
+import type { FunctionCallEvent } from '../FunctionTrace.ts';
 
 export type PC = number;
 export type Depth = number;

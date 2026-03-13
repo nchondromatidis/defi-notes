@@ -1,7 +1,7 @@
 import type { Message } from 'tevm/actions';
 import type { EvmResult, InterpreterStep } from 'tevm/evm';
 
-export type EvmEvent = Message | EvmResult | InterpreterStep;
+export type TEvmEvent = Message | EvmResult | InterpreterStep;
 
 const isRecord = (v: unknown): v is Record<PropertyKey, unknown> => typeof v === 'object' && v !== null;
 

@@ -1,7 +1,7 @@
-import { EventsHandlerBase } from '../EventsHandlerBase.ts';
-import type { FunctionCallEvent } from '../../call-tracer/CallTrace.ts';
+import { EventsHandlerBase } from '../../EventsHandlerBase.ts';
+import type { FunctionCallEvent } from '../../FunctionTrace.ts';
 import { type RuntimeTraceMetadata } from '../trace-metadata.ts';
-import type { InternalFunctionCallEvent } from '../_events/call-trace-events.ts';
+import type { InternalFunctionCallEvent } from '../events/function-call-events.ts';
 
 /*
  * Detects internal function calls. <br>

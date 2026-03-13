@@ -1,6 +1,6 @@
-import { type EvmEvent, isEvmResult, isInterpreterStep, isMessage } from '../_events/client-evm-events.ts';
+import { type TEvmEvent, isEvmResult, isInterpreterStep, isMessage } from '../tevm-events/tevm-events.ts';
 import type { Address, LensFunctionIndex, PcLocationReadable } from '../../types.ts';
-import type { ExternalCallEvmEvent, ExternalCallResultEvmEvent, OpcodeStepEvent } from '../_events/lens-evm-events.ts';
+import type { ExternalCallEvmEvent, ExternalCallResultEvmEvent, OpcodeStepEvent } from './events/evm-events.ts';
 import { InvariantError } from '../../../_common/errors.ts';
 import { isExternalCallOpcode, isJumpDestOpcode, isJumpOpcode } from '../../opcodes';
 import { EventsHandlerBase } from '../EventsHandlerBase.ts';
@@ -15,12 +15,12 @@ export type EvmStoreEntry =
     }
   | { _type: 'ExternalCall'; evmEvent: ExternalCallResultEvmEvent | ExternalCallEvmEvent };
 
-export class EventStore extends EventsHandlerBase {
+export class EvmEventStore extends EventsHandlerBase {
   private evmEvents: Array<EvmStoreEntry> = [];
   private currSequenceNum = 0;
   private delegateCallContractAddress?: Address = undefined;
 
-  store(event: EvmEvent) {
+  store(event: TEvmEvent) {
     switch (true) {
       case isMessage(event): {
         const evmEvent: ExternalCallEvmEvent = {

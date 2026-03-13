@@ -1,14 +1,14 @@
-import { EventsHandlerBase } from '../EventsHandlerBase.ts';
-import { isExternalCallEvmEvent, isExternalCallResultEvmEvent } from '../_events/lens-evm-events.ts';
-import type { EvmStoreEntry } from './EventStore.ts';
-import type { CallTraceEvents } from '../_events/call-trace-events.ts';
-import { detectInternalCallsFromOpcodeSequence } from './pattern-matchers/internal-calls-opcode-sequence.ts';
+import { EventsHandlerBase } from '../../EventsHandlerBase.ts';
+import { isExternalCallEvmEvent, isExternalCallResultEvmEvent } from '../events/evm-events.ts';
+import type { EvmStoreEntry } from '../EvmEventStore.ts';
+import type { FunctionCallEvent } from '../../function-call-events/events/function-call-events.ts';
+import { detectInternalCallsFromOpcodeSequence } from './internal-calls-opcode-sequence.ts';
 
-export class OpcodeMatcher extends EventsHandlerBase {
+export class EvmEventPreprocessor extends EventsHandlerBase {
   public async matchFunctionCallOpcodeSequence(
     evmStoreEntries: ReadonlyArray<EvmStoreEntry>
-  ): Promise<ReadonlyArray<CallTraceEvents>> {
-    const callTraceEvents: Array<CallTraceEvents> = [];
+  ): Promise<ReadonlyArray<FunctionCallEvent>> {
+    const callTraceEvents: Array<FunctionCallEvent> = [];
     for (const evmStoreEntry of evmStoreEntries) {
       if (isExternalCallEvmEvent(evmStoreEntry.evmEvent)) callTraceEvents.push(evmStoreEntry.evmEvent);
       if (isExternalCallResultEvmEvent(evmStoreEntry.evmEvent)) callTraceEvents.push(evmStoreEntry.evmEvent);

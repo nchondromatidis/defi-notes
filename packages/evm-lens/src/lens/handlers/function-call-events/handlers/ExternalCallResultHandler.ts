@@ -1,21 +1,21 @@
-import { EventsHandlerBase } from '../EventsHandlerBase.ts';
-import type { ExternalCallResultEvmEvent } from '../_events/lens-evm-events.ts';
+import { EventsHandlerBase } from '../../EventsHandlerBase.ts';
+import type { ExternalCallResultEvmEvent } from '../../evm-events/events/evm-events.ts';
 import { bytesToHex } from 'viem';
-import type { FunctionCallEvent, FunctionResultEvent, LensLog } from '../../call-tracer/CallTrace.ts';
+import type { FunctionCallEvent, FunctionResultEvent, LensLog } from '../../FunctionTrace.ts';
 import {
   type ContractLogDecodingData,
   DecodedLogsCache,
   decodeLogMultipleAbisWithCache,
-} from '../../abi-decoders/logDecoder.ts';
+} from '../../../abi-decoders/logDecoder.ts';
 import {
   DecodedErrorsCache,
   type DecodeFunctionResulData,
   decodeFunctionResultMultipleAbisWithCache,
   decodeFunctionReturnWithFunctionIndex,
-} from '../../abi-decoders/functionResultDecoder.ts';
-import { InvariantError } from '../../../_common/errors.ts';
-import { QueryBy } from '../../indexes/FunctionIndexesRegistry.ts';
-import type { RawLog } from '../../types.ts';
+} from '../../../abi-decoders/functionResultDecoder.ts';
+import { InvariantError } from '../../../../_common/errors.ts';
+import { QueryBy } from '../../../indexes/FunctionIndexesRegistry.ts';
+import type { RawLog } from '../../../types.ts';
 
 /*
  * Detects and decodes external function call result data and logs. <br>
