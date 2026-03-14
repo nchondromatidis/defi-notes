@@ -1,10 +1,10 @@
 import type { ArtifactMap } from '@defi-notes/protocols/*';
-import path from 'path';
+import path from 'node:path';
 import type { LensArtifactsMapSlice } from '@defi-notes/evm-lens/src/client-utils/type-helpers.ts';
 import type { LensArtifactsMap } from '@defi-notes/evm-lens/src/lens/types.ts';
 import { fileURLToPath } from 'node:url';
 import * as fs from 'node:fs';
-import { trimFirstSpaces } from '@/protocols/extract-code/_utils.ts';
+import { trimFirstSpaces } from './_utils.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const PROTOCOLS_RESOURCES_PATH = path.join(__dirname, '..', '..', '..', '..', '..', 'packages', 'protocols');

@@ -1,0 +1,60 @@
+---
+title: Swap
+sidebar:
+  order: 5100
+---
+
+import { Code } from '@astrojs/starlight/components';
+import { ProtocolWorkflowTrace } from '@defi-notes/workflows/components/ProtocolWorkflowTrace';
+import { extractProtocolWorkflowCode } from "@defi-notes/workflows/protocols/extract-code/protocol-workflow";
+
+This page covers the necessary concepts to understand token **swap flow in Uniswap V2**.
+
+## Concepts
+
+### Swap
+
+A swap is the exchange of one token for another through an automated liquidity pool in a single transaction, with no need for a traditional order book or counterparty.
+
+You specify either an exact amount to send or an exact amount to receive, and the pool calculates the other side using its current reserves.
+
+A 0.3% fee is deducted from each swap and distributed to liquidity providers.
+
+### Price Impact and Slippage
+
+Because the pool balances must move along a **multiplicative inverse curve** (a rectangular hyperbola), every trade shifts the balance of reserves and results in a new price.
+
+This means the **effective price** paid is always slightly worse than the spot price, a phenomenon known as **price impact**.
+
+
+### Chart
+
+## Methods
+
+`UniswapV2Router2` contract (periphery) provides multiple swap methods to support different combinations of swaps.
+
+The core distinction across all functions is two axes:
+- who fixes what (exact input vs. exact output)
+- and whether ETH or ERC-20 tokens are on either end
+
+The SupportingFeeOnTransferTokens variants add a third axis:
+- for tokens whose balance decreases on transfer
+
+All of them call two helper methods:
+- `_swap`: It iterates over each hop in the path array, computes the correct `amount0Out/amount1Out` for each pair, and calls `IUniswapV2Pair.swap()` on each pool, forwarding the output directly to the next pool (or to the final recipient)
+- `_swapSupportingFeeOnTransferTokens`: A variant of _swap for tokens that take a fee on every transfer (e.g., deflationary tokens). Instead of relying on pre-calculated amounts, it reads the pair's actual token balance after transfer to determine `amountInput`, then computes `amountOutput` on-chain, since the received amount may differ from what was sent.
+
+All router swap methods call `UniswapV2Pair.swap()` method, which will be the focus of this document.
+
+
+## Function trace
+
+<Code
+  code={extractProtocolWorkflowCode([
+    ['UniswapV2Workflows', 'swap'],
+    ['UniswapV2Workflows', '_swap']
+  ])}
+  lang="ts"
+/>
+
+<ProtocolWorkflowTrace protocol="uniswapV2" workflow="swap" header='Swap' client:load />

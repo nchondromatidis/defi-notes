@@ -1,14 +1,19 @@
 import type { ArtifactMap } from '@defi-notes/protocols/*';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
-import { ProtocolWorkflowsBase } from '@/protocols/workflows/ProtocolWorkflowsBase.ts';
+import { ProtocolWorkflowsBase } from './ProtocolWorkflowsBase.ts';
 import type { IResourceLoader } from '@defi-notes/evm-lens/src/lens/_ports/IResourceLoader.ts';
-import { _1e18, USER_0, USER_1 } from '@/protocols/workflows/_constants.ts';
-import type { Address } from 'viem';
+import { _1e18, USER_0, USER_1 } from './_constants.ts';
+import { type Address, encodePacked, getContractAddress, type GetContractReturnType, keccak256 } from 'viem';
 import type { LensClient } from '@defi-notes/evm-lens/src/lens/LensClient.ts';
+import { safeCastToHex } from '@defi-notes/evm-lens/src/_common/type-utils.ts';
 
 export type UniswapV2Artifacts = {
   [K in keyof ArtifactMap as K extends `contracts/uniswap-v2/${string}` ? K : never]: ArtifactMap[K];
 };
+
+type UniswapV2ERC20 = GetContractReturnType<
+  ArtifactMap['contracts/uniswap-v2/v2-periphery/contracts/test/ERC20.sol:ERC20']['abi']
+>;
 
 export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts> {
   static async create(resourceLoader: IResourceLoader) {
@@ -64,13 +69,13 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
   } = {}) {
     await this.lensClient.fundAccount(user, _1e18);
 
-    const ercTokenA = await this.deployErc20(USER_0.address, 1_000_000n * _1e18);
+    const erc20TokenA = await this.deployErc20(USER_0.address, 1_000_000n * _1e18);
 
-    const ercTokenB = await this.deployErc20(USER_0.address, 1_000_000n * _1e18);
+    const erc20TokenB = await this.deployErc20(USER_0.address, 1_000_000n * _1e18);
 
     const trace = await this._addLiquidity(
-      ercTokenA,
-      ercTokenB,
+      erc20TokenA,
+      erc20TokenB,
       amountADesired,
       amountBDesired,
       0n,
@@ -80,7 +85,7 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
       traceTx
     );
 
-    return { trace, ercTokenA: ercTokenA, ercTokenB: ercTokenB };
+    return { trace, erc20TokenA, erc20TokenB };
   }
 
   async addLiquidity({
@@ -90,15 +95,15 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
     amountAMin = 50n * _1e18,
     amountBMin = 50n * _1e18,
   } = {}) {
-    const { ercTokenA, ercTokenB } = await this.initialLiquidity({
+    const { erc20TokenA, erc20TokenB } = await this.initialLiquidity({
       user: USER_1.address,
       amountADesired: 200n * _1e18,
       amountBDesired: 400n * _1e18,
     });
 
     const trace = await this._addLiquidity(
-      ercTokenA,
-      ercTokenB,
+      erc20TokenA,
+      erc20TokenB,
       amountADesired,
       amountBDesired,
       amountAMin,
@@ -107,12 +112,12 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
       this.maxUint256()
     );
 
-    return { trace, ercTokenA, ercTokenB };
+    return { trace, ercTokenA: erc20TokenA, ercTokenB: erc20TokenB };
   }
 
   private async _addLiquidity(
-    tokenA: any,
-    tokenB: any,
+    tokenA: UniswapV2ERC20,
+    tokenB: UniswapV2ERC20,
     amountADesired: bigint,
     amountBDesired: bigint,
     amountAMin: bigint,
@@ -141,7 +146,46 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
     return this.lensClient.getTracedTx(result);
   }
 
-  // helpers
+  async swap({ user = USER_1.address, amountIn = 50n * _1e18, amountOutMin = 50n * _1e18 } = {}) {
+    const { erc20TokenA, erc20TokenB } = await this.initialLiquidity({
+      user: USER_1.address,
+      amountADesired: 200n * _1e18,
+      amountBDesired: 400n * _1e18,
+    });
+
+    const path: Address[] = [erc20TokenA.address, erc20TokenB.address];
+
+    const trace = await this._swap(erc20TokenA, amountIn, amountOutMin, path, user, this.maxUint256(), user);
+
+    return { trace, erc20TokenA, erc20TokenB };
+  }
+
+  private async _swap(
+    tokenIn: UniswapV2ERC20,
+    amountIn: bigint,
+    amountOutMin: bigint,
+    path: Address[],
+    to: Address,
+    deadline: bigint,
+    user: Address,
+    trace = true
+  ) {
+    const { router2 } = this.deployment;
+
+    await this.transferErc20(tokenIn, USER_0.address, user, amountIn);
+    await this.approve(tokenIn, router2.address, amountIn, user);
+
+    const result = await this.lensClient.contract(
+      router2,
+      'swapExactTokensForTokens',
+      [amountIn, amountOutMin, path, to, deadline],
+      user,
+      undefined,
+      trace
+    );
+
+    return this.lensClient.getTracedTx(result);
+  }
 
   private async deployErc20(initialUser: Address, initialSupply: bigint) {
     const ercTokenDeployResult = await this.lensClient.deploy(
@@ -156,11 +200,26 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
     );
   }
 
-  private async transferErc20(erc20: any, fromUser: Address, toUser: Address, amount: bigint) {
+  private async transferErc20(erc20: UniswapV2ERC20, fromUser: Address, toUser: Address, amount: bigint) {
     await this.lensClient.contract(erc20, 'transfer', [toUser, amount], fromUser);
   }
 
-  private async approve(erc20: any, spender: `0x${string}`, amount: bigint, caller: Address) {
+  private async approve(erc20: UniswapV2ERC20, spender: `0x${string}`, amount: bigint, caller: Address) {
     await this.lensClient.contract(erc20, 'approve', [spender, amount], caller);
+  }
+
+  private async calculatePairAddress(tokenA: UniswapV2ERC20, tokenB: UniswapV2ERC20) {
+    const { factory } = this.deployment;
+    const pairArtifact = await this.resourceLoader.getArtifact(
+      'contracts/uniswap-v2/v2-core/contracts/UniswapV2Pair.sol:UniswapV2Pair'
+    );
+
+    const salt = keccak256(encodePacked(['address', 'address'], [tokenA.address, tokenB.address]));
+    return getContractAddress({
+      bytecode: safeCastToHex(pairArtifact.bytecode),
+      from: factory.address,
+      opcode: 'CREATE2',
+      salt: salt,
+    });
   }
 }

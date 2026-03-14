@@ -36,5 +36,11 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    ssr: {
+      noExternal: ['@defi-notes/workflows'],
+    },
+    optimizeDeps: {
+      exclude: ['@defi-notes/workflows'],
+    },
   },
 });

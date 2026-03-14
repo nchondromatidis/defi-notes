@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Maximize2, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Button } from './ui/button';
+import { Dialog, DialogClose, DialogContent, DialogTitle } from './ui/dialog';
 
 interface DesmosChartProps {
   graphId: string;

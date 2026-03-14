@@ -1,0 +1,11 @@
+{
+  "extends": "@defi-notes/config/tsconfig.node.json",
+  "include": [
+    "src/protocols/**/*",
+    "test/**/*",
+    "./vite.config.ts",
+    "./vitest.config.js",
+    "eslint.config.js",
+    "prettier.config.js"
+  ]
+}

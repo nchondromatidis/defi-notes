@@ -1,9 +1,9 @@
 import { TraceViewerClient } from '@defi-notes/evm-lens-ui';
 import React, { useEffect, useRef, useState } from 'react';
 import type { TraceResult } from '@defi-notes/evm-lens-ui';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'packages/workflows/src/components/ui/card';
+import { Button } from 'packages/workflows/src/components/ui/button';
+import { Dialog, DialogClose, DialogContent, DialogTitle } from 'packages/workflows/src/components/ui/dialog';
 import { X } from 'lucide-react';
 import {
   protocolWorkflowsRegistry,
@@ -11,7 +11,7 @@ import {
   runWorkflow,
   type MethodArgs,
   type WorkflowNames,
-} from '@/protocols/run-workflow.ts';
+} from 'packages/workflows/src/protocols/run-workflow.ts';
 
 type ProtocolActionProps<
   R extends Record<string, object> = ProtocolWorkflowsRegistry,

@@ -2,7 +2,7 @@ import { test, beforeEach, describe } from 'vitest';
 import { UniswapV2Workflows } from '@/protocols/workflows/UniswapV2Workflows.ts';
 import { HardhatEvmLensFileRL } from '@defi-notes/evm-lens/test/_setup/HardhatEvmLensFileRL.ts';
 import path from 'node:path';
-import { inspect } from './utils/inspect.ts';
+import { functionOrder, inspect } from './utils/inspect.ts';
 
 export const PROTOCOLS_RESOURCES_PATH = path.join(__dirname, '..', '..', '..', 'packages', 'protocols');
 
@@ -23,4 +23,9 @@ describe('uniswap-v2', () => {
     const a = await uniswapV2Actions.addLiquidity();
     inspect(a);
   });
+
+  test('swap', async () => {
+    const a = await uniswapV2Actions.swap();
+    functionOrder(a.trace);
+  }, 99999);
 });
