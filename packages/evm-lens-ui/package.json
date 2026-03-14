@@ -4,12 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./*.css": "./dist/*.css",
-    "./styles/*.css": "./dist/styles/*.css"
+    "./components/*": "./src/components/*.tsx"
   },
   "files": [
     "dist",

@@ -3,8 +3,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "../../node_modules/katex/dist/katex.min.css";
-@import "@defi-notes/evm-lens-ui/index.css";
 
+@source "../../node_modules/@defi-notes/evm-lens-ui/src";
 @source "../../node_modules/@defi-notes/workflows/src";
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));

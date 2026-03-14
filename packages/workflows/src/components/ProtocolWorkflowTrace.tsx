@@ -1,6 +1,6 @@
-import { TraceViewerClient } from '@defi-notes/evm-lens-ui';
+import { TraceViewerClient } from '@defi-notes/evm-lens-ui/components/TraceViewerClient';
 import React, { useEffect, useRef, useState } from 'react';
-import type { TraceResult } from '@defi-notes/evm-lens-ui';
+import type { TraceResult } from '@defi-notes/evm-lens-ui/components/TraceViewerClient';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Dialog, DialogClose, DialogContent, DialogTitle } from './ui/dialog';
@@ -99,7 +99,7 @@ export const ProtocolWorkflowTrace: React.FC<ProtocolActionProps<ProtocolWorkflo
           showCloseButton={false}
           className="border-none rounded-none max-w-[95vw] sm:max-w-[95vw] max-h-[95vh] w-[95vw] h-[95vh] p-0 gap-0"
           ref={dialogRef}
-          onPointerDownOutside={(e: React.PointerEvent) => {
+          onPointerDownOutside={(e) => {
             // Only prevent close if the pointer-down target is
             // actually inside the dialog's DOM node
             if (dialogRef.current?.contains(e.target as Node)) {
