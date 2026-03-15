@@ -54,4 +54,34 @@ contract CallerContract {
         emit Log("callAnotherContractWithFallback executed", a);
         return a;
     }
+
+    // Function with rich EVM stack to stress test the tracer
+    function richStackFunction(
+        uint256 amountIn,
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external returns (uint256) {
+        // Only 3-4 local variables
+        uint256 a = amountIn;
+        uint256 b = amountOutMin;
+        address c = path[0];
+        
+        // Ternary creates stack pressure
+        uint256 result = a > b ? a + deadline : b + deadline;
+        
+        // Simple internal call in the middle
+        uint256 midResult = simpleInternal(result, c, to);
+        
+        // More operations after the call
+        uint256 finalResult = midResult > a ? midResult + b : midResult - b;
+        
+        return finalResult;
+    }
+    
+    function simpleInternal(uint256 x, address y, address z) internal pure returns (uint256) {
+        uint256 temp = x + uint256(uint160(y));
+        return temp > x ? temp + uint256(uint160(z)) : x;
+    }
 }

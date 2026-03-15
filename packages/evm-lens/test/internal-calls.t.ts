@@ -3,8 +3,9 @@ import type { LensClient } from '../src/lens/LensClient.ts';
 import type { ArtifactMap } from './_setup/artifacts';
 import { createLensTracerTestSetup } from './_setup/lensTracerTestSetup.ts';
 import type { GetContractReturnType } from 'viem';
-import type { LensArtifactsMap } from '../src/lens/types.ts';
+import type { Address, LensArtifactsMap } from '../src/lens/types.ts';
 import type { LensArtifactsMapSlice } from '../src/client-utils/type-helpers.ts';
+import { inspect } from './_setup/utils/inspect.ts';
 
 describe('internal-calls', () => {
   let lensClient: LensClient<LensArtifactsMapSlice<LensArtifactsMap<ArtifactMap>, 'test-contracts', 'internal-calls'>>;
@@ -90,5 +91,23 @@ describe('internal-calls', () => {
   test('test function fallback', async () => {
     const result = await lensClient.contract(callerContract, 'callAnotherContractWithFallback', [1n]);
     expect(lensClient.getSucceeded(result)).toMatchSnapshot();
+  });
+
+  test('richStackFunction - function with rich EVM stack', async () => {
+    const path: Address[] = [
+      '0x0000000000000000000000000000000000000001',
+      '0x0000000000000000000000000000000000000002',
+    ];
+    const to = '0x0000000000000000000000000000000000000004';
+
+    const result = await lensClient.contract(callerContract, 'richStackFunction', [
+      100n, // amountIn
+      90n, // amountOutMin
+      path,
+      to,
+      9999999999n, // deadline
+    ]);
+    const trace = lensClient.getTracedTx(result);
+    inspect(trace);
   });
 });
