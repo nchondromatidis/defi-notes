@@ -74,7 +74,7 @@ export class LensClient<
     traceTx = true
   ): Promise<ContractResult<TAbi, TFunctionName>> {
     if (traceTx) this.functionTracer.reset();
-    logger.debug('Contract TX Received', { functionName });
+    logger.debug('Contract called', { functionName, traceTx });
     const contractTxResult = await tevmContract(this.client, {
       to: contract.address,
       code: undefined,
@@ -98,7 +98,7 @@ export class LensClient<
         next?.();
       },
     });
-    await this.functionTracer.process();
+    if (traceTx) await this.functionTracer.process();
     if (contractTxResult.errors) {
       logger.error('TX Reverted', { errors: contractTxResult.errors });
       if (traceTx) this.functionTracer.save(contractTxResult.txHash!, 'failed');
