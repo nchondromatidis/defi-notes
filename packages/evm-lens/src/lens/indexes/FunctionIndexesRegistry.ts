@@ -17,10 +17,10 @@ export class FunctionIndexesRegistry {
 
   public async register(functionIndexes: LensFunctionIndex[]) {
     for (const fnIndex of functionIndexes) {
-      // create index2
+      // create index1
       this.index1.set(fnIndex.contractFQN, fnIndex.nameOrKind, fnIndex);
 
-      // create index3
+      // create index2
       if (fnIndex.selector) {
         this.index2.set(fnIndex.contractFQN, fnIndex.selector, fnIndex);
       }

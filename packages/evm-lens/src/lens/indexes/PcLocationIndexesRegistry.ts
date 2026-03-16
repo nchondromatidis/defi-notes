@@ -2,8 +2,8 @@ import type { LensFunctionIndex, LensPcLocationIndex } from '../types.ts';
 import { NestedMap } from '../../_common/NestedMap.ts';
 
 export class PcLocationIndexesRegistry {
-  protected contactFunctions = new NestedMap<[contractFQN: string], LensFunctionIndex[]>();
-  protected contactOpcodes = new NestedMap<
+  protected contractFunctions = new NestedMap<[contractFQN: string], LensFunctionIndex[]>();
+  protected contractOpcodes = new NestedMap<
     [contractFQN: string, pc: number],
     LensPcLocationIndex['pcLocations'][number]
   >();
@@ -12,7 +12,7 @@ export class PcLocationIndexesRegistry {
   // manage
 
   public async register(lensFunctionIndexes: LensFunctionIndex[], pcLocationIndexes: LensPcLocationIndex[]) {
-    // contactFunctions index
+    // contractFunctions index
     const functionsPerSource = new Map<string, LensFunctionIndex[]>();
     for (const lensFunctionIndex of lensFunctionIndexes) {
       const existingFunctions = functionsPerSource.get(lensFunctionIndex.source) ?? [];
@@ -25,13 +25,13 @@ export class PcLocationIndexesRegistry {
       for (const locationSource of pcLocationIndex.locationSources) {
         contractFQNFunctions.push(...(functionsPerSource.get(locationSource) ?? []));
       }
-      this.contactFunctions.set(pcLocationIndex.contractFQN, contractFQNFunctions);
+      this.contractFunctions.set(pcLocationIndex.contractFQN, contractFQNFunctions);
     }
 
-    // contactOpcodes index
+    // contractOpcodes index
     for (const pcLocationIndex of pcLocationIndexes) {
       for (const pcLocation of pcLocationIndex.pcLocations) {
-        this.contactOpcodes.set(pcLocationIndex.contractFQN, pcLocation[0], pcLocation);
+        this.contractOpcodes.set(pcLocationIndex.contractFQN, pcLocation[0], pcLocation);
       }
     }
 
@@ -44,8 +44,8 @@ export class PcLocationIndexesRegistry {
   }
 
   reset() {
-    this.contactFunctions.clear();
-    this.contactOpcodes.clear();
+    this.contractFunctions.clear();
+    this.contractOpcodes.clear();
     this.contractLocationSources.clear();
   }
 
@@ -56,7 +56,7 @@ export class PcLocationIndexesRegistry {
     if (!pcLocationIndex) return undefined;
     const { startLine, sourceName } = pcLocationIndex;
 
-    const contractFunctions = this.contactFunctions.get(contractFQN);
+    const contractFunctions = this.contractFunctions.get(contractFQN);
     if (!contractFunctions) return undefined;
 
     return contractFunctions.find((it) => {
@@ -65,7 +65,7 @@ export class PcLocationIndexesRegistry {
   }
 
   public getPcLocationIndex(contractFQN: string, pc: number) {
-    const pcLocation = this.contactOpcodes.get(contractFQN, pc);
+    const pcLocation = this.contractOpcodes.get(contractFQN, pc);
     if (!pcLocation) return undefined;
 
     const sourceIndex = pcLocation[2][2];
