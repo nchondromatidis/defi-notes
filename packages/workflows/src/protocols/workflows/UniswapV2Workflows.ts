@@ -200,10 +200,10 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
   }
 
   private async transferErc20(erc20: UniswapV2ERC20, fromUser: Address, toUser: Address, amount: bigint) {
-    await this.lensClient.contract(erc20, 'transfer', [toUser, amount], fromUser);
+    await this.lensClient.contract(erc20, 'transfer', [toUser, amount], fromUser, undefined, false);
   }
 
   private async approve(erc20: UniswapV2ERC20, spender: `0x${string}`, amount: bigint, caller: Address) {
-    await this.lensClient.contract(erc20, 'approve', [spender, amount], caller);
+    await this.lensClient.contract(erc20, 'approve', [spender, amount], caller, undefined, false);
   }
 }
