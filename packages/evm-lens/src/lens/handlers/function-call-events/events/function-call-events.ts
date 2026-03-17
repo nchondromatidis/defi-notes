@@ -6,7 +6,6 @@ import {
 
 export type InternalFunctionCallEvent = {
   _type: 'InternalFunctionCallEvent';
-  functionCallId: number;
 
   contractFQN: string;
   functionName: string;
@@ -21,7 +20,6 @@ export type InternalFunctionCallEvent = {
 
 export type InternalFunctionCallResultEvent = {
   _type: 'InternalFunctionCallResultEvent';
-  functionCallId: number;
 
   contractFQN: string;
   functionName: string;
@@ -51,7 +49,7 @@ export function isExternalCallResultEvmEvent(event: FunctionCallEvent): event is
 export function isInternalFunctionCallEvent(event: FunctionCallEvent): event is InternalFunctionCallEvent {
   return event._type === 'InternalFunctionCallEvent';
 }
-export function isInternalFunctionCallResultEvent(event: FunctionCallEvent): event is InternalFunctionCallEvent {
+export function isInternalFunctionCallResultEvent(event: FunctionCallEvent): event is InternalFunctionCallResultEvent {
   return event._type === 'InternalFunctionCallResultEvent';
 }
 

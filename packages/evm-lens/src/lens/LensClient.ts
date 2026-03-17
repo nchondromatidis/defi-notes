@@ -19,8 +19,12 @@ import { buildClient, type PublicTestClient } from '../adapters/client.ts';
 import type { IResourceLoader } from './_ports/IResourceLoader.ts';
 import type { ReadOnlyFunctionCallEvent } from './handlers/FunctionTrace.ts';
 import { logger } from '../_common/logger.ts';
+import createDebug from 'debug';
+import { DEBUG_PREFIX } from '../_common/debug.ts';
 
 export type Next = () => void;
+
+const debug = createDebug(`${DEBUG_PREFIX}:LensClient`);
 
 export class LensClient<
   ArtifactMapT extends object,
@@ -74,7 +78,7 @@ export class LensClient<
     traceTx = true
   ): Promise<ContractResult<TAbi, TFunctionName>> {
     if (traceTx) this.functionTracer.reset();
-    logger.debug('Contract called', { functionName, traceTx });
+    debug('Contract called', { functionName, traceTx });
     const contractTxResult = await tevmContract(this.client, {
       to: contract.address,
       code: undefined,

@@ -152,6 +152,34 @@ export class NestedMap<K extends unknown[], V> {
   clear() {
     this.storage = new Map();
   }
+
+  push(...args: [...K, V extends Array<infer T> ? T : never]): void {
+    const value = args[args.length - 1] as any;
+    const keys = args.slice(0, -1) as unknown as K;
+
+    let arr = this.get(...keys) as any[] | undefined;
+
+    if (!arr) {
+      arr = [];
+      this.set(...keys, arr as any);
+    }
+
+    arr.push(value);
+  }
+
+  add(...args: [...K, V extends Set<infer T> ? T : never]): void {
+    const value = args[args.length - 1] as any;
+    const keys = args.slice(0, -1) as unknown as K;
+
+    let set = this.get(...keys) as Set<any> | undefined;
+
+    if (!set) {
+      set = new Set();
+      this.set(...keys, set as any);
+    }
+
+    set.add(value);
+  }
 }
 
 // Helper type to build nested Map structure from remaining keys

@@ -3,27 +3,30 @@ import { type TxId } from '../types.ts';
 import type { TEvmEvent } from './tevm-events/tevm-events.ts';
 import type { FunctionCallEventHandler } from './function-call-events/FunctionCallEventHandler.ts';
 import type { Hex } from 'viem';
-import { EvmEventStore } from './evm-events/EvmEventStore.ts';
-import { EvmEventPreprocessor } from './evm-events/preprocessor/EvmEventPreprocessor.ts';
+import { EvmEventStore } from './evm-events/store/EvmEventStore.ts';
+import { EvmEventHandler } from './evm-events/handler/EvmEventHandler.ts';
+import { TevmEventsAdapter } from './tevm-events/TevmEventAdapter.ts';
 
 export class FunctionTracer {
   public readonly succeededTxs: Map<TxId, ReadOnlyFunctionCallEvent> = new Map();
   public readonly failedTxs: Map<TxId, ReadOnlyFunctionCallEvent> = new Map();
 
   constructor(
+    private readonly tevmEventsAdapter: TevmEventsAdapter,
     private readonly evmEventStore: EvmEventStore,
-    private readonly evmEventPreprocessor: EvmEventPreprocessor,
+    private readonly evmEventHandler: EvmEventHandler,
     private readonly functionCallEventHandler: FunctionCallEventHandler
   ) {}
 
-  async register(event: TEvmEvent) {
-    this.evmEventStore.store(event);
+  async register(tevmEvent: TEvmEvent) {
+    const evmEvent = this.tevmEventsAdapter.toEvmEvent(tevmEvent);
+    if (!evmEvent) return;
+    this.evmEventStore.store(evmEvent);
   }
 
   public async process() {
-    const callTraceEvents = await this.evmEventPreprocessor.matchFunctionCallOpcodeSequence(
-      this.evmEventStore.getEvmEvents()
-    );
+    const storedEvents = this.evmEventStore.getEvmEvents();
+    const callTraceEvents = await this.evmEventHandler.detectFunctionCalls(storedEvents);
     for (const callTraceEvent of callTraceEvents) {
       await this.functionCallEventHandler.route(callTraceEvent);
     }
@@ -37,8 +40,9 @@ export class FunctionTracer {
   }
 
   public reset() {
+    this.tevmEventsAdapter.reset();
     this.evmEventStore.reset();
-    this.evmEventPreprocessor.reset();
+    this.evmEventHandler.reset();
     this.functionCallEventHandler.reset();
   }
 }

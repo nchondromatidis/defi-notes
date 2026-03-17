@@ -2,6 +2,10 @@ import { EventsHandlerBase } from '../../EventsHandlerBase.ts';
 import type { FunctionCallEvent } from '../../FunctionTrace.ts';
 import { type RuntimeTraceMetadata } from '../trace-metadata.ts';
 import type { InternalFunctionCallEvent } from '../events/function-call-events.ts';
+import createDebug from 'debug';
+import { DEBUG_PREFIX } from '../../../../_common/debug.ts';
+
+const debug = createDebug(`${DEBUG_PREFIX}:FunctionEntryHandler`);
 
 /*
  * Detects internal function calls. <br>
@@ -20,6 +24,14 @@ export class FunctionEntryHandler extends EventsHandlerBase {
     executionContext: RuntimeTraceMetadata['executionContext'],
     parentFunctionCallEvent: FunctionCallEvent
   ): Promise<FunctionCallEvent | undefined> {
+    debug(
+      'Received event:',
+      internalCallEvent.opcodeStepEvent.pc,
+      internalCallEvent.opcodeStepEvent.depth,
+      internalCallEvent.contractFQN,
+      internalCallEvent.functionName
+    );
+
     // identify contract and function using contract address and pc
     let contractAddress = internalCallEvent.opcodeStepEvent.to;
     const currentDepthExecutionContext = executionContext.get(internalCallEvent.opcodeStepEvent.depth)!;
@@ -75,6 +87,7 @@ export class FunctionEntryHandler extends EventsHandlerBase {
       functionCallEvent.implContractFQN = parentFunctionCallEvent.implContractFQN;
       functionCallEvent.implAddress = parentFunctionCallEvent.implAddress;
     }
+    debug('Transformed event:', functionCallEvent.depth, functionCallEvent.contractFQN, functionCallEvent.functionName);
 
     return functionCallEvent;
   }

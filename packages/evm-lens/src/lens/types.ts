@@ -48,20 +48,26 @@ export type LensFunctionIndex = {
   returnSlots: number;
 };
 
-// pc location index
+// Helper types
+export type Depth = number;
+export type OpCodeName = string;
+export type OpCodeIndex = number;
 export type PC = number;
 export type ContractFQN = string;
+
+// pc location index
 export type JumpType = 'i' | 'o' | '-';
 export type Location = [startLine: number, endLine: number, sourceIndex: number];
 
 export type LensPcLocationIndex = {
   contractFQN: ContractFQN;
   locationSources: Array<string>;
-  pcLocations: Array<[PC, JumpType, Location]>; // PcLocationReadable
+  pcLocations: Array<[PC, JumpType, Location, OpCodeName]>; // PcLocationReadable
 };
 
 export type PcLocationReadable = {
   pc: number;
+  OpcodeName: string;
   jumpType: JumpType;
   startLine: number;
   endLine: number;

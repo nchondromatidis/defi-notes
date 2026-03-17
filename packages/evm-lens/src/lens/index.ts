@@ -11,10 +11,11 @@ import { FunctionTracer } from './handlers/FunctionTracer.ts';
 import { LensClient } from './LensClient.ts';
 import type { LensArtifactsMap } from './types.ts';
 import { PcLocationIndexesRegistry } from './indexes/PcLocationIndexesRegistry.ts';
-import { EvmEventPreprocessor } from './handlers/evm-events/preprocessor/EvmEventPreprocessor.ts';
-import { EvmEventStore } from './handlers/evm-events/EvmEventStore.ts';
+import { EvmEventHandler } from './handlers/evm-events/handler/EvmEventHandler.ts';
+import { EvmEventStore } from './handlers/evm-events/store/EvmEventStore.ts';
 import { FunctionCallEventHandler } from './handlers/function-call-events/FunctionCallEventHandler.ts';
 import type { Account } from 'viem';
+import { TevmEventsAdapter } from './handlers/tevm-events/TevmEventAdapter.ts';
 
 export async function buildCallTracer<LensArtifactsMapT extends LensArtifactsMap<any>>(defaultAccount: Account) {
   const client = await buildClient(defaultAccount);
@@ -37,10 +38,16 @@ export async function buildCallTracer<LensArtifactsMapT extends LensArtifactsMap
     functionExitHandler
   );
   // evm events handlers
+  const tevmEventsAdapter = new TevmEventsAdapter();
   const evmEventStore = new EvmEventStore(debugMetadata, addressLabeler);
-  const evmEventPreprocessor = new EvmEventPreprocessor(debugMetadata, addressLabeler);
+  const evmEventHandler = new EvmEventHandler(debugMetadata, addressLabeler);
 
-  const functionTracer = new FunctionTracer(evmEventStore, evmEventPreprocessor, functionCallEventHandler);
+  const functionTracer = new FunctionTracer(
+    tevmEventsAdapter,
+    evmEventStore,
+    evmEventHandler,
+    functionCallEventHandler
+  );
 
   const lensClient = new LensClient<LensArtifactsMapT>(
     defaultAccount,
