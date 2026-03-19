@@ -74,9 +74,8 @@ export async function createPair(): Promise<TraceResult> {
       []
     );
 
-    const result = await lensClient.contract(factory, 'createPair', [token1.createdAddress!, token2.createdAddress!]);
+    const trace = await lensClient.contract(factory, 'createPair', [token1.createdAddress!, token2.createdAddress!]);
 
-    const trace = lensClient.getSucceeded(result);
     if (!trace) {
       return { error: 'Failed to get trace from transaction' };
     }

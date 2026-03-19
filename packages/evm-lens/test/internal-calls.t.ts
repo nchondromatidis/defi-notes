@@ -73,23 +73,23 @@ describe('internal-calls', () => {
   });
 
   test('publicFunction', async () => {
-    const result = await lensClient.contract(callerContract, 'publicFunction', [2n]);
-    expect(lensClient.getSucceeded(result)).toMatchSnapshot();
+    const functionTrace = await lensClient.contract(callerContract, 'publicFunction', [2n]);
+    expect(functionTrace).toMatchSnapshot();
   });
 
   test('mixedCall', async () => {
-    const result = await lensClient.contract(callerContract, 'mixedCall', [2n]);
-    expect(lensClient.getSucceeded(result)).toMatchSnapshot();
+    const functionTrace = await lensClient.contract(callerContract, 'mixedCall', [2n]);
+    expect(functionTrace).toMatchSnapshot();
   });
 
   test('callAnotherContract', async () => {
-    const result = await lensClient.contract(callerContract, 'callAnotherContract', []);
-    expect(lensClient.getSucceeded(result)).toMatchSnapshot();
+    const functionTrace = await lensClient.contract(callerContract, 'callAnotherContract', []);
+    expect(functionTrace).toMatchSnapshot();
   });
 
   test('test function fallback', async () => {
-    const result = await lensClient.contract(callerContract, 'callAnotherContractWithFallback', [1n]);
-    expect(lensClient.getSucceeded(result)).toMatchSnapshot();
+    const functionTrace = await lensClient.contract(callerContract, 'callAnotherContractWithFallback', [1n]);
+    expect(functionTrace).toMatchSnapshot();
   });
 
   test('richStackFunction - function with rich EVM stack', async () => {
@@ -99,13 +99,13 @@ describe('internal-calls', () => {
     ];
     const to = '0x0000000000000000000000000000000000000004';
 
-    const result = await lensClient.contract(callerContract, 'richStackFunction', [
+    const functionTrace = await lensClient.contract(callerContract, 'richStackFunction', [
       100n, // amountIn
       90n, // amountOutMin
       path,
       to,
       9999999999n, // deadline
     ]);
-    expect(lensClient.getSucceeded(result)).toMatchSnapshot();
+    expect(functionTrace).toMatchSnapshot();
   });
 });

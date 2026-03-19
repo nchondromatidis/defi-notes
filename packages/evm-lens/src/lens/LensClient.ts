@@ -82,7 +82,7 @@ export class LensClient<
     from?: Address,
     value?: bigint,
     traceTx = true
-  ): Promise<ContractResult<TAbi, TFunctionName>> {
+  ): Promise<ReadOnlyFunctionCallEvent | undefined> {
     if (traceTx) this.functionTracer.reset();
     debug('Contract called', { functionName, traceTx });
     const contractTxResult = await tevmContract(this.client, {
@@ -116,30 +116,20 @@ export class LensClient<
       if (traceTx) this.functionTracer.save(contractTxResult.txHash!, 'success');
     }
 
-    return contractTxResult;
+    return this.getTracedTx(contractTxResult);
   }
 
-  // view traced
+  // get function trace
 
   getTracedTx(contractTxResult: ContractResult): ReadOnlyFunctionCallEvent | undefined {
-    const succeeded = this.getSucceeded(contractTxResult);
-    const failed = this.getFailed(contractTxResult);
+    if (!contractTxResult?.txHash) return undefined;
+
+    const succeeded = this.functionTracer.succeededTxs.get(contractTxResult.txHash);
+    const failed = this.functionTracer.failedTxs.get(contractTxResult.txHash);
 
     if (succeeded && failed) throw new InvariantError(`Both failed and succeed trace tx registered`, contractTxResult);
 
     return succeeded ?? failed;
-  }
-
-  getSucceeded(contractTxResult: ContractResult): ReadOnlyFunctionCallEvent | undefined {
-    if (!contractTxResult?.txHash) return undefined;
-
-    return this.functionTracer.succeededTxs.get(contractTxResult.txHash);
-  }
-
-  getFailed(contractTxResult: ContractResult): ReadOnlyFunctionCallEvent | undefined {
-    if (!contractTxResult?.txHash) return undefined;
-
-    return this.functionTracer.failedTxs.get(contractTxResult.txHash);
   }
 
   // helper functions

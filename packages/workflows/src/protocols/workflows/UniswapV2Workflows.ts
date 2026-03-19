@@ -134,7 +134,7 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
     await this.approve(tokenA, router2.address, amountADesired, user);
     await this.approve(tokenB, router2.address, amountBDesired, user);
 
-    const result = await this.lensClient.contract(
+    return await this.lensClient.contract(
       router2,
       'addLiquidity',
       [tokenA.address, tokenB.address, amountADesired, amountBDesired, amountAMin, amountBMin, user, deadline],
@@ -142,8 +142,6 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
       undefined,
       trace
     );
-
-    return this.lensClient.getTracedTx(result);
   }
 
   async swap({ user = USER_1.address, amountIn = 50n * _1e18, amountOutMin = 50n * _1e18 } = {}) {
@@ -181,7 +179,7 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
     await this.transferErc20(tokenIn, USER_0.address, user, amountIn);
     await this.approve(tokenIn, router2.address, amountIn, user);
 
-    const result = await this.lensClient.contract(
+    return await this.lensClient.contract(
       router2,
       'swapExactTokensForTokens',
       [amountIn, amountOutMin, path, to, deadline],
@@ -189,8 +187,6 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
       undefined,
       trace
     );
-
-    return this.lensClient.getTracedTx(result);
   }
 
   private async deployErc20(initialUser: Address, initialSupply: bigint) {

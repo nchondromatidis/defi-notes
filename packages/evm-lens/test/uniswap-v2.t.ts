@@ -62,10 +62,13 @@ describe('uniswap-v2', () => {
     );
 
     // act
-    const result = await lensClient.contract(factory, 'createPair', [token1.createdAddress!, token2.createdAddress!]);
+    const functionTrace = await lensClient.contract(factory, 'createPair', [
+      token1.createdAddress!,
+      token2.createdAddress!,
+    ]);
 
     // assert
-    inspect(lensClient.getSucceeded(result));
+    inspect(functionTrace);
   });
 
   test('tracer: call success', async () => {
@@ -110,10 +113,10 @@ describe('uniswap-v2', () => {
     );
 
     // act
-    const result = await lensClient.contract(pairContract, 'getReserves', []);
+    const functionTrace = await lensClient.contract(pairContract, 'getReserves', []);
 
     // assert
-    inspect(lensClient.getSucceeded(result));
+    inspect(functionTrace);
   });
 
   test('tracer: call error', async () => {
@@ -124,11 +127,11 @@ describe('uniswap-v2', () => {
     );
 
     // act
-    const result = await lensClient.contract(factory, 'createPair', [ZERO_ADDRESS, token2.createdAddress!]);
+    const functionTrace = await lensClient.contract(factory, 'createPair', [ZERO_ADDRESS, token2.createdAddress!]);
 
     // assert
-    inspect(lensClient.getSucceeded(result));
-    inspect(lensClient.getFailed(result));
+    inspect(functionTrace);
+    inspect(functionTrace);
   });
 
   test.skip('debug_traceTransaction', async () => {

@@ -223,7 +223,99 @@ exports[`external-calls > external call to public function 1`] = `
 }
 `;
 
-exports[`external-calls > external call with revert 1`] = `undefined`;
+exports[`external-calls > external call with revert 1`] = `
+{
+  "args": [],
+  "callType": "CALL",
+  "called": [
+    {
+      "args": [
+        "0x0000000000000000000000000000000000000000",
+      ],
+      "callType": "CALL",
+      "called": [],
+      "contractFQN": "test-contracts/external-calls/CalleeContract.sol:CalleeContract",
+      "depth": 1,
+      "from": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+      "functionLineEnd": 42,
+      "functionLineStart": 40,
+      "functionName": "revertFunction",
+      "functionSource": "test-contracts/external-calls/CalleeContract.sol",
+      "functionType": "function",
+      "precompile": false,
+      "rawData": "0x843ccbc60000000000000000000000000000000000000000000000000000000000000000",
+      "result": {
+        "errorAbiItem": {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address",
+            },
+          ],
+          "name": "DummyRevert",
+          "type": "error",
+        },
+        "errorArgs": [
+          "0x0000000000000000000000000000000000000000",
+        ],
+        "errorName": "DummyRevert",
+        "errorType": EVMError {
+          "error": "revert",
+          "errorType": "EVMError",
+        },
+        "isCreate": false,
+        "isError": true,
+        "logs": [],
+        "returnValueRaw": "0x35456ff00000000000000000000000000000000000000000000000000000000000000000",
+        "type": "FunctionResultEvent",
+      },
+      "to": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+      "type": "FunctionCallEvent",
+      "value": 0n,
+    },
+  ],
+  "contractFQN": "test-contracts/external-calls/CallerContract.sol:CallerContract",
+  "depth": 0,
+  "from": "0x0000000000000000000000000000000000000000",
+  "functionLineEnd": 44,
+  "functionLineStart": 42,
+  "functionName": "callRevert",
+  "functionSource": "test-contracts/external-calls/CallerContract.sol",
+  "functionType": "function",
+  "precompile": false,
+  "rawData": "0xed329299",
+  "result": {
+    "errorAbiItem": {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address",
+        },
+      ],
+      "name": "DummyRevert",
+      "type": "error",
+    },
+    "errorArgs": [
+      "0x0000000000000000000000000000000000000000",
+    ],
+    "errorName": "DummyRevert",
+    "errorType": EVMError {
+      "error": "revert",
+      "errorType": "EVMError",
+    },
+    "isCreate": false,
+    "isError": true,
+    "logs": [],
+    "returnValueRaw": "0x35456ff00000000000000000000000000000000000000000000000000000000000000000",
+    "type": "FunctionResultEvent",
+  },
+  "to": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+  "type": "FunctionCallEvent",
+  "value": 0n,
+}
+`;
 
 exports[`external-calls > external call with unmatched selector, args, value 1`] = `
 {
