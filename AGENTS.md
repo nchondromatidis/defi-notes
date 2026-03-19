@@ -54,6 +54,13 @@
   - Validate by running `pnpm run test` in `packages/evm-lens`.
   - Validate by checking for absence of console errors when running `pnpm run build` in `packages/protocols`.
 
+## `packages/workflows`
+
+- **Purpose**:
+    - Provides workflow logic and ui components to DeFi `apps/notes`.
+- **Tech Stack**:
+    - Node.js
+
 ## `packages/protocols`
 
 - **Purpose**:
