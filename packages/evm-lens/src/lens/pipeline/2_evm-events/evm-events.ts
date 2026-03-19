@@ -1,4 +1,4 @@
-import type { Address, Hex } from '../../../types.ts';
+import type { Address, Hex } from '../../types.ts';
 
 export type ExternalCallEvmEvent = {
   _type: 'ExternalCallEvmEvent';

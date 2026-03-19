@@ -2,20 +2,22 @@ import { buildClient } from '../adapters/client.ts';
 import { ArtifactsProvider } from './indexes/ArtifactsProvider.ts';
 import { FunctionIndexesRegistry } from './indexes/FunctionIndexesRegistry.ts';
 import { AddressLabeler } from './indexes/AddressLabeler.ts';
-import { ExternalCallHandler } from './handlers/function-call-events/handlers/ExternalCallHandler.ts';
-import { ExternalCallResultHandler } from './handlers/function-call-events/handlers/ExternalCallResultHandler.ts';
-import { FunctionEntryHandler } from './handlers/function-call-events/handlers/FunctionEntryHandler.ts';
-import { FunctionExitHandler } from './handlers/function-call-events/handlers/FunctionExitHandler.ts';
-import { FunctionTracer } from './handlers/FunctionTracer.ts';
 import { LensClient } from './LensClient.ts';
 import type { LensArtifactsMap } from './types.ts';
 import { PcLocationIndexesRegistry } from './indexes/PcLocationIndexesRegistry.ts';
-import { EvmEventHandler } from './handlers/evm-events/handler/EvmEventHandler.ts';
-import { EvmEventStore } from './handlers/evm-events/store/EvmEventStore.ts';
-import { FunctionCallEventHandler } from './handlers/function-call-events/FunctionCallEventHandler.ts';
 import type { Account } from 'viem';
-import { TevmEventsAdapter } from './handlers/tevm-events/TevmEventAdapter.ts';
 import { SourceMapper } from './source-map/SourceMapper.ts';
+import { FunctionTracePipeline } from './pipeline/FunctionTracePipeline.ts';
+import { FilterStage } from './pipeline/1_tevm-events/FilterStage.ts';
+import { AdapterStage } from './pipeline/1_tevm-events/AdapterStage.ts';
+import { EnrichEvmEventStage } from './pipeline/2_evm-events/jump-strategy/EnrichEvmEventStage.ts';
+import { OpcodeAnalysisStage } from './pipeline/2_evm-events/jump-strategy/OpcodeAnalysisStage.ts';
+import { DecodingStage } from './pipeline/3_function-call-events/DecodingStage.ts';
+import { FunctionTraceBuilderStage } from './pipeline/4_function-trace/FunctionTraceBuilderStage.ts';
+import { ExternalCallDecoder } from './pipeline/3_function-call-events/decoders/ExternalCallDecoder.ts';
+import { ExternalCallResultDecoder } from './pipeline/3_function-call-events/decoders/ExternalCallResultDecoder.ts';
+import { FunctionEntryDecoder } from './pipeline/3_function-call-events/decoders/FunctionEntryDecoder.ts';
+import { FunctionExitDecoder } from './pipeline/3_function-call-events/decoders/FunctionExitDecoder.ts';
 
 export async function buildCallTracer<LensArtifactsMapT extends LensArtifactsMap<any>>(defaultAccount: Account) {
   const client = await buildClient(defaultAccount);
@@ -26,32 +28,37 @@ export async function buildCallTracer<LensArtifactsMapT extends LensArtifactsMap
   const addressLabeler = new AddressLabeler();
   const sourceMapper = new SourceMapper();
 
-  // call trace event handlers
-  const externalCallHandler = new ExternalCallHandler(artifactsProvider, functionIndexesRegistry, addressLabeler);
-  const externalCallResultHandler = new ExternalCallResultHandler(
+  // Build pipeline transformers
+  const externalCallTransform = new ExternalCallDecoder(artifactsProvider, addressLabeler, functionIndexesRegistry);
+  const externalCallResultTransform = new ExternalCallResultDecoder(
     artifactsProvider,
-    functionIndexesRegistry,
-    addressLabeler
+    addressLabeler,
+    functionIndexesRegistry
   );
-  const functionEntryHandler = new FunctionEntryHandler(pcLocationIndexesRegistry, addressLabeler);
-  const functionExitHandler = new FunctionExitHandler();
-  const functionCallEventHandler = new FunctionCallEventHandler(
-    externalCallHandler,
-    externalCallResultHandler,
-    functionEntryHandler,
-    functionExitHandler
+  const functionEntryTransform = new FunctionEntryDecoder(pcLocationIndexesRegistry, addressLabeler);
+  const functionExitTransform = new FunctionExitDecoder();
+
+  // Build pipeline stages
+  const filterStage = new FilterStage();
+  const adapterStage = new AdapterStage();
+  const enrichEvmEventStage = new EnrichEvmEventStage(pcLocationIndexesRegistry, addressLabeler);
+  const opcodeAnalysisStage = new OpcodeAnalysisStage();
+  const decodingStage = new DecodingStage(
+    externalCallTransform,
+    externalCallResultTransform,
+    functionEntryTransform,
+    functionExitTransform
   );
+  const functionTraceBuilderStage = new FunctionTraceBuilderStage();
 
-  // evm events handlers
-  const tevmEventsAdapter = new TevmEventsAdapter();
-  const evmEventStore = new EvmEventStore(pcLocationIndexesRegistry, addressLabeler);
-  const evmEventHandler = new EvmEventHandler();
-
-  const functionTracer = new FunctionTracer(
-    tevmEventsAdapter,
-    evmEventStore,
-    evmEventHandler,
-    functionCallEventHandler
+  // Build pipeline
+  const functionTracePipeline = new FunctionTracePipeline(
+    filterStage,
+    adapterStage,
+    enrichEvmEventStage,
+    opcodeAnalysisStage,
+    decodingStage,
+    functionTraceBuilderStage
   );
 
   const lensClient = new LensClient<LensArtifactsMapT>(
@@ -62,7 +69,7 @@ export async function buildCallTracer<LensArtifactsMapT extends LensArtifactsMap
     pcLocationIndexesRegistry,
     addressLabeler,
     sourceMapper,
-    functionTracer
+    functionTracePipeline
   );
 
   return {
@@ -72,11 +79,6 @@ export async function buildCallTracer<LensArtifactsMapT extends LensArtifactsMap
     functionIndexesRegistry,
     pcLocationIndexesRegistry,
     addressLabeler,
-    externalCallHandler,
-    externalCallResultHandler,
-    functionEntryHandler,
-    functionExitHandler,
-    functionTracer,
     lensClient,
   };
 }

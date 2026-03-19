@@ -2,7 +2,7 @@ import {
   type ExternalCallEvmEvent,
   type ExternalCallResultEvmEvent,
   type OpcodeStepEvent,
-} from '../../evm-events/events/evm-events.ts';
+} from '../2_evm-events/evm-events.ts';
 
 export type InternalFunctionCallEvent = {
   _type: 'InternalFunctionCallEvent';

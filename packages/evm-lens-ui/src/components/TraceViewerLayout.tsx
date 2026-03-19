@@ -1,7 +1,7 @@
 'use client';
 
 import { ResizablePanelGroup, ResizablePanel, type Layout } from './ui/resizable.tsx';
-import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/handlers/FunctionTrace.ts';
+import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
 import { FunctionTraceViewer } from './FunctionTraceViewer.tsx';
 import { SourceCodeViewer } from './SourceCodeViewer.tsx';
 import { ProjectFilesViewer, type Item } from './ProjectFilesViewer.tsx';

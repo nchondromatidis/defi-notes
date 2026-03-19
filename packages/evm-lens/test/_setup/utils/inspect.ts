@@ -1,5 +1,5 @@
 import util from 'node:util';
-import type { ReadOnlyFunctionCallEvent } from '../../../src/lens/handlers/FunctionTrace.ts';
+import type { ReadOnlyFunctionCallEvent } from '../../../src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
 
 declare global {
   interface Uint8Array {

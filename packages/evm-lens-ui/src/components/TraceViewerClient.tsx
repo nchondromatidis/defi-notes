@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import { TraceViewerLayout } from './TraceViewerLayout.tsx';
-import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/handlers/FunctionTrace.ts';
+import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
 import { contractFQNListToProjectFiles } from '../adapters/project-files-mapper.ts';
 import { getSourceContractFqQN } from '@defi-notes/evm-lens/src/client-utils/names.ts';
 import type { TraceResult, TraceResultError } from '../types/TraceResult.ts';

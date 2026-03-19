@@ -1,6 +1,6 @@
-import type { FunctionCallEvent } from '@defi-notes/evm-lens/src/lens/handlers/FunctionTrace.ts';
+import type { FunctionTraceCall } from '@defi-notes/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
 
-export const sample1: FunctionCallEvent = {
+export const sample1: FunctionTraceCall = {
   type: 'FunctionCallEvent',
   to: '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512',
   from: '0x0000000000000000000000000000000000000000',
@@ -494,7 +494,7 @@ export const sample1: FunctionCallEvent = {
   },
 };
 
-export const sample2: FunctionCallEvent = {
+export const sample2: FunctionTraceCall = {
   type: 'FunctionCallEvent',
   to: '0x5fbdb2315678afecb367f032d93f642f64180aa3',
   from: '0x0000000000000000000000000000000000000000',

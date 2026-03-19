@@ -1,14 +1,19 @@
 import createDebug from 'debug';
-import { DEBUG_PREFIX } from '../../../../_common/debug.ts';
+import { DEBUG_PREFIX, jsonStr } from '../../../../_common/debug.ts';
 import { isJumpDestOpcode, isJumpOpcode } from '../../../opcodes';
 import { NestedMap } from '../../../../_common/NestedMap.ts';
-import type { OpcodeStoreEntry } from '../store/evm-store-entry.ts';
 
-const debug = createDebug(`${DEBUG_PREFIX}:matchJumpOpcodes`);
+import type { EnrichedOpcodeEvent } from './enriched-evm-events.ts';
 
-export type FunctionEntry = { jumpDest: OpcodeStoreEntry; jumpIn: OpcodeStoreEntry; jumpOut: OpcodeStoreEntry };
+const debug = createDebug(`${DEBUG_PREFIX}:matched-jump-opcodes`);
 
-export function matchJumpOpcodes(entries: OpcodeStoreEntry[]): FunctionEntry[] {
+export type FunctionEntry = {
+  jumpDest: EnrichedOpcodeEvent;
+  jumpIn: EnrichedOpcodeEvent;
+  jumpOut: EnrichedOpcodeEvent;
+};
+
+export function matchJumpOpcodes(entries: EnrichedOpcodeEvent[]): FunctionEntry[] {
   const jumpDestEntryPointsPerDepth: FunctionEntry[] = [];
 
   // context ids
@@ -38,11 +43,11 @@ export function matchJumpOpcodes(entries: OpcodeStoreEntry[]): FunctionEntry[] {
   // index
   const jumpInJumpDestCandidates = new NestedMap<
     [depth: number, ctxId: number, jumpDestCandidatePc: number],
-    { entry: OpcodeStoreEntry; matched: boolean }[]
+    { entry: EnrichedOpcodeEvent; matched: boolean }[]
   >();
   const jumpOutJumpDestCandidates = new NestedMap<
     [depth: number, ctxId: number, jumpDestCandidatePc: number],
-    { entry: OpcodeStoreEntry; matched: boolean }[]
+    { entry: EnrichedOpcodeEvent; matched: boolean }[]
   >();
 
   for (let i = 0; i < entries.length; i++) {
@@ -103,12 +108,15 @@ export function matchJumpOpcodes(entries: OpcodeStoreEntry[]): FunctionEntry[] {
         jumpIn: match.jumpIn.entry,
         jumpOut: match.jumpOut.entry,
       });
-      debug('jumpDestEntryPointsPerDepth', {
-        depth: jumpDest.evmEvent.depth,
-        jumpDestPc: jumpDest.evmEvent.pc,
-        jumpIn: match.jumpIn.entry.evmEvent.pc,
-        jumpOut: match.jumpOut.entry.evmEvent.pc,
-      });
+
+      debug(
+        jsonStr({
+          depth: jumpDest.evmEvent.depth,
+          jumpDestPc: jumpDest.evmEvent.pc,
+          jumpIn: match.jumpIn.entry.evmEvent.pc,
+          jumpOut: match.jumpOut.entry.evmEvent.pc,
+        })
+      );
     }
   }
 

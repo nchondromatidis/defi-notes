@@ -35,43 +35,6 @@ describe('internal-calls', () => {
     );
   });
 
-  test.skip('debug_traceTransaction.structLogs', async () => {
-    await lensClient.contract(callerContract, 'mixedCall', [2n]);
-    const txHash = lensClient.functionTracer.succeededTxs.keys().next().value;
-    const callTraceResult = await lensClient.client.transport.tevm.request({
-      method: 'debug_traceTransaction',
-      params: [
-        {
-          transactionHash: txHash,
-          tracer: 'structLogs',
-          tracerConfig: {
-            enableMemory: true,
-          },
-        },
-      ],
-    });
-
-    // fs.writeFileSync('./structLogs.json', JSON.stringify(callTraceResult, null, 2), 'utf8');
-    console.log(callTraceResult);
-  });
-
-  test.skip('debug_traceTransaction.callTracer', async () => {
-    await lensClient.contract(callerContract, 'mixedCall', [2n]);
-    const txHash = lensClient.functionTracer.succeededTxs.keys().next().value;
-    const callTraceResult = await lensClient.client.transport.tevm.request({
-      method: 'debug_traceTransaction',
-      params: [
-        {
-          transactionHash: txHash,
-          tracer: 'callTracer',
-          tracerConfig: { onlyTopCall: false },
-        },
-      ],
-    });
-
-    console.log(callTraceResult);
-  });
-
   test('publicFunction', async () => {
     const functionTrace = await lensClient.contract(callerContract, 'publicFunction', [2n]);
     expect(functionTrace).toMatchSnapshot();

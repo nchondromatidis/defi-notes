@@ -1,4 +1,4 @@
-import type { ReadOnlyFunctionCallEvent } from '../lens/handlers/FunctionTrace.ts';
+import type { ReadOnlyFunctionCallEvent } from '../lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
 
 export function getContractName(contractFQN?: string) {
   if (!contractFQN) return undefined;

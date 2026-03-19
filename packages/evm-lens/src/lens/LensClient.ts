@@ -7,16 +7,15 @@ import {
   type ContractFunctionArgs,
   getContract,
 } from 'viem';
-import type { ContractResult, Message } from 'tevm/actions';
+import type { Message } from 'tevm/actions';
 import type { EvmResult, InterpreterStep } from 'tevm/evm';
 import { AddressLabeler } from './indexes/AddressLabeler.ts';
-import { FunctionTracer } from './handlers/FunctionTracer.ts';
 import { InvalidArgument, InvariantError } from '../_common/errors.ts';
 import type { Address, Hex, LensArtifactsMap } from './types.ts';
 import { hardhatLinkExternalLibToBytecode } from './utils/hardhat-utils.ts';
 import { buildClient, type PublicTestClient } from '../adapters/client.ts';
 import type { IResourceLoader } from './_ports/IResourceLoader.ts';
-import type { ReadOnlyFunctionCallEvent } from './handlers/FunctionTrace.ts';
+import type { ReadOnlyFunctionCallEvent } from './pipeline/4_function-trace/FunctionTraceBuilder.ts';
 import { logger } from '../_common/logger.ts';
 import createDebug from 'debug';
 import { DEBUG_PREFIX } from '../_common/debug.ts';
@@ -24,6 +23,7 @@ import { ArtifactsProvider } from './indexes/ArtifactsProvider.ts';
 import { FunctionIndexesRegistry } from './indexes/FunctionIndexesRegistry.ts';
 import { PcLocationIndexesRegistry } from './indexes/PcLocationIndexesRegistry.ts';
 import type { SourceMapper } from './source-map/SourceMapper.ts';
+import type { FunctionTracePipeline } from './pipeline/FunctionTracePipeline.ts';
 
 export type Next = () => void;
 
@@ -41,7 +41,7 @@ export class LensClient<
     public readonly pcLocations: PcLocationIndexesRegistry,
     public readonly addressLabeler: AddressLabeler,
     public readonly sourceMapper: SourceMapper,
-    public readonly functionTracer: FunctionTracer
+    public readonly functionTracePipeline: FunctionTracePipeline
   ) {}
 
   // tracing functions
@@ -83,7 +83,7 @@ export class LensClient<
     value?: bigint,
     traceTx = true
   ): Promise<ReadOnlyFunctionCallEvent | undefined> {
-    if (traceTx) this.functionTracer.reset();
+    if (traceTx) this.functionTracePipeline.reset();
     debug('Contract called', { functionName, traceTx });
     const contractTxResult = await tevmContract(this.client, {
       to: contract.address,
@@ -95,41 +95,25 @@ export class LensClient<
       args: args,
       throwOnFail: false,
       from,
-      onStep: async (event: InterpreterStep, next?: Next) => {
-        if (traceTx) await this.functionTracer.register(event);
+      onStep: (event: InterpreterStep, next?: Next) => {
+        if (traceTx) this.functionTracePipeline.process(event);
         next?.();
       },
-      onBeforeMessage: async (event: Message, next?: Next) => {
-        if (traceTx) await this.functionTracer.register(event);
+      onBeforeMessage: (event: Message, next?: Next) => {
+        if (traceTx) this.functionTracePipeline.process(event);
         next?.();
       },
-      onAfterMessage: async (event: EvmResult, next?: Next) => {
-        if (traceTx) await this.functionTracer.register(event);
+      onAfterMessage: (event: EvmResult, next?: Next) => {
+        if (traceTx) this.functionTracePipeline.process(event);
         next?.();
       },
     });
-    if (traceTx) await this.functionTracer.process();
+
     if (contractTxResult.errors) {
       logger.error('TX Reverted', { errors: contractTxResult.errors });
-      if (traceTx) this.functionTracer.save(contractTxResult.txHash!, 'failed');
-    } else {
-      if (traceTx) this.functionTracer.save(contractTxResult.txHash!, 'success');
     }
 
-    return this.getTracedTx(contractTxResult);
-  }
-
-  // get function trace
-
-  getTracedTx(contractTxResult: ContractResult): ReadOnlyFunctionCallEvent | undefined {
-    if (!contractTxResult?.txHash) return undefined;
-
-    const succeeded = this.functionTracer.succeededTxs.get(contractTxResult.txHash);
-    const failed = this.functionTracer.failedTxs.get(contractTxResult.txHash);
-
-    if (succeeded && failed) throw new InvariantError(`Both failed and succeed trace tx registered`, contractTxResult);
-
-    return succeeded ?? failed;
+    return traceTx ? await this.functionTracePipeline.flush() : undefined;
   }
 
   // helper functions
@@ -179,5 +163,6 @@ export class LensClient<
     this.functions.reset();
     this.pcLocations.reset();
     this.sourceMapper.reset();
+    this.functionTracePipeline.reset();
   }
 }

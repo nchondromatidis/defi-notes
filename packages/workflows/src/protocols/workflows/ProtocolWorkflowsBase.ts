@@ -1,4 +1,4 @@
-import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/handlers/FunctionTrace.ts';
+import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
 import type { TraceResult } from '@defi-notes/evm-lens-ui/types/TraceResult';
 import type { LensClient } from '@defi-notes/evm-lens/src/lens/LensClient.ts';
 import type { IResourceLoader } from '@defi-notes/evm-lens/src/lens/_ports/IResourceLoader.ts';

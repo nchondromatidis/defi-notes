@@ -1,12 +1,12 @@
-import { InvariantError } from '../../_common/errors.ts';
-import type { Address, Hex } from '../types.ts';
-import type { DeepReadonly } from '../../_common/type-utils.ts';
+import { InvariantError } from '../../../_common/errors.ts';
+import type { Address, Hex } from '../../types.ts';
+import type { DeepReadonly } from '../../../_common/type-utils.ts';
 
 type External = 'EXTERNAL';
 type InternalCallTypes = 'INTERNAL';
 type ExternalCallTypes = 'CALL' | 'DELEGATECALL' | 'STATICCALL' | 'CREATE' | 'CREATE2';
 // TODO: conditional types: eg FunctionCallEvent.to is only undefined when callType equals ('CREATE' || 'CREATE2')
-export type FunctionCallEvent = {
+export type FunctionTraceCall = {
   type: 'FunctionCallEvent';
   to: Address | undefined;
   from: Address | undefined;
@@ -28,11 +28,11 @@ export type FunctionCallEvent = {
   functionCallLineEnd?: number;
   create2Salt?: Hex;
   createdContractFQN?: string;
-  called?: Array<FunctionCallEvent>;
-  result?: FunctionResultEvent;
+  called?: Array<FunctionTraceCall>;
+  result?: FunctionTraceResult;
 };
 
-export type FunctionResultEvent = {
+export type FunctionTraceResult = {
   type: 'FunctionResultEvent';
   isError: boolean;
   returnValueRaw: Hex;
@@ -47,6 +47,8 @@ export type FunctionResultEvent = {
   createdContractFQN?: string;
 };
 
+export type FunctionTraceEntry = FunctionTraceCall | FunctionTraceResult;
+
 export type LensLog = {
   rawData: unknown;
   eventName?: string;
@@ -57,42 +59,42 @@ export type LensLog = {
   functionType?: string;
 };
 
-export type ReadOnlyFunctionCallEvent = DeepReadonly<FunctionCallEvent>;
+export type ReadOnlyFunctionCallEvent = DeepReadonly<FunctionTraceCall>;
 
-export class FunctionTrace {
-  public rootFunction?: FunctionCallEvent;
-  private stack: FunctionCallEvent[] = [];
+export class FunctionTraceBuilder {
+  public rootFunction?: FunctionTraceCall;
+  private stack: FunctionTraceCall[] = [];
 
-  public addFunctionCall(event: FunctionCallEvent) {
-    // Ensure event shape and defaults
-    event.called = event.called ?? [];
-    event.result = event.result ?? undefined;
+  public addFunctionCall(functionTraceCallEntry: FunctionTraceCall) {
+    // Ensure functionTraceCallEntry shape and defaults
+    functionTraceCallEntry.called = functionTraceCallEntry.called ?? [];
+    functionTraceCallEntry.result = functionTraceCallEntry.result ?? undefined;
 
     const parent = this.getLatestFunctionCallEvent();
 
     if (!this.rootFunction) {
-      this.rootFunction = event;
+      this.rootFunction = functionTraceCallEntry;
     } else if (parent) {
-      parent.called!.push(event);
+      parent.called!.push(functionTraceCallEntry);
     }
 
-    this.stack.push(event);
+    this.stack.push(functionTraceCallEntry);
   }
 
-  public addResult(event: FunctionResultEvent) {
+  public addResult(functionTraceResultEntry: FunctionTraceResult) {
     const current = this.getLatestFunctionCallEvent();
     if (!current) {
-      throw new InvariantError('Result event raised without function call');
+      throw new InvariantError('Result functionTraceResultEntry raised without function call');
     }
     if (current.result) {
       throw new InvariantError('Result already exists');
     }
 
-    current.result = event;
+    current.result = functionTraceResultEntry;
     this.stack.pop();
   }
 
-  public getLatestFunctionCallEvent(): FunctionCallEvent | undefined {
+  public getLatestFunctionCallEvent(): FunctionTraceCall | undefined {
     if (this.stack.length === 0) return undefined;
     return this.stack[this.stack.length - 1];
   }
