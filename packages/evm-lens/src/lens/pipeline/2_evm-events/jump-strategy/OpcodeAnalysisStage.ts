@@ -6,7 +6,7 @@ import type {
 import { isJumpDestOpcode } from '../../../opcodes';
 import { matchJumpOpcodes } from './match-jump-opcodes.ts';
 
-import type { EnrichedEvmEvent, EnrichedOpcodeEvent } from './enriched-evm-events.ts';
+import type { EnrichedEvmEvent, EnrichedOpcodeEvent } from '../enriched/enriched-evm-events.ts';
 import createDebug from 'debug';
 import { DEBUG_PREFIX } from '../../../../_common/debug.ts';
 import { debugLog } from './../../3_function-call-events/_debugLog.ts';

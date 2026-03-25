@@ -10,7 +10,7 @@ import { SourceMapper } from './source-map/SourceMapper.ts';
 import { FunctionTracePipeline } from './pipeline/FunctionTracePipeline.ts';
 import { FilterStage } from './pipeline/1_tevm-events/FilterStage.ts';
 import { AdapterStage } from './pipeline/1_tevm-events/AdapterStage.ts';
-import { EnrichEvmEventStage } from './pipeline/2_evm-events/jump-strategy/EnrichEvmEventStage.ts';
+import { EnrichEvmEventStage } from './pipeline/2_evm-events/enriched/EnrichEvmEventStage.ts';
 import { OpcodeAnalysisStage } from './pipeline/2_evm-events/jump-strategy/OpcodeAnalysisStage.ts';
 import { DecodingStage } from './pipeline/3_function-call-events/DecodingStage.ts';
 import { FunctionTraceBuilderStage } from './pipeline/4_function-trace/FunctionTraceBuilderStage.ts';

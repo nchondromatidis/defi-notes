@@ -3,7 +3,7 @@ import { DEBUG_PREFIX, jsonStr } from '../../../../_common/debug.ts';
 import { isJumpDestOpcode, isJumpOpcode } from '../../../opcodes';
 import { NestedMap } from '../../../../_common/NestedMap.ts';
 
-import type { EnrichedOpcodeEvent } from './enriched-evm-events.ts';
+import type { EnrichedOpcodeEvent } from '../enriched/enriched-evm-events.ts';
 
 const debug = createDebug(`${DEBUG_PREFIX}:matched-jump-opcodes`);
 

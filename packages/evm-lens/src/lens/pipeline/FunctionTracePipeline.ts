@@ -1,6 +1,6 @@
 import { FilterStage } from './1_tevm-events/FilterStage.ts';
 import { AdapterStage } from './1_tevm-events/AdapterStage.ts';
-import { EnrichEvmEventStage } from './2_evm-events/jump-strategy/EnrichEvmEventStage.ts';
+import { EnrichEvmEventStage } from './2_evm-events/enriched/EnrichEvmEventStage.ts';
 import { OpcodeAnalysisStage } from './2_evm-events/jump-strategy/OpcodeAnalysisStage.ts';
 import { DecodingStage } from './3_function-call-events/DecodingStage.ts';
 import { FunctionTraceBuilderStage } from './4_function-trace/FunctionTraceBuilderStage.ts';
