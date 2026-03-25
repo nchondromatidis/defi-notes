@@ -36,7 +36,9 @@ Let's analyze the formula that calculates LP tokens to the LP.
 It calculates the pro-rata shares (no dilution) and sends them to the LP using the formula:
 
 <div className='flex justify-center'>
-  $s_{minted} = \min \left( \frac{x_{in}}{x_{reserve}} \cdot s_{total}, \frac{y_{in}}{y_{reserve}} \cdot s_{total} \right)$
+  $$
+  s_{minted} = \min \left( \frac{x_{in}}{x_{reserve}} \cdot s_{total}, \frac{y_{in}}{y_{reserve}} \cdot s_{total} \right)
+  $$
 </div>
 
 - **Only deposits in proportion to the reserve ratio are accepted**
@@ -61,8 +63,10 @@ The router computes the maximum amount of tokens A and B that the LP can deposit
 before passing to mint:
 
 <div className='flex justify-center'>
-  $\frac{ \normalsize{\text{deposited tokenA amount}} } { \normalsize{\text{deposited tokenB amount}} } =
-  \frac{ \normalsize{\text{current tokenA reserves}} } { \normalsize{\text{current tokenB reserves}} }$
+  $$
+  \frac{ {\text{deposited tokenA amount}} } { {\text{deposited tokenB amount}} } =
+  \frac{ {\text{current tokenA reserves}} } { {\text{current tokenB reserves}} }
+  $$
 </div>
 
 <Code
@@ -72,7 +76,7 @@ before passing to mint:
   lang="solidity"
 />
 
-### Chart
+## Chart
 
 <DesmosChart graphId="iyevv8l7wf" height="500px" client:load />
 

@@ -111,11 +111,11 @@ $T_i$ is a **duration** from **block N** to **the first interaction from block N
 <div className="codeBlock">
 $N$ = prior block, $M$ = target block
 
-$\Delta\texttt{price0Cumulative} = \texttt{price0CumulativeLast}_M - \texttt{price0CumulativeLast}_N$
+$\Delta\text{price0Cumulative} = \text{price0CumulativeLast}_M - \text{price0CumulativeLast}_N$
 
-$\text{timeElapsed} = (\texttt{blockTimestampLast}_M \mod 2^{32}) - (\texttt{blockTimestampLast}_N \mod 2^{32})$
+$\text{timeElapsed} = (\text{blockTimestampLast}_M \mod 2^{32}) - (\text{blockTimestampLast}_N \mod 2^{32})$
 
-$\text{TWAP}_0 = \frac{\Delta\texttt{price0Cumulative}}{\text{timeElapsed}} \times 2^{112}$
+$\text{TWAP}_0 = \frac{\Delta\text{price0Cumulative}}{\text{timeElapsed}} \times 2^{112}$
 
 </div>
 Notes:
