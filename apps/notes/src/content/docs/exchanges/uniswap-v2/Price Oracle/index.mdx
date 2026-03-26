@@ -50,7 +50,7 @@ V2 mitigates this by
   - Smooths short-lived spikes, so a brief manipulation usually affects the average much less than it affects the instantaneous spot price.
 
 
-## Mechanics
+### Update method
 
 Let's see how it achieves those defenses
 
@@ -61,23 +61,6 @@ Let's see how it achieves those defenses
   ])}
   lang="solidity"
 />
-
-### Fixed point binary numbers
-
-Reference [Fixed Point Binary Numbers](/fundamentals/defi/fixed-point-numbers/#binary-fixed-point-libraries)
-
-I uses Q112.112 to store TWAP
-
-| Property   | Value                                       |
-|------------|---------------------------------------------|
-| Total bits | 224                                         |
-| Min value  | $−2^{111} \approx −2.596×1033-2^{111}$      |
-| Max value  | $2^{111} − 2^{−112} \approx +2.596×10^{33}$ |
-| Resolution | $2^{−112} \approx 1.926×10^{-34}$           |
-
-This is an enormous format
-- it gives you a range on the scale of $10^{33}$
-- while simultaneously resolving differences as small as $10^{-34}$
 
 ### Update per block
 
@@ -97,8 +80,24 @@ This is an enormous format
 - Each pair tracks `price0CumulativeLast` and `price1CumulativeLast`
 - There might be cases when a block did not have any interaction; therefore, the price is not updated
 
+#### Fixed point binary numbers
 
-#### TWAP Definition
+Reference [Fixed Point Binary Numbers](/fundamentals/defi/fixed-point-numbers/#binary-fixed-point-libraries)
+
+Uses Q112.112 to store TWAP
+
+| Property   | Value                                       |
+|------------|---------------------------------------------|
+| Total bits | 224                                         |
+| Min value  | $−2^{111} \approx −2.596×1033-2^{111}$      |
+| Max value  | $2^{111} − 2^{−112} \approx +2.596×10^{33}$ |
+| Resolution | $2^{−112} \approx 1.926×10^{-34}$           |
+
+This is an enormous format
+- it gives you a range on the scale of $10^{33}$
+- while simultaneously resolving differences as small as $10^{-34}$
+
+#### Definition
 <div className="codeBlock">
 $\text{TWAP} = \frac{P_1T_1 + P_2T_2 + \cdots + P_nT_n} {\sum_{i=1}^{n} T_i}$
 
@@ -107,7 +106,9 @@ $\text{priceXCumulativeLast} = P_1T_1 + P_2T_2 + P_3T_3 + P_4T_4 + P_5T_5 + P_6T
 $T_i$ is a **duration** from **block N** to **the first interaction from block N+1** (`timeElapsed`)
 </div>
 
-#### Calculate the average price for block M
+#### Retrieval
+Retrieving TWAP for block M formula:
+
 <div className="codeBlock">
 $N$ = prior block, $M$ = target block
 

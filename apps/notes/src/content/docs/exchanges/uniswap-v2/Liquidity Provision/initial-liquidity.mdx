@@ -9,6 +9,7 @@ import { ProtocolWorkflowTrace } from '@defi-notes/workflows/components/Protocol
 import { extractProtocolWorkflowCode } from "@defi-notes/workflows/protocols/extract-code/protocol-workflow";
 import { extractProtocolCodeSlice } from "@defi-notes/workflows/protocols/extract-code/protocol-sources";
 import { Code } from '@astrojs/starlight/components';
+import { uniswapV2ChartId } from '@constants/charts';
 
 This page covers the necessary concepts for the reader to understand the **initial liquidity flow in Uniswap V2**.
 
@@ -151,7 +152,7 @@ With the interactive chart below you can experiment with all the concepts above 
 
 Each folder in the chart represents a concept that you can show or hide.
 
-<DesmosChart graphId="iyevv8l7wf" height="500px" client:load />
+<DesmosChart graphId={uniswapV2ChartId} height="500px" client:load />
 
 ## Function Trace
 In this example we will set the initial erc20 token deposits, and therefore the price to

@@ -23,6 +23,10 @@ export default defineConfig({
         { label: 'Fundamentals', autogenerate: { directory: 'fundamentals/defi' } },
       ],
       customCss: ['./src/styles/global.css', './src/styles/custom.css'],
+      tableOfContents: {
+        minHeadingLevel: 2,
+        maxHeadingLevel: 4,
+      },
     }),
     mdx(),
     astroMultipleAssets([

@@ -10,6 +10,7 @@ import { ProtocolWorkflowTrace } from '@defi-notes/workflows/components/Protocol
 import { extractProtocolWorkflowCode } from "@defi-notes/workflows/protocols/extract-code/protocol-workflow";
 import { extractProtocolCodeSlice } from "@defi-notes/workflows/protocols/extract-code/protocol-sources";
 import { Code } from '@astrojs/starlight/components';
+import { uniswapV2ChartId } from '@constants/charts';
 
 ---
 
@@ -78,7 +79,7 @@ before passing to mint:
 
 ## Chart
 
-<DesmosChart graphId="iyevv8l7wf" height="500px" client:load />
+<DesmosChart graphId={uniswapV2ChartId} height="500px" client:load />
 
 ## Function Trace
 
