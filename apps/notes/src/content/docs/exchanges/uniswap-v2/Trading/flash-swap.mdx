@@ -1,5 +1,5 @@
 ---
-title: Advanced Swap
+title: Flash Swap
 sidebar:
   order: 5200
 ---
@@ -13,9 +13,11 @@ Prereq: [Swap](/exchanges/uniswap-v2/trading/swap/)
 
 ---
 
-This page covers the necessary concepts to understand **custom swap flows in Uniswap V2**.
+This page covers the necessary concepts to understand **flash swap flows in Uniswap V2**.
 
-## Swap callback
+With flash swap, you can make **capital-free and collateral-free trades** as long as you return your borrowed amount plus fees in the same tx.
+
+## Callback
 Swap is coded to support advanced/custom swap scenarios:
 - Uniswap V2 treats swaps as “optimistic”: the pair transfers out amount0Out or amount1Out before checking that it has been repaid by the end of the same transaction.
 - If your data.length == 0, it behaves like a normal swap,
@@ -29,7 +31,7 @@ Swap is coded to support advanced/custom swap scenarios:
   lang="solidity"
 />
 
-## Callback swap steps
+## Callback steps
 The basic sequence is:
 - Your contract calls the pair’s `swap(...)` and asks for `token0` or `token1` `out`.
 - The pair `transfers the requested tokens to your contract`
@@ -40,6 +42,27 @@ The basic sequence is:
     - check the pair existence
   - you run your `custom logic`, such as arbitrage, collateral swapping, or liquidation.
   - you `transfer back enough tokens` so the pair `satisfies its reserve invariant plus fees`
+
+### Minimum Validation
+
+```solidity
+function uniswapV2Call(
+    address sender,
+    uint amount0,
+    uint amount1,
+    bytes calldata
+) external {
+    address token0 = IUniswapV2Pair(msg.sender).token0();
+    address token1 = IUniswapV2Pair(msg.sender).token1();
+    address pair = IUniswapV2Factory(factory).getPair(token0, token1);
+
+    require(msg.sender == pair, "INVALID_PAIR");
+    require(amount0 == 0 || amount1 == 0, "ONLY_ONE_TOKEN_OUT");
+    require(amount0 > 0 || amount1 > 0, "ZERO_BORROW");
+
+    // rest
+}
+```
 
 ## Multi token swap
 This is the case where the `token withdrawn` is `different than the token returned`.
@@ -59,6 +82,34 @@ This is the case where the `token withdrawn` is `different than the token return
 Ordinary Uniswap V2 swap with a 0.3% fee on the input/returned token amount.
 
 No fees on output/withdrawn amount.
+
+### Example
+
+```solidity
+function uniswapV2Call(
+    address sender,
+    uint amount0,
+    uint amount1,
+    bytes calldata
+) external {
+    // min validation
+
+    address tokenBorrowed = amount0 > 0 ? token0 : token1;
+    uint amountBorrowed = amount0 > 0 ? amount0 : amount1;
+
+    // your logic here:
+    // use borrowed tokens, arbitrage, swap elsewhere, etc.
+
+    // same-token repayment minimum
+    uint amountToRepay = UniswapV2Library.getAmountIn(
+        amountBorrowed,
+        reserveIn,
+        reserveOut
+    );
+
+    IERC20(tokenBorrowed).transfer(address(pair), amountToRepay);
+}
+```
 
 ## Single token swap
 This is the case where the `token withdrawn` is `the same as the token returned`.
@@ -117,8 +168,45 @@ It expresses the extra repayment as a percentage of the amount you originally wi
 - fee: 0.3% of the returned/input amount
 - effective fee: 0.3009027% of the withdrawn amount
 
+### Example
+
+```solidity
+function uniswapV2Call(
+    address sender,
+    uint amount0,
+    uint amount1,
+    bytes calldata
+) external {
+    // min validation
+
+    address tokenBorrowed = amount0 > 0 ? token0 : token1;
+    uint amountBorrowed = amount0 > 0 ? amount0 : amount1;
+
+    // your logic here:
+    // use borrowed tokens, arbitrage, swap elsewhere, etc.
+
+    // same-token repayment minimum
+    uint amountToRepay = (amountBorrowed * 1000 + 996) / 997;
+
+    IERC20(tokenBorrowed).transfer(address(pair), amountToRepay);
+}
+```
+
 ## Comparing fees
 
 Multitoken swap is `0,0009027% cheaper`, that single token swap.
 - 0.3009027% − 0.3000000% = 0.0009027% difference
 - 30.09 bps − 30.00 bps ≈ 0.09 bps
+
+
+## Use cases
+
+Most real uses fall into these buckets:
+- Arbitrage — buy on one venue, sell on another, keep spread.
+- Liquidation — borrow asset, liquidate unhealthy position elsewhere, receive bonus, repay.
+- Collateral swap / debt refinance — use borrowed funds to change a position’s collateral or debt composition in one transaction.
+- Self-leveraging / deleveraging — recursively adjust exposure without upfront capital.
+- Peg / price dislocation capture — exploit temporary mispricings of wrapped, staked, synthetic, or stable assets.
+- Inventory bridging inside one tx — temporarily source inventory needed to finish a larger operation.
+- Position migration — move LP, lending, vault, or leveraged positions across protocols.
+- Protocol-specific actions — mint, redeem, stake, unwrap, claim, then repay.
