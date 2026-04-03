@@ -1,0 +1,38 @@
+---
+title: Pool Recovery
+description: Uniswap V2 workflows
+sidebar:
+  order: 6100
+---
+
+Uniswap V2 has mechanisms when these internal cached reserves diverge from the actual token balances held by the contract.
+
+## Issue 1
+Stale reserve mismatch, where the pair’s stored reserves no longer match its actual token balances.
+
+### Effects
+- Swaps can price from wrong balances
+- Some pool operations always revert (e.g. trigger UniswapV2 K errors)
+- Pool effectively stuck (e.g. real token balances are now lower than reserves)
+
+### Use Cases
+- Any token with custom logic that changes the pair’s balance outside the normal Uniswap V2 call flows.
+- Negative rebasing tokens reduce the pair’s balance without going through normal Uniswap swap, mint, or burn flows.
+
+### Solution
+`sync()`: updates the pair’s stored reserves to equal the contract’s current real token balances
+
+## Issue 2
+Token balance more than reserve (`uint112(-1)`)
+
+### Effects
+- Reserve updates can fail if balances are large enough to overflow the pair’s uint112 reserve storage during _update()
+  - Normal pool operations can fail or become effectively blocked until the excess is removed
+
+### Use Cases
+- Someone sends extra tokens directly to the pair contract, so actual balances become larger than stored reserves.
+- Positive rebasing tokens increase the pair’s token balance without updating reserves, creating an unaccounted surplus
+- Tokens with a very large total supply or unusual balance-changing mechanics can push balances beyond what reserve storage can safely track.
+
+### Solution
+`skim()`: transfers out the surplus, meaning balanceOf(pair) - reserve, to a target address, without changing reserves.
