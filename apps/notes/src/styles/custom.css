@@ -19,6 +19,6 @@
     }
 
     .codeBlock {
-        @apply p-4 bg-[#121212] border rounded-[9px] overflow-auto
+        @apply p-4 border rounded-[9px] overflow-auto
     }
 }
