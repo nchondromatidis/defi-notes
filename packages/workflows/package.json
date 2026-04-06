@@ -19,6 +19,7 @@
   "dependencies": {
     "@defi-notes/evm-lens": "workspace:*",
     "@defi-notes/evm-lens-ui": "workspace:*",
+    "@radix-ui/react-tooltip": "^1.2.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.563.0",
