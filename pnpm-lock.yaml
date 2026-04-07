@@ -276,14 +276,14 @@ importers:
   packages/evm-lens:
     dependencies:
       '@tevm/actions':
-        specifier: ^1.0.0-next.148
-        version: 1.0.0-next.149(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
+        specifier: 1.0.0-next.147
+        version: 1.0.0-next.147(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
       '@tevm/evm':
-        specifier: ^1.0.0-next.148
-        version: 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
+        specifier: 1.0.0-next.146
+        version: 1.0.0-next.146(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
       '@tevm/memory-client':
-        specifier: ^1.0.0-next.148
-        version: 1.0.0-next.148(@types/debug@4.1.13)(@types/node@25.5.2)(debug@4.4.3)(jiti@2.6.1)(lightningcss@1.32.0)(msw@2.13.0(@types/node@25.5.2)(typescript@5.9.3))(terser@5.46.1)(tsx@4.21.0)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(yaml@2.8.3)(zod@4.3.6)
+        specifier: 1.0.0-next.147
+        version: 1.0.0-next.147(@types/debug@4.1.13)(@types/node@25.5.2)(debug@4.4.3)(jiti@2.6.1)(lightningcss@1.32.0)(msw@2.13.0(@types/node@25.5.2)(typescript@5.9.3))(terser@5.46.1)(tsx@4.21.0)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(yaml@2.8.3)(zod@4.3.6)
       debug:
         specifier: 'catalog:'
         version: 4.4.3
@@ -2914,6 +2914,11 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
 
+  '@tevm/actions@1.0.0-next.147':
+    resolution: {integrity: sha512-jrgv8yCWHjSrgZI1DvDpKxz0yE6M2AteIxI+Ry02wcA4ffWuFuivZfUCo3zPN6udwqIBJ4cVsTy76N9krYPqEA==}
+    peerDependencies:
+      viem: ^2.30.1
+
   '@tevm/actions@1.0.0-next.149':
     resolution: {integrity: sha512-cFM2HVYg/rXykL83QFGqIU6Eg7M1d0/O67f2tbrakQAJOpMRzW3lwEDjpuRp154t4aPwrmGDOzQCI3DAH94tng==}
     peerDependencies:
@@ -2969,6 +2974,9 @@ packages:
   '@tevm/esbuild-plugin@1.0.0-next.148':
     resolution: {integrity: sha512-qLa2LE/ncqpYSZWGjCjdMSUtW33MevCoA5qsCKMMiauDUBCkTn+4XuL+ysBcyAOIQbtsTx82Q0Qg8sw2Qy4hVg==}
 
+  '@tevm/evm@1.0.0-next.146':
+    resolution: {integrity: sha512-jb0z9ntkTmH+xNW4nIXjh8bgXtlwUwP6/GwvNviuswLg4HNxbTH2YVxzL6A2kiCouPSfQiVdVLRp+NYluIgxPg==}
+
   '@tevm/evm@1.0.0-next.148':
     resolution: {integrity: sha512-r92OtsI3oE996AZw1xpbgbpwZYZYAtLAs3CzuQXTz2PjpW2jNFbrcN3VCQz3/f1rzCO7dOXRfqQfYbO60mROaA==}
 
@@ -2980,10 +2988,10 @@ packages:
   '@tevm/logger@1.0.0-next.148':
     resolution: {integrity: sha512-B8o0V9tW6IwQffN4b8cC8SUk9bWv6AEcupgsqh5o19YyWjZKbZX/Dp3eVyv0h9FD3IsZYl70Fef3Bx7iUrVLAg==}
 
-  '@tevm/memory-client@1.0.0-next.148':
-    resolution: {integrity: sha512-4aMYnKMJtGXdmZDAuNpoYuu+InK1QOZ6eIGMzzkcgwOHyOSSzaq3eMbyHLQ4hDYxgQPDbSRHYmy5l8ltymce8A==}
+  '@tevm/memory-client@1.0.0-next.147':
+    resolution: {integrity: sha512-PbE8x3nc+fOgSdjH+JoKfI0I3hho11PinPRzi5CXSfjhlTET0wfS+u0RMbvZHzlH+K5yEH5ywZYeASZ9/h+7JQ==}
     peerDependencies:
-      viem: ^2.37.9
+      viem: ^2.30.1
 
   '@tevm/node@1.0.0-next.148':
     resolution: {integrity: sha512-xzMjuUgzTlGzryJfoNqlfqAWJHDgHlNJSj4zuHiK/24dJXWN0Gs3jsHln4bASZJhn+1IPT/qSNfifrwBeNZ9ug==}
@@ -9684,6 +9692,30 @@ snapshots:
       tailwindcss: 4.2.2
       vite: 7.3.2(@types/node@25.5.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
+  '@tevm/actions@1.0.0-next.147(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))':
+    dependencies:
+      '@tevm/address': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/block': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/blockchain': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/common': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/contract': 1.0.0-next.149(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/evm': 1.0.0-next.146(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/jsonrpc': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/node': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/receipt-manager': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/state': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/tx': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/txpool': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/vm': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      viem: 2.37.13(typescript@5.9.3)(zod@4.3.6)
+      zod: 3.25.76
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+      - typescript
+
   '@tevm/actions@1.0.0-next.149(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
     dependencies:
       '@tevm/address': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
@@ -9707,6 +9739,16 @@ snapshots:
       - debug
       - supports-color
       - typescript
+
+  '@tevm/address@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      viem: 2.37.13(typescript@5.9.3)(zod@4.3.6)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+      - zod
 
   '@tevm/address@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
     dependencies:
@@ -9734,6 +9776,20 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
+  '@tevm/block@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@tevm/common': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/rlp': 1.0.0-next.148
+      '@tevm/trie': 1.0.0-next.148
+      '@tevm/tx': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+      - viem
+      - zod
+
   '@tevm/block@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
     dependencies:
       '@tevm/common': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
@@ -9746,6 +9802,22 @@ snapshots:
       - supports-color
       - typescript
       - viem
+      - zod
+
+  '@tevm/blockchain@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@ethereumjs/blockchain': 10.1.1
+      '@tevm/block': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/common': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/jsonrpc': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/logger': 1.0.0-next.148
+      '@tevm/trie': 1.0.0-next.148
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      viem: 2.37.13(typescript@5.9.3)(zod@4.3.6)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
       - zod
 
   '@tevm/blockchain@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
@@ -9770,6 +9842,18 @@ snapshots:
       '@tevm/tsconfig': 1.0.0-next.142
       '@tevm/tsupconfig': 1.0.0-next.148
       '@types/node': 24.12.2
+
+  '@tevm/common@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@ethereumjs/common': 10.1.1
+      '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/logger': 1.0.0-next.148
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      viem: 2.37.13(typescript@5.9.3)(zod@4.3.6)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+      - zod
 
   '@tevm/common@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
     dependencies:
@@ -9800,6 +9884,16 @@ snapshots:
       '@types/node': 24.12.2
       effect: 3.18.1
       zod: 4.3.6
+
+  '@tevm/contract@1.0.0-next.149(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+      - viem
+      - zod
 
   '@tevm/contract@1.0.0-next.149(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
     dependencies:
@@ -9842,6 +9936,57 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
+  '@tevm/evm@1.0.0-next.146(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@ethereumjs/evm': 10.1.1
+      '@tevm/blockchain': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/common': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/logger': 1.0.0-next.148
+      '@tevm/predeploys': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/state': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+      - typescript
+      - viem
+      - zod
+
+  '@tevm/evm@1.0.0-next.146(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
+    dependencies:
+      '@ethereumjs/evm': 10.1.1
+      '@tevm/blockchain': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
+      '@tevm/common': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
+      '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/logger': 1.0.0-next.148
+      '@tevm/predeploys': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
+      '@tevm/state': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+      - typescript
+      - viem
+      - zod
+
+  '@tevm/evm@1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@ethereumjs/evm': 10.1.1
+      '@tevm/blockchain': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/common': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/logger': 1.0.0-next.148
+      '@tevm/predeploys': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/state': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+      - typescript
+      - viem
+      - zod
+
   '@tevm/evm@1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
     dependencies:
       '@ethereumjs/evm': 10.1.1
@@ -9870,15 +10015,15 @@ snapshots:
     dependencies:
       pino: 9.14.0
 
-  '@tevm/memory-client@1.0.0-next.148(@types/debug@4.1.13)(@types/node@25.5.2)(debug@4.4.3)(jiti@2.6.1)(lightningcss@1.32.0)(msw@2.13.0(@types/node@25.5.2)(typescript@5.9.3))(terser@5.46.1)(tsx@4.21.0)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(yaml@2.8.3)(zod@4.3.6)':
+  '@tevm/memory-client@1.0.0-next.147(@types/debug@4.1.13)(@types/node@25.5.2)(debug@4.4.3)(jiti@2.6.1)(lightningcss@1.32.0)(msw@2.13.0(@types/node@25.5.2)(typescript@5.9.3))(terser@5.46.1)(tsx@4.21.0)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(yaml@2.8.3)(zod@4.3.6)':
     dependencies:
-      '@tevm/actions': 1.0.0-next.149(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
+      '@tevm/actions': 1.0.0-next.147(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
       '@tevm/address': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
       '@tevm/common': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
       '@tevm/contract': 1.0.0-next.149(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
       '@tevm/decorators': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
       '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
-      '@tevm/evm': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
+      '@tevm/evm': 1.0.0-next.146(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
       '@tevm/node': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
       '@tevm/predeploys': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
       '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
@@ -9909,6 +10054,31 @@ snapshots:
       - yaml
       - zod
 
+  '@tevm/node@1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@tevm/address': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/block': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/blockchain': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/common': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/evm': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/jsonrpc': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/logger': 1.0.0-next.148
+      '@tevm/precompiles': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/predeploys': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/receipt-manager': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/state': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/sync-storage-persister': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/tx': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/txpool': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/vm': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      viem: 2.37.13(typescript@5.9.3)(zod@4.3.6)
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+      - typescript
+      - zod
+
   '@tevm/node@1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
     dependencies:
       '@tevm/address': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
@@ -9934,6 +10104,20 @@ snapshots:
       - typescript
       - zod
 
+  '@tevm/precompiles@1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@noble/curves': 2.0.1
+      '@tevm/address': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/contract': 1.0.0-next.149(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/evm': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+      - typescript
+      - viem
+      - zod
+
   '@tevm/precompiles@1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
     dependencies:
       '@noble/curves': 2.0.1
@@ -9948,11 +10132,36 @@ snapshots:
       - viem
       - zod
 
+  '@tevm/predeploys@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@tevm/address': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/contract': 1.0.0-next.149(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+      - viem
+      - zod
+
   '@tevm/predeploys@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
     dependencies:
       '@tevm/address': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
       '@tevm/contract': 1.0.0-next.149(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
       '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+      - viem
+      - zod
+
+  '@tevm/receipt-manager@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@tevm/block': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/blockchain': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/common': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/rlp': 1.0.0-next.148
+      '@tevm/tx': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -9996,6 +10205,24 @@ snapshots:
       '@tevm/tsconfig': 1.0.0-next.142
       '@tevm/tsupconfig': 1.0.0-next.148
 
+  '@tevm/state@1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@ethereumjs/statemanager': 10.1.1
+      '@tevm/address': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/common': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/logger': 1.0.0-next.148
+      '@tevm/rlp': 1.0.0-next.148
+      '@tevm/test-utils': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      ethereum-cryptography: 3.2.0
+      viem: 2.37.13(typescript@5.9.3)(zod@4.3.6)
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+      - typescript
+      - zod
+
   '@tevm/state@1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
     dependencies:
       '@ethereumjs/statemanager': 10.1.1
@@ -10014,6 +10241,16 @@ snapshots:
       - typescript
       - zod
 
+  '@tevm/sync-storage-persister@1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@tevm/state': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+      - typescript
+      - viem
+      - zod
+
   '@tevm/sync-storage-persister@1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
     dependencies:
       '@tevm/state': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
@@ -10022,6 +10259,20 @@ snapshots:
       - supports-color
       - typescript
       - viem
+      - zod
+
+  '@tevm/test-utils@1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@openzeppelin/contracts': 5.4.0
+      '@ponder/utils': 0.2.18(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/contract': 1.0.0-next.149(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/esbuild-plugin': 1.0.0-next.148(debug@4.4.3)
+      '@tevm/ts-plugin': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)
+      viem: 2.37.13(typescript@5.9.3)(zod@4.3.6)
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+      - typescript
       - zod
 
   '@tevm/test-utils@1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
@@ -10065,12 +10316,41 @@ snapshots:
       '@tevm/tsconfig': 1.0.0-next.142
       '@types/node': 24.12.2
 
+  '@tevm/tx@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@ethereumjs/tx': 10.1.1
+      '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+      - viem
+      - zod
+
   '@tevm/tx@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
     dependencies:
       '@ethereumjs/tx': 10.1.1
       '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
       '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)
     transitivePeerDependencies:
+      - supports-color
+      - typescript
+      - viem
+      - zod
+
+  '@tevm/txpool@1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@tevm/block': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/blockchain': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/common': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/evm': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/state': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/tx': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/vm': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      qheap: 1.4.0
+    transitivePeerDependencies:
+      - debug
       - supports-color
       - typescript
       - viem
@@ -10107,6 +10387,18 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
+  '@tevm/utils@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@ethereumjs/evm': 10.1.1
+      '@ethereumjs/util': 10.1.1
+      '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      abitype: 1.2.3(typescript@5.9.3)(zod@3.25.76)
+      viem: 2.37.13(typescript@5.9.3)(zod@4.3.6)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+      - zod
+
   '@tevm/utils@1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@4.3.6)':
     dependencies:
       '@ethereumjs/evm': 10.1.1
@@ -10115,6 +10407,27 @@ snapshots:
       abitype: 1.2.3(typescript@5.9.3)(zod@4.3.6)
       viem: 2.37.13(typescript@5.9.3)(zod@4.3.6)
     transitivePeerDependencies:
+      - supports-color
+      - typescript
+      - zod
+
+  '@tevm/vm@1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)':
+    dependencies:
+      '@ethereumjs/vm': 10.1.1
+      '@tevm/block': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/blockchain': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/common': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/errors': 1.0.0-next.148(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))
+      '@tevm/evm': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/rlp': 1.0.0-next.148
+      '@tevm/state': 1.0.0-next.148(debug@4.4.3)(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/trie': 1.0.0-next.148
+      '@tevm/tx': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      '@tevm/utils': 1.0.0-next.148(typescript@5.9.3)(viem@2.37.13(typescript@5.9.3)(zod@4.3.6))(zod@3.25.76)
+      eventemitter3: 5.0.4
+      viem: 2.37.13(typescript@5.9.3)(zod@4.3.6)
+    transitivePeerDependencies:
+      - debug
       - supports-color
       - typescript
       - zod

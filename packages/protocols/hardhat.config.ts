@@ -4,8 +4,8 @@ import augmentArtifacts from '@defi-notes/evm-lens-indexer';
 const compilerVersions = [
   { v: '0.4.26', opt: true },
   { v: '0.5.16', opt: true },
-  { v: '0.6.6', opt: false },
-  { v: '0.6.12', opt: false },
+  { v: '0.6.6', opt: true },
+  { v: '0.6.12', opt: true },
 ];
 
 function createCompilerSettings(version: string, optimize = false) {
