@@ -15,27 +15,27 @@
     "test:no-build": "vitest --watch=false"
   },
   "dependencies": {
-    "debug": "^4.4.3",
     "@tevm/memory-client": "^1.0.0-next.148",
     "@tevm/evm": "^1.0.0-next.148",
     "@tevm/actions": "^1.0.0-next.148",
-    "viem": "2.37.13"
+    "debug": "catalog:",
+    "viem": "catalog:"
   },
   "devDependencies": {
     "@defi-notes/config": "workspace:*",
     "@defi-notes/evm-lens-indexer": "workspace:*",
     "@defi-notes/protocols": "workspace:*",
-    "@eslint/js": "^10.0.1",
-    "@types/debug": "^4.1.13",
-    "@types/node": "^25.5.2",
-    "eslint": "^10.2.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.5",
-    "globals": "^17.4.0",
-    "hardhat": "^3.3.0",
-    "prettier": "3.8.1",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.58.0",
-    "vitest": "^4.1.2"
+    "@eslint/js": "catalog:",
+    "@types/debug": "catalog:",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-plugin-prettier": "catalog:",
+    "globals": "catalog:",
+    "hardhat": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
+    "vitest": "catalog:"
   }
 }

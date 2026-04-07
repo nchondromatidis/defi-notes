@@ -18,25 +18,25 @@
   },
   "dependencies": {
     "@noble/hashes": "^2.0.1",
-    "debug": "^4.4.3",
-    "glob": "^13.0.6",
+    "debug": "catalog:",
+    "glob": "catalog:",
     "solidity-ast": "^0.4.62",
-    "ts-morph": "^27.0.2",
-    "zod": "^4.3.6"
+    "ts-morph": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@defi-notes/config": "workspace:*",
-    "@eslint/js": "^10.0.1",
-    "@types/debug": "^4.1.13",
-    "@types/node": "^25.5.2",
-    "eslint": "^10.2.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.5",
-    "prettier": "3.8.1",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.2"
+    "@eslint/js": "catalog:",
+    "@types/debug": "catalog:",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-plugin-prettier": "catalog:",
+    "prettier": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
   },
   "peerDependencies": {
-    "hardhat": "^3.3.0"
+    "hardhat": "catalog:"
   }
 }

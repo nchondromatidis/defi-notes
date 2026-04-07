@@ -10,16 +10,8 @@
     "check:types": "pnpm -r run check:types",
     "lint": "pnpm -r run lint",
     "lint:fix": "pnpm -r run lint:fix",
+    "build": "pnpm -r run build",
     "preinstall": "npx only-allow pnpm",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "deps:list:verbose": "pnpm dlx syncpack@14.3.0 list --show instances",
-    "deps:fix": "pnpm dlx syncpack@14.3.0 fix",
-    "deps:update:patch": "pnpm dlx syncpack@14.3.0 update --target patch",
-    "unsafe:deps:update:latest": "pnpm dlx syncpack@14.3.0 update --target latest"
-  },
-  "pnpm": {
-    "overrides": {
-      "zod": "4.3.6"
-    }
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
