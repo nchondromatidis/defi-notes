@@ -3,6 +3,8 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
+    "predev": "node scripts/link-protocol-assets.js",
+    "prebuild": "node scripts/link-protocol-assets.js",
     "check:types": "tsc --noEmit",
     "dev": "astro dev",
     "start": "astro dev",

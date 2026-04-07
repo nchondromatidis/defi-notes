@@ -12,8 +12,8 @@ Each protocol will be analyzed per workflows combining `source code`, `workflow 
 
 ## Fundamentals
 
-- [DeFi](/fundamentals/defi/) - Fundamental DeFi Concepts
+- [DeFi](/defi-notes/fundamentals/defi/) - Fundamental DeFi Concepts
 
 ## Exchanges
 
-- [Uniswap V2](/exchanges/uniswap-v2/) - Automated market maker protocol
+- [Uniswap V2](/defi-notes/exchanges/uniswap-v2/) - Automated market maker protocol

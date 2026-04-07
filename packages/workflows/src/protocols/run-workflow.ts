@@ -10,8 +10,8 @@ export type ProtocolWorkflowsRegistryType = {
 let protocolWorkflowsRegistryInstance: ProtocolWorkflowsRegistryType | null = null;
 
 export async function getProtocolWorkflowsRegistry(
-  resourcesUri: string = 'http://localhost:4321',
-  contractsFolder: string = 'contracts'
+  resourcesUri: string,
+  contractsFolder: string
 ): Promise<ProtocolWorkflowsRegistryType> {
   if (protocolWorkflowsRegistryInstance) {
     return protocolWorkflowsRegistryInstance;

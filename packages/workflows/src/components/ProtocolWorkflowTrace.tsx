@@ -14,6 +14,13 @@ import {
 } from '../protocols/run-workflow.ts';
 import type { TraceResult } from '@defi-notes/evm-lens-ui/types/TraceResult';
 
+const getResourcesBaseUrl = (): string => {
+  if (typeof window === 'undefined') {
+    throw new Error('ProtocolWorkflowTrace must run in browser environment');
+  }
+  return `${window.location.origin}/defi-notes`;
+};
+
 type ProtocolActionProps<
   R extends Record<string, object> = ProtocolWorkflowsRegistry,
   P extends keyof R = keyof R,
@@ -48,7 +55,7 @@ export const ProtocolWorkflowTrace: React.FC<ProtocolActionProps<ProtocolWorkflo
       try {
         setLoading(true);
         setError(null);
-        const registry = await getProtocolWorkflowsRegistry();
+        const registry = await getProtocolWorkflowsRegistry(getResourcesBaseUrl(), 'contracts');
         const { trace } = await runWorkflow(registry, protocol, workflow, args);
         const result = await registry[protocol].toTraceResult(trace);
         setTraceResult(result ?? null);

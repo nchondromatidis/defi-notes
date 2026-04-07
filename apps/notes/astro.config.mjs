@@ -5,14 +5,17 @@ import mdx from '@astrojs/mdx';
 import starlightThemeNext from 'starlight-theme-next';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import { astroMultipleAssets } from 'vite-multiple-assets';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import path from 'node:path';
 
 import react from '@astrojs/react';
 
 import tailwindcss from '@tailwindcss/vite';
+import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
+  site: 'https://nchondromatidis.github.io',
+  base: '/defi-notes',
   integrations: [
     react(),
     starlight({
@@ -30,10 +33,6 @@ export default defineConfig({
       },
     }),
     mdx(),
-    astroMultipleAssets([
-      '../../packages/protocols/{\x01,artifacts}/**',
-      '../../packages/protocols/{\x01,contracts}/**',
-    ]),
   ],
   markdown: {
     remarkPlugins: [remarkMath],
@@ -51,10 +50,7 @@ export default defineConfig({
         enforce: 'post',
         renderChunk(code) {
           // Replace buffer.constants.MAX_STRING_LENGTH with actual value
-          return code.replace(
-            /buffer\.constants\.MAX_STRING_LENGTH/g,
-            '536870888'
-          );
+          return code.replace(/buffer\.constants\.MAX_STRING_LENGTH/g, '536870888');
         },
       },
       {
