@@ -1,0 +1,192 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-on-background: #e6e5e5;
+  --color-tertiary-fixed: #69f6b8;
+  --color-on-tertiary-container: #005a3c;
+  --color-on-tertiary: #006443;
+  --color-on-surface-variant: #ababab;
+  --color-secondary-dim: #05a9e3;
+  --color-on-secondary-fixed: #00445e;
+  --color-on-secondary-container: #63caff;
+  --color-surface-container-low: #131313;
+  --color-primary-container: #5a00c6;
+  --color-tertiary: #9bffce;
+  --color-inverse-surface: #fcf9f8;
+  --color-on-secondary-fixed-variant: #006286;
+  --color-primary-fixed-dim: #deccff;
+  --color-surface-container-lowest: #000000;
+  --color-on-primary: #5200b5;
+  --color-primary-fixed: #eaddff;
+  --color-inverse-on-surface: #565555;
+  --color-inverse-primary: #742fe5;
+  --color-outline-variant: #474848;
+  --color-error-container: #7f2737;
+  --color-background: #0e0e0e;
+  --color-surface-container: #191a1a;
+  --color-surface: #0e0e0e;
+  --color-surface-dim: #0e0e0e;
+  --color-primary: #d2bbff;
+  --color-on-tertiary-fixed-variant: #006544;
+  --color-on-surface: #e6e5e5;
+  --color-secondary-fixed-dim: #a2dcff;
+  --color-surface-tint: #d2bbff;
+  --color-surface-bright: #2b2c2c;
+  --color-secondary: #22b1ec;
+  --color-on-primary-container: #dbc7ff;
+  --color-on-error: #490013;
+  --color-secondary-container: #004059;
+  --color-error-dim: #b95463;
+  --color-primary-dim: #c7abff;
+  --color-surface-container-high: #1f2020;
+  --color-on-secondary: #002b3d;
+  --color-error: #ec7c8a;
+  --color-tertiary-fixed-dim: #58e7ab;
+  --color-tertiary-container: #69f6b8;
+  --color-on-primary-fixed: #5100b3;
+  --color-on-error-container: #ff97a3;
+  --color-on-tertiary-fixed: #00452d;
+  --color-outline: #757575;
+  --color-on-primary-fixed-variant: #702ae1;
+  --color-tertiary-dim: #58e7ab;
+  --color-surface-variant: #252626;
+  --color-surface-container-highest: #252626;
+  --color-secondary-fixed: #c4e7ff;
+
+  --font-headline: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-label: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 300,
+    'GRAD' 0,
+    'opsz' 20;
+  font-size: 18px;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.label-font {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.code-font {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.badgeText {
+  margin-block: calc(0.5cap - 0.5lh);
+}
+
+@supports (text-box-trim: trim-both) {
+  .badgeText {
+    margin-block: 0;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+  }
+}
+
+.indent-line-v2 {
+  position: relative;
+  margin-left: 10px;
+}
+
+.indent-line-v2::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: -4px;
+  bottom: -4px;
+  width: 1px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+.cm-editor {
+  height: 100%;
+}
+
+.cm-editor .cm-scroller {
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(63 63 70) transparent;
+}
+
+.cm-editor .cm-scroller::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.cm-editor .cm-scroller::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cm-editor .cm-scroller::-webkit-scrollbar-thumb {
+  background: rgb(63 63 70);
+  border-radius: 9999px;
+}
+
+.cm-editor .cm-scroller::-webkit-scrollbar-thumb:hover {
+  background: rgb(82 82 91);
+}
+
+[data-panel-group-direction='vertical'] > [data-resize-handle-active] {
+  cursor: row-resize;
+}
+
+[data-panel-group-direction='horizontal'] > [data-resize-handle-active] {
+  cursor: col-resize;
+}
+
+[data-resize-handle] {
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+}
+
+[data-resize-handle]:hover,
+[data-resize-handle][data-resize-handle-active] {
+  background-color: rgba(112, 42, 225, 0.3);
+}
+
+[data-panel-group-direction='vertical'] > [data-resize-handle] {
+  height: 1px;
+  margin-top: -0.5px;
+  margin-bottom: -0.5px;
+}
+
+[data-panel-group-direction='horizontal'] > [data-resize-handle] {
+  width: 1px;
+  margin-left: -0.5px;
+  margin-right: -0.5px;
+}
