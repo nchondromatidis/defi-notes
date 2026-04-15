@@ -1,6 +1,6 @@
 @layer theme, base, components, vendor, utilities, starlight, nextjs, custom, tailwind ;
 
-@import "../../node_modules/@defi-notes/evm-lens-ui/src/styles/icons.css";
+@import "../../node_modules/@defi-notes/evm-lens-ui/src/styles/custom.css";
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "../../node_modules/katex/dist/katex.min.css";

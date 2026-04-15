@@ -36,7 +36,7 @@ export default defineConfig(({ command }) => ({
     viteStaticCopy({
       targets: [
         { src: 'src/styles/index.css', dest: 'styles' },
-        { src: 'src/styles/icons.css', dest: 'styles' },
+        { src: 'src/styles/custom.css', dest: 'styles' },
       ],
     }),
   ],
