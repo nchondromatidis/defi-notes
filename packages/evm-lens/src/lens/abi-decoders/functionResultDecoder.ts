@@ -129,7 +129,7 @@ export function decodeFunctionResultOneAbi(
     const decodedFunctionResult = trySync(() => decodeFunctionResultViem({ abi, data, functionName }));
 
     if (decodedFunctionResult.ok) {
-      return { isSuccess: true, rawData: data, contractFQN, decodedFunctionResult: decodedFunctionResult };
+      return { isSuccess: true, rawData: data, contractFQN, decodedFunctionResult: decodedFunctionResult.value };
     }
     if (!decodedFunctionResult.ok && !(decodedFunctionResult.error instanceof AbiFunctionNotFoundError)) {
       throw decodedFunctionResult.error;

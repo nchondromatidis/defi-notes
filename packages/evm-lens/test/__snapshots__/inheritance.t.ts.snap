@@ -295,10 +295,7 @@ exports[`inheritance > inheritance contract A 1`] = `
         ],
       },
     ],
-    "returnValue": {
-      "ok": true,
-      "value": "A._internal1",
-    },
+    "returnValue": "A._internal1",
     "returnValueRaw": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c412e5f696e7465726e616c310000000000000000000000000000000000000000",
     "type": "FunctionResultEvent",
   },
@@ -646,10 +643,7 @@ exports[`inheritance > inheritance contract A2 1`] = `
         ],
       },
     ],
-    "returnValue": {
-      "ok": true,
-      "value": "A2._internal1",
-    },
+    "returnValue": "A2._internal1",
     "returnValueRaw": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000d41322e5f696e7465726e616c3100000000000000000000000000000000000000",
     "type": "FunctionResultEvent",
   },

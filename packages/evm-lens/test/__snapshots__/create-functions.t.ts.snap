@@ -90,10 +90,7 @@ exports[`create-functions > create2Contract 1`] = `
         ],
       },
     ],
-    "returnValue": {
-      "ok": true,
-      "value": undefined,
-    },
+    "returnValue": undefined,
     "returnValueRaw": "0x",
     "type": "FunctionResultEvent",
   },
@@ -191,10 +188,7 @@ exports[`create-functions > deployContract 1`] = `
         ],
       },
     ],
-    "returnValue": {
-      "ok": true,
-      "value": undefined,
-    },
+    "returnValue": undefined,
     "returnValueRaw": "0x",
     "type": "FunctionResultEvent",
   },

@@ -53,10 +53,7 @@ exports[`external-calls > external call to external function 1`] = `
             ],
           },
         ],
-        "returnValue": {
-          "ok": true,
-          "value": "externalFunction called",
-        },
+        "returnValue": "externalFunction called",
         "returnValueRaw": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001765787465726e616c46756e6374696f6e2063616c6c6564000000000000000000",
         "type": "FunctionResultEvent",
       },
@@ -100,10 +97,7 @@ exports[`external-calls > external call to external function 1`] = `
         ],
       },
     ],
-    "returnValue": {
-      "ok": true,
-      "value": "externalFunction called",
-    },
+    "returnValue": "externalFunction called",
     "returnValueRaw": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001765787465726e616c46756e6374696f6e2063616c6c6564000000000000000000",
     "type": "FunctionResultEvent",
   },
@@ -158,11 +152,8 @@ exports[`external-calls > external call to public function 1`] = `
           },
         ],
         "returnValue": {
-          "ok": true,
-          "value": {
-            "id": 1n,
-            "name": "dummy",
-          },
+          "id": 1n,
+          "name": "dummy",
         },
         "returnValueRaw": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000564756d6d79000000000000000000000000000000000000000000000000000000",
         "type": "FunctionResultEvent",
@@ -208,11 +199,8 @@ exports[`external-calls > external call to public function 1`] = `
       },
     ],
     "returnValue": {
-      "ok": true,
-      "value": {
-        "id": 1n,
-        "name": "dummy",
-      },
+      "id": 1n,
+      "name": "dummy",
     },
     "returnValueRaw": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000564756d6d79000000000000000000000000000000000000000000000000000000",
     "type": "FunctionResultEvent",
@@ -424,13 +412,10 @@ exports[`external-calls > external call with unmatched selector, args, value 1`]
         ],
       },
     ],
-    "returnValue": {
-      "ok": true,
-      "value": [
-        true,
-        "0x307831",
-      ],
-    },
+    "returnValue": [
+      true,
+      "0x307831",
+    ],
     "returnValueRaw": "0x0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000033078310000000000000000000000000000000000000000000000000000000000",
     "type": "FunctionResultEvent",
   },
@@ -545,13 +530,10 @@ exports[`external-calls > external call with unmatched selector, no args, value 
         ],
       },
     ],
-    "returnValue": {
-      "ok": true,
-      "value": [
-        true,
-        "0x",
-      ],
-    },
+    "returnValue": [
+      true,
+      "0x",
+    ],
     "returnValueRaw": "0x000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000",
     "type": "FunctionResultEvent",
   },
@@ -584,10 +566,7 @@ exports[`external-calls > external static call to public function 1`] = `
         "isCreate": false,
         "isError": false,
         "logs": [],
-        "returnValue": {
-          "ok": true,
-          "value": 0n,
-        },
+        "returnValue": 0n,
         "returnValueRaw": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "type": "FunctionResultEvent",
       },
@@ -629,13 +608,10 @@ exports[`external-calls > external static call to public function 1`] = `
         ],
       },
     ],
-    "returnValue": {
-      "ok": true,
-      "value": [
-        true,
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-      ],
-    },
+    "returnValue": [
+      true,
+      "0x0000000000000000000000000000000000000000000000000000000000000000",
+    ],
     "returnValueRaw": "0x0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000",
     "type": "FunctionResultEvent",
   },
