@@ -97,12 +97,15 @@ const ReturnSection: React.FC<{ returnValue?: unknown; isError: boolean; path: s
   path,
   ctx,
 }) => {
-  if (!returnValue || typeof returnValue !== 'object') {
+  if (returnValue == null || typeof returnValue !== 'object') {
     return (
       <div className="space-y-1">
-        <span className={isError ? 'text-destructive font-bold' : 'text-emerald-600 dark:text-emerald-400 font-bold'}>
-          {isError ? 'REVERT' : 'SUCCESS'}
-        </span>
+        {returnValue != null && (
+          <div className="flex justify-between gap-2">
+            <ValueSpan value={returnValue} path={path} ctx={ctx} />
+          </div>
+        )}
+        {isError && <span className="text-destructive font-bold">REVERT</span>}
       </div>
     );
   }
@@ -120,11 +123,11 @@ const ReturnSection: React.FC<{ returnValue?: unknown; isError: boolean; path: s
           </div>
         ))}
       </div>
-      <div className="mt-2">
-        <span className={isError ? 'text-destructive font-bold' : 'text-emerald-600 dark:text-emerald-400 font-bold'}>
-          {isError ? 'REVERT' : 'SUCCESS'}
-        </span>
-      </div>
+      {isError && (
+        <div className="mt-2">
+          <span className="text-destructive font-bold">REVERT</span>
+        </div>
+      )}
     </div>
   );
 };
