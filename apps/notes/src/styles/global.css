@@ -1,12 +1,12 @@
 @layer theme, base, components, vendor, utilities, starlight, nextjs, custom, tailwind ;
 
-@import "../../node_modules/@defi-notes/evm-lens-ui/src/styles/custom.css";
+@import "../../node_modules/@protocol-lens/evm-lens-ui/src/styles/custom.css";
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "../../node_modules/katex/dist/katex.min.css";
 
-@source "../../node_modules/@defi-notes/evm-lens-ui/src";
-@source "../../node_modules/@defi-notes/workflows/src";
+@source "../../node_modules/@protocol-lens/evm-lens-ui/src";
+@source "../../node_modules/@protocol-lens/workflows/src";
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *, .dark));
 

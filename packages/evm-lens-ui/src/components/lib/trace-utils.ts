@@ -1,7 +1,7 @@
 import type {
   ReadOnlyFunctionCallEvent,
   LensLog,
-} from '@defi-notes/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
+} from '@protocol-lens/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
 
 export type FormattedLog = {
   eventName: string;

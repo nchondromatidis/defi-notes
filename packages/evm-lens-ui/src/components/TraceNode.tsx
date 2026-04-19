@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from './lib/utils.ts';
-import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
-import { getContractName } from '@defi-notes/evm-lens/src/client-utils/names.ts';
+import type { ReadOnlyFunctionCallEvent } from '@protocol-lens/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
+import { getContractName } from '@protocol-lens/evm-lens/src/client-utils/names.ts';
 import { MaterialIcon } from './lib/MaterialIcon.tsx';
 import { formatAggregates, getCallTypeStyle } from './lib/trace-utils.ts';
 import { TraceNodeDetail } from './TraceNodeDetail.tsx';

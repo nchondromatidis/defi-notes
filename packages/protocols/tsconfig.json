@@ -1,5 +1,5 @@
 {
-  "extends": "@defi-notes/config/tsconfig.node.json",
+  "extends": "@protocol-lens/config/tsconfig.node.json",
   "compilerOptions": {
     "rootDir": "."
   },

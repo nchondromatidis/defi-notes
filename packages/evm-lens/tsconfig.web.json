@@ -1,4 +1,4 @@
 {
-  "extends": "@defi-notes/config/tsconfig.web.json",
+  "extends": "@protocol-lens/config/tsconfig.web.json",
   "include": ["src/**/*"]
 }

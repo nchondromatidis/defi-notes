@@ -15,12 +15,12 @@ import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
   site: 'https://nchondromatidis.github.io',
-  base: '/defi-notes',
+  base: '/protocol-lens',
   integrations: [
     react(),
     starlight({
       plugins: [starlightThemeNext()],
-      title: 'DeFi Notes',
+      title: 'Protocol Lens',
       routeMiddleware: './src/routeData.ts',
       sidebar: [
         { label: 'Uniswap v2', autogenerate: { directory: 'exchanges/uniswap-v2' } },

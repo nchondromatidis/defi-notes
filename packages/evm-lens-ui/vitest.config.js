@@ -1,4 +1,4 @@
-import configShared from '@defi-notes/config/vitest.config.js';
+import configShared from '@protocol-lens/config/vitest.config.js';
 
 export default {
   ...configShared,

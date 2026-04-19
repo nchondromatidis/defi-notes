@@ -17,7 +17,7 @@
   - Avoid creating CSS classes; use Tailwind CSS helper classes directly in the component.
 - **Architecture Patterns**:
   - PNPM workspaces
-  - Package naming: `@defi-notes/*` for core packages
+  - Package naming: `@protocol-lens/*` for core packages
 - **Testing Strategy**:
   - For each package, typecheck with: `pnpm run check:types`
   - Each package has its own testing strategy; some packages do not need tests.

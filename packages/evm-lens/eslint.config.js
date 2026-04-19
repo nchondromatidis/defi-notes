@@ -1,4 +1,4 @@
-import config from '@defi-notes/config/eslint.config.web.js';
+import config from '@protocol-lens/config/eslint.config.web.js';
 
 /** @type {import("eslint").Linter.Config} */
 export default [

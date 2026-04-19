@@ -1,7 +1,7 @@
-import type { ArtifactMap } from '@defi-notes/protocols/*';
+import type { ArtifactMap } from '@protocol-lens/protocols/*';
 import path from 'node:path';
-import type { LensArtifactsMapSlice } from '@defi-notes/evm-lens/src/client-utils/type-helpers.ts';
-import type { LensArtifactsMap } from '@defi-notes/evm-lens/src/lens/types.ts';
+import type { LensArtifactsMapSlice } from '@protocol-lens/evm-lens/src/client-utils/type-helpers.ts';
+import type { LensArtifactsMap } from '@protocol-lens/evm-lens/src/lens/types.ts';
 import { fileURLToPath } from 'node:url';
 import * as fs from 'node:fs';
 import { trimFirstSpaces } from './_utils.ts';

@@ -1,11 +1,11 @@
-import type { ArtifactMap } from '@defi-notes/protocols/*';
+import type { ArtifactMap } from '@protocol-lens/protocols/*';
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts';
 import { ProtocolWorkflowsBase } from './ProtocolWorkflowsBase.ts';
-import type { IResourceLoader } from '@defi-notes/evm-lens/src/lens/_ports/IResourceLoader.ts';
+import type { IResourceLoader } from '@protocol-lens/evm-lens/src/lens/_ports/IResourceLoader.ts';
 import { _1e18, USER_0, USER_1 } from './_constants.ts';
 import { type Address, encodePacked, getContractAddress, type GetContractReturnType, keccak256 } from 'viem';
-import type { LensClient } from '@defi-notes/evm-lens/src/lens/LensClient.ts';
-import { safeCastToHex } from '@defi-notes/evm-lens/src/_common/type-utils.ts';
+import type { LensClient } from '@protocol-lens/evm-lens/src/lens/LensClient.ts';
+import { safeCastToHex } from '@protocol-lens/evm-lens/src/_common/type-utils.ts';
 
 export type UniswapV2Artifacts = {
   [K in keyof ArtifactMap as K extends `contracts/uniswap-v2/${string}` ? K : never]: ArtifactMap[K];

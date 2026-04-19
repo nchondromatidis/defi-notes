@@ -1,5 +1,5 @@
 {
-  "name": "@defi-notes/evm-lens-indexer",
+  "name": "@protocol-lens/evm-lens-indexer",
   "version": "1.0.0",
   "description": "Augments hardhat artifacts with build info data",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@defi-notes/config": "workspace:*",
+    "@protocol-lens/config": "workspace:*",
     "@eslint/js": "catalog:",
     "@types/debug": "catalog:",
     "@types/node": "catalog:",

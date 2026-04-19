@@ -1,5 +1,5 @@
 {
-  "extends": "@defi-notes/config/tsconfig.node.json",
+  "extends": "@protocol-lens/config/tsconfig.node.json",
   "include": ["src/**/*"],
   "exclude": ["node_modules", "lib", "contracts", "artifacts/build-info", "dist"]
 }

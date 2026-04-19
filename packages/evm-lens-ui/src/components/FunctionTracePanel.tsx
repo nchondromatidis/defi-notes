@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
+import type { ReadOnlyFunctionCallEvent } from '@protocol-lens/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
 import { MaterialIcon } from './lib/MaterialIcon.tsx';
 import { TraceNode } from './TraceNode.tsx';
 import { getAllPaths } from './lib/trace-utils.ts';

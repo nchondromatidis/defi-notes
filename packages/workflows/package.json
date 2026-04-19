@@ -1,5 +1,5 @@
 {
-  "name": "@defi-notes/workflows",
+  "name": "@protocol-lens/workflows",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -17,8 +17,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@defi-notes/evm-lens": "workspace:*",
-    "@defi-notes/evm-lens-ui": "workspace:*",
+    "@protocol-lens/evm-lens": "workspace:*",
+    "@protocol-lens/evm-lens-ui": "workspace:*",
     "@radix-ui/react-tooltip": "catalog:",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
@@ -29,8 +29,8 @@
     "viem": "catalog:"
   },
   "devDependencies": {
-    "@defi-notes/config": "workspace:*",
-    "@defi-notes/protocols": "workspace:*",
+    "@protocol-lens/config": "workspace:*",
+    "@protocol-lens/protocols": "workspace:*",
     "@tailwindcss/vite": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",

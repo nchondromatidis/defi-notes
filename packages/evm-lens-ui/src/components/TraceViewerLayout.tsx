@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import { PanelGroup, Panel, PanelResizeHandle, type Layout } from './lib/resizable.ts';
-import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
+import type { ReadOnlyFunctionCallEvent } from '@protocol-lens/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
 import { FunctionTracePanel } from './FunctionTracePanel.tsx';
 import { SourceCodeTabs } from './SourceCodeTabs.tsx';
 import { ProjectExplorer } from './ProjectExplorer.tsx';

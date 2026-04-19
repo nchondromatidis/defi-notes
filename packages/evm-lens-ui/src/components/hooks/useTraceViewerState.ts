@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
-import type { IResourceLoader } from '@defi-notes/evm-lens/src/lens/_ports/IResourceLoader.ts';
-import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
-import { getSourceContractFqQN } from '@defi-notes/evm-lens/src/client-utils/names.ts';
+import type { IResourceLoader } from '@protocol-lens/evm-lens/src/lens/_ports/IResourceLoader.ts';
+import type { ReadOnlyFunctionCallEvent } from '@protocol-lens/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
+import { getSourceContractFqQN } from '@protocol-lens/evm-lens/src/client-utils/names.ts';
 
 export type TraceViewerState = {
   sourceCode: string | undefined;

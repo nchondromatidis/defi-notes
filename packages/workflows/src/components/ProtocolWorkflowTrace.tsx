@@ -1,4 +1,4 @@
-import { TraceViewerClient } from '@defi-notes/evm-lens-ui/components/TraceViewerClient';
+import { TraceViewerClient } from '@protocol-lens/evm-lens-ui/components/TraceViewerClient';
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
 import { Dialog, DialogClose, DialogContent, DialogTitle } from './ui/dialog';
@@ -11,7 +11,7 @@ import {
   type MethodArgs,
   type WorkflowNames,
 } from '../protocols/run-workflow.ts';
-import type { TraceResult } from '@defi-notes/evm-lens-ui/types/TraceResult';
+import type { TraceResult } from '@protocol-lens/evm-lens-ui/types/TraceResult';
 
 const getResourcesBaseUrl = (): string => {
   if (typeof window === 'undefined') {

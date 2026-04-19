@@ -1,5 +1,5 @@
 {
-  "name": "@defi-notes/evm-lens",
+  "name": "@protocol-lens/evm-lens",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -23,9 +23,9 @@
     "viem": "catalog:"
   },
   "devDependencies": {
-    "@defi-notes/config": "workspace:*",
-    "@defi-notes/evm-lens-indexer": "workspace:*",
-    "@defi-notes/protocols": "workspace:*",
+    "@protocol-lens/config": "workspace:*",
+    "@protocol-lens/evm-lens-indexer": "workspace:*",
+    "@protocol-lens/protocols": "workspace:*",
     "@eslint/js": "catalog:",
     "@types/debug": "catalog:",
     "@types/node": "catalog:",

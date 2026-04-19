@@ -1,5 +1,5 @@
 {
-  "name": "@defi-notes/evm-lens-ui",
+  "name": "@protocol-lens/evm-lens-ui",
   "private": false,
   "version": "0.0.0",
   "type": "module",
@@ -30,7 +30,7 @@
   "dependencies": {
     "@codemirror/state": "^6.6.0",
     "@codemirror/view": "^6.41.0",
-    "@defi-notes/evm-lens": "workspace:*",
+    "@protocol-lens/evm-lens": "workspace:*",
     "@headless-tree/core": "^1.6.3",
     "@headless-tree/react": "^1.6.3",
     "@replit/codemirror-lang-solidity": "^6.0.2",
@@ -42,8 +42,8 @@
     "tailwindcss": "catalog:"
   },
   "devDependencies": {
-    "@defi-notes/config": "workspace:*",
-    "@defi-notes/workflows": "workspace:*",
+    "@protocol-lens/config": "workspace:*",
+    "@protocol-lens/workflows": "workspace:*",
     "@eslint/js": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",

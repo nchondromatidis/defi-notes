@@ -1,4 +1,4 @@
-# Makefile for @defi-notes/protocols
+# Makefile for @protocol-lens/protocols
 
 contracts-clean:
 	@echo "cleaning contracts directory..."

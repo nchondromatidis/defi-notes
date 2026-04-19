@@ -1,8 +1,8 @@
-import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
-import type { TraceResult } from '@defi-notes/evm-lens-ui/types/TraceResult';
-import type { LensClient } from '@defi-notes/evm-lens/src/lens/LensClient.ts';
-import type { IResourceLoader } from '@defi-notes/evm-lens/src/lens/_ports/IResourceLoader.ts';
-import { buildCallTracer } from '@defi-notes/evm-lens/src/lens';
+import type { ReadOnlyFunctionCallEvent } from '@protocol-lens/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
+import type { TraceResult } from '@protocol-lens/evm-lens-ui/types/TraceResult';
+import type { LensClient } from '@protocol-lens/evm-lens/src/lens/LensClient.ts';
+import type { IResourceLoader } from '@protocol-lens/evm-lens/src/lens/_ports/IResourceLoader.ts';
+import { buildCallTracer } from '@protocol-lens/evm-lens/src/lens';
 import { _1e18 } from './_constants.ts';
 import type { Account } from 'viem';
 

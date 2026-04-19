@@ -1,4 +1,4 @@
 {
-  "extends": "@defi-notes/config/tsconfig.node.json",
+  "extends": "@protocol-lens/config/tsconfig.node.json",
   "include": ["test/**/*", "./vitest.config.js", "eslint.config.js", "prettier.config.js", "hardhat.config.ts"]
 }

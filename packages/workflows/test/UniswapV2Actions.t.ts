@@ -1,8 +1,8 @@
 import { test, beforeEach, describe } from 'vitest';
 import { UniswapV2Workflows } from '../src/protocols/workflows/UniswapV2Workflows.ts';
-import { HardhatEvmLensFileRL } from '@defi-notes/evm-lens/test/_setup/HardhatEvmLensFileRL.ts';
+import { HardhatEvmLensFileRL } from '@protocol-lens/evm-lens/test/_setup/HardhatEvmLensFileRL.ts';
 import path from 'node:path';
-import { inspect, printFunctionHierarchy } from '@defi-notes/evm-lens/test/_setup/utils/inspect.ts';
+import { inspect, printFunctionHierarchy } from '@protocol-lens/evm-lens/test/_setup/utils/inspect.ts';
 
 export const PROTOCOLS_RESOURCES_PATH = path.join(__dirname, '..', '..', '..', 'packages', 'protocols');
 

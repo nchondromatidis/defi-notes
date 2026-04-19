@@ -1,7 +1,7 @@
-import { HardhatEvmLensHttpRL } from '@defi-notes/evm-lens/src/adapters/resource-loader/HardhatEvmLensHttpRL.ts';
+import { HardhatEvmLensHttpRL } from '@protocol-lens/evm-lens/src/adapters/resource-loader/HardhatEvmLensHttpRL.ts';
 
 import type { TraceResult } from '../../src/types/TraceResult.ts';
-import { UniswapV2Workflows } from '@defi-notes/workflows/protocols/workflows/UniswapV2Workflows';
+import { UniswapV2Workflows } from '@protocol-lens/workflows/protocols/workflows/UniswapV2Workflows';
 
 export async function createPair(): Promise<TraceResult> {
   try {

@@ -1,5 +1,5 @@
 {
-  "name": "@defi-notes/protocols",
+  "name": "@protocol-lens/protocols",
   "version": "1.0.0",
   "type": "module",
   "exports": {
@@ -16,8 +16,8 @@
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
-    "@defi-notes/config": "workspace:*",
-    "@defi-notes/evm-lens-indexer": "workspace:*",
+    "@protocol-lens/config": "workspace:*",
+    "@protocol-lens/evm-lens-indexer": "workspace:*",
     "@eslint/js": "catalog:",
     "@types/node": "catalog:",
     "eslint": "catalog:",

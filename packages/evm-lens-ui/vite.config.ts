@@ -47,7 +47,7 @@ export default defineConfig(({ command }) => ({
     emptyOutDir: true,
     lib: {
       entry: 'src/index.ts',
-      name: '@defi-notes/evm-lens-ui',
+      name: '@protocol-lens/evm-lens-ui',
       fileName: 'index',
       formats: ['es'], // ESM only
     },

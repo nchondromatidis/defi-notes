@@ -1,5 +1,5 @@
 import type { HardhatUserConfig } from 'hardhat/config';
-import augmentArtifacts from '@defi-notes/evm-lens-indexer';
+import augmentArtifacts from '@protocol-lens/evm-lens-indexer';
 
 const compilerVersions = [
   { v: '0.4.26', opt: true },

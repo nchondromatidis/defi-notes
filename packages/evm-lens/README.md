@@ -32,7 +32,7 @@ evm-lens requires pre-built indexes from [`evm-lens-indexer`](../evm-lens-indexe
 ## Usage
 
 ```typescript
-import { buildCallTracer } from '@defi-notes/evm-lens';
+import { buildCallTracer } from '@protocol-lens/evm-lens';
 import { privateKeyToAccount } from 'viem/accounts';
 
 // 1. Build the call tracer

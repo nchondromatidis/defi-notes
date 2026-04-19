@@ -1,5 +1,5 @@
 import { defineProject, mergeConfig } from 'vitest/config';
-import configShared from '@defi-notes/config/vitest.config.js';
+import configShared from '@protocol-lens/config/vitest.config.js';
 import path from 'node:path';
 
 export default mergeConfig(

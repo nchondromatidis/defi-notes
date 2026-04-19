@@ -1,6 +1,6 @@
 import { UniswapV2Workflows } from './workflows/UniswapV2Workflows.ts';
-import { HardhatEvmLensHttpRL } from '@defi-notes/evm-lens/src/adapters/resource-loader/HardhatEvmLensHttpRL.ts';
-import type { ReadOnlyFunctionCallEvent } from '@defi-notes/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
+import { HardhatEvmLensHttpRL } from '@protocol-lens/evm-lens/src/adapters/resource-loader/HardhatEvmLensHttpRL.ts';
+import type { ReadOnlyFunctionCallEvent } from '@protocol-lens/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
 
 export type ProtocolWorkflowsRegistryType = {
   uniswapV2: UniswapV2Workflows;

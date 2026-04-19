@@ -2,7 +2,7 @@ import React from 'react';
 import type {
   ReadOnlyFunctionCallEvent,
   LensLog,
-} from '@defi-notes/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
+} from '@protocol-lens/evm-lens/src/lens/pipeline/4_function-trace/FunctionTraceBuilder.ts';
 import { formatArgs, formatLogs, formatValue, type FormattedLog } from './lib/trace-utils.ts';
 import { useCopyFeedback } from './lib/useCopyFeedback.ts';
 import { cn } from './lib/utils.ts';
