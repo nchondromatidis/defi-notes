@@ -1,14 +1,13 @@
-<img src="artwork.png" width="100%" alt="Protocol Lens Artwork" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".images/logo-dark.png" />
+  <img alt="Logo" src=".images/logo-light.png" />
+</picture>
 
 ---
 
-<h1 align="center">Protocol Lens</h1>
-
-<p align="center">
-    <b>A platform for analyzing EVM DeFi protocols written in Solidity.</b>
-    </br>
-    <b>Protocol interaction call traces, source code, whitepaper concepts. </b>
-</p>
+<div align="center">
+    <b>DeFi concepts, workflows, traces, and source analysis.</b>
+</div>
 
 ---
 
