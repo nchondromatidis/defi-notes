@@ -21,15 +21,20 @@ It combines `classic docs` with `dynamic tx analysis in-browser`.
 
 ### Protocol Analysis Structure
 
-- DeFi protocols are analyzed `per workflow`
-  - For each workflow the analysis consists of
-    - Whitepaper concepts (contains math)
-    - Interactive charts to reinforce concepts
-    - Source code analysis, matching concepts with implementation
-    - Lightweight editor that contains (tenderly style)
-      - Function Trace of the specific workflow 
-      - Protocol source code view
-      - Protocol file navigation
+DeFi protocols are analyzed **per workflow**.
+
+For each workflow, the analysis includes:
+
+- **Whitepaper concepts** with supporting mathematical context
+- **Interactive charts** to reinforce core ideas
+- **Source code analysis** that connects concepts to implementation
+- A **lightweight editor** contaning:
+    - **Function Trace**\* for the selected workflow
+    - Protocol **source code** view
+    - Protocol **file navigation**
+
+
+<small> * Function traces are only supported in Solidity </small>
 
 
 ### Protocol Analysis Structure Diagram
