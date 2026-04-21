@@ -5,10 +5,28 @@
     <style>
         :root {
             color-scheme: light;
+            --icon-ink: #1e1e1e;
+            --icon-ink-muted: #6b7280;
+            --icon-ink-faint: #d4d4d8;
+            --icon-accent: #005ecb;
+            --icon-success: #16a34a;
+            --icon-warning: #d97706;
+            --icon-error: #dc2626;
+            --icon-surface: #e9ecef;
+            --icon-surface-accent: #005ecb1a;
         }
 
         :root.dark {
             color-scheme: dark;
+            --icon-ink: #d4d4d8;
+            --icon-ink-muted: #9ca3af;
+            --icon-ink-faint: #374151;
+            --icon-accent: #5599ff;
+            --icon-success: #4ade80;
+            --icon-warning: #fbbf24;
+            --icon-error: #f87171;
+            --icon-surface: #2a2a2e;
+            --icon-surface-accent: #5599ff1a;
         }
 
         body {
@@ -49,7 +67,7 @@
             z-index: 1;
         }
 
-        img {
+        .svg-container svg {
             max-width: 100%;
             height: auto;
         }
@@ -57,13 +75,20 @@
 </head>
 <body>
     <button onclick="toggle()">Toggle Dark/Light</button>
-    <img src="logo.svg"/>
-    <img src="structure.svg"/>
-    <img src="architecture.svg"/>
+    <div class="svg-container" data-src="logo.svg"></div>
+    <div class="svg-container" data-src="structure.svg"></div>
+    <div class="svg-container" data-src="architecture.svg"></div>
     <script>
       function toggle() {
         document.documentElement.classList.toggle('dark');
       }
+
+      document.querySelectorAll('.svg-container').forEach(async container => {
+        const src = container.dataset.src;
+        const res = await fetch(src);
+        const text = await res.text();
+        container.innerHTML = text;
+      });
     </script>
 </body>
 </html>

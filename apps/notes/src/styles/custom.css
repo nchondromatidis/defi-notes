@@ -5,6 +5,9 @@
         --sl-nav-pad-x: 1.5rem;
         --sidebar-margin-left: 0rem;
 
+        --icon-ink: #1e1e1e;
+        --icon-surface: #e9ecef;
+
         .right-sidebar-container {
             display: flex;
             justify-content: flex-end;
@@ -16,6 +19,18 @@
             padding-right: 0;
         }
 
+    }
+
+    [data-theme='dark'] {
+        --icon-ink: #d4d4d8;
+        --icon-surface: #2a2a2e;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme]) {
+            --icon-ink: #d4d4d8;
+            --icon-surface: #2a2a2e;
+        }
     }
 
     .codeBlock {
