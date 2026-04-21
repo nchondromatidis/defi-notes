@@ -1,10 +1,7 @@
-<div style="display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 48px;">
-  <img src="apps/notes/src/assets/logo.svg" alt="Protocol Lens" style="width: 160px; height: 160px;" />
-  <span style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;">
-    PROTOCOL LENS
-  </span>
-</div>
-
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".images/logo-dark.png" />
+  <img alt="Logo" src=".images/logo-light.png" />
+</picture>
 
 ---
 
