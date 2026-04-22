@@ -62,7 +62,7 @@ Let's see how it achieves those defenses
   lang="solidity"
 />
 
-### Update per block
+#### Behavior
 
 - Every time an interaction (mint, swap, burn) occurs `_update()` is called
 - Contract updates its internal accumulator on the first interaction in block $N+1$
@@ -70,9 +70,33 @@ Let's see how it achieves those defenses
   - price is added into the oracle accumulator in block $N+1$ based on reserves on block $N$
   - `block.timestamp` increases when block increases
   - it updates its price only when `block.timestamp` increases
-  - blockTimestamp stores a cropped version of `block.timestamp` (uint256), truncated to uint32 for storage packing efficiency.
-    - $2^{32} = 4,294,967,296$ seconds after the Unix epoch (January 1, 1970)
-    - $4,294,967,296$ seconds after epoch = February 7, 2106, at 06:28:16 UTC
+
+
+#### Timestamp
+
+- `blockTimestamp` stores a cropped version of `block.timestamp` (uint256),
+  - It is truncated to uint32 for storage packing efficiency
+  - $2^{32} = 4,294,967,296$ seconds after the Unix epoch (January 1, 1970)
+  - $4,294,967,296$ seconds after epoch = February 7, 2106, at 06:28:16 UTC
+
+
+Eventually, a newer timestamp will be numerically smaller than an older one after wraparound.
+  - This code was written for Solidity 0.5.16, where unsigned arithmetic naturally wrapped instead of reverting on overflow.
+  - Interval between the two observations must be less than $2^{32}$ seconds for calculation to work (almost sure)
+  - Because subtractions wrap to zero after max int, it returns the correct number of elapsed seconds
+
+
+> Uniswap’s oracle logic only cares about differences between observations, that is why this calculation works.
+
+**Example**
+
+$blockTimestamp_1 = 2^{32} - 5$
+
+$blockTimestamp_2 = 3 $
+
+$Δt = 3− (2^{32}−5) = 8$
+
+
 
 ### TWAP
 
@@ -119,13 +143,15 @@ $T_i$ is a **duration** from **block N** to **the first interaction from block N
 Retrieving TWAP for block M formula:
 
 <div className="codeBlock">
-$N$ = prior block, $M$ = target block
+  $N$ = prior block, $M$ = target block
 
-$\Delta\text{price0Cumulative} = \text{price0CumulativeLast}_M - \text{price0CumulativeLast}_N$
+  $\Delta\text{price0Cumulative} = \text{price0CumulativeLast}_M - \text{price0CumulativeLast}_N$
 
-$\text{timeElapsed} = (\text{blockTimestampLast}_M \mod 2^{32}) - (\text{blockTimestampLast}_N \mod 2^{32})$
+  $\text{timeElapsed} = (\text{blockTimestampLast}_M \mod 2^{32}) - (\text{blockTimestampLast}_N \mod 2^{32})$
 
-$\text{TWAP}_0 = \frac{\Delta\text{price0Cumulative}}{\text{timeElapsed}} \times 2^{112}$
+  $\text{TWAP}_0^{Q112x112} = \frac{\Delta\text{price0Cumulative}}{\text{timeElapsed}}$
+
+  $\text{TWAP}_0^{decimal} = \frac{\text{TWAP}_0^{Q112x112}}{2^{112}}$
 
 </div>
 Notes:
