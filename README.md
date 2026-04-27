@@ -31,14 +31,7 @@ For each workflow, the analysis includes:
     - Protocol **source code** view
     - Protocol **file navigation**
 
-
 <small> * Function traces are only supported in Solidity </small>
-
-
-### Protocol Analysis Structure Diagram
-In the diagram below you can see each workflow's analysis structure
-
-<img src="apps/notes/src/assets/structure.svg" alt="analysis structure" style="max-width: 100%; width: 400px;">
 
 ## About the function trace
 - Protocol is **deployed** in a test Ethereum node running **in-browser** using compilation artifacts
@@ -52,6 +45,3 @@ In the diagram below you can see each workflow's analysis structure
 | `evm-lens-indexer` | Hardhat plugin for building trace indexes        |
 | `evm-lens`         | EVM transaction call tracer (browser-native)     |
 | `evm-lens-ui`      | React UI components for call trace visualization |
-
-### Architecture
-<img src="apps/notes/src/assets/architecture.svg" alt="analysis structure" style="max-width: 100%; width: 1200px;">
