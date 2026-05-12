@@ -7,7 +7,7 @@
     "check:types": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest"
   },
   "exports": {
     "./components/*": "./src/components/*.tsx",

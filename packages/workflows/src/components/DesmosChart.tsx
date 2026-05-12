@@ -67,7 +67,7 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<'dark' | 'light'>(getCurrentTheme);
 
   const mainContainerRef = useRef<HTMLDivElement>(null);
   const modalContainerRef = useRef<HTMLDivElement>(null);
@@ -152,9 +152,6 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
 
   // Watch for theme changes
   useEffect(() => {
-    // Set initial theme
-    setTheme(getCurrentTheme());
-
     // Create observer to watch for theme attribute changes
     observerRef.current = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
