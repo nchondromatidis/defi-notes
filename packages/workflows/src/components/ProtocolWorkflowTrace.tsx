@@ -1,5 +1,5 @@
 import { TraceViewerClient } from '@protocol-lens/evm-lens-ui/components/TraceViewerClient';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
 import { Dialog, DialogClose, DialogContent, DialogTitle } from './ui/dialog';
 import { X } from 'lucide-react';
@@ -12,6 +12,26 @@ import {
   type WorkflowNames,
 } from '../protocols/run-workflow.ts';
 import type { TraceResult } from '@protocol-lens/evm-lens-ui/types/TraceResult';
+
+const WORKFLOW_ID_PARAM = 'workflowId';
+
+function getWorkflowIdFromUrl(): string | null {
+  return new URLSearchParams(window.location.search).get(WORKFLOW_ID_PARAM);
+}
+
+function setWorkflowIdInUrl(workflowId: string): void {
+  const url = new URL(window.location.href);
+  if (url.searchParams.get(WORKFLOW_ID_PARAM) === workflowId) return;
+  url.searchParams.set(WORKFLOW_ID_PARAM, workflowId);
+  window.history.pushState({}, '', url.pathname + url.search + url.hash);
+}
+
+function removeWorkflowIdFromUrl(): void {
+  const url = new URL(window.location.href);
+  if (!url.searchParams.has(WORKFLOW_ID_PARAM)) return;
+  url.searchParams.delete(WORKFLOW_ID_PARAM);
+  window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+}
 
 const getResourcesBaseUrl = (): string => {
   if (typeof window === 'undefined') {
@@ -42,12 +62,38 @@ export const ProtocolWorkflowTrace: React.FC<ProtocolActionProps<ProtocolWorkflo
   infoMessages = [],
   warnMessages = [],
 }) => {
+  const workflowId = `${String(protocol)}-${String(workflow)}`;
+
   const [traceResult, setTraceResult] = useState<TraceResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return getWorkflowIdFromUrl() === workflowId;
+  });
 
   const dialogRef = useRef<HTMLDivElement>(null);
+
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      if (open) {
+        setWorkflowIdInUrl(workflowId);
+      } else {
+        removeWorkflowIdFromUrl();
+      }
+      setIsOpen(open);
+    },
+    [workflowId]
+  );
+
+  useEffect(() => {
+    const onPopState = () => {
+      const urlId = getWorkflowIdFromUrl();
+      setIsOpen(urlId === workflowId);
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, [workflowId]);
 
   useEffect(() => {
     const fetchTrace = async () => {
@@ -92,10 +138,10 @@ export const ProtocolWorkflowTrace: React.FC<ProtocolActionProps<ProtocolWorkflo
         infoMessages={infoMessages}
         warnMessages={warnMessages}
         disabled={!traceResult || loading || !!error}
-        onStartTrace={() => setIsOpen(true)}
+        onStartTrace={() => handleOpenChange(true)}
       />
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={isOpen} onOpenChange={handleOpenChange}>
         <DialogContent
           showCloseButton={false}
           className="border-none rounded-none max-w-[95vw] sm:max-w-[95vw] max-h-[95vh] w-[95vw] h-[95vh] p-0 gap-0"
