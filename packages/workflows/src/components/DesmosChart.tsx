@@ -64,7 +64,16 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
   width = '100%',
   invertedColors: invertedColorsProp,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return new URLSearchParams(window.location.search).get('chartId') === graphId;
+  });
+
+  useEffect(() => {
+    if (isOpen) {
+      document.getElementById('chart')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, []);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [theme, setTheme] = useState<'dark' | 'light'>(getCurrentTheme);
@@ -75,6 +84,22 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
   const modalCalculatorRef = useRef<DesmosCalculator | null>(null);
   const graphStateRef = useRef<unknown>(null);
   const observerRef = useRef<MutationObserver | null>(null);
+
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      setIsOpen(open);
+      const url = new URL(window.location.href);
+      if (open) {
+        url.searchParams.set('chartId', graphId);
+        url.hash = 'chart';
+        window.history.pushState(null, '', url.pathname + url.search + url.hash);
+      } else {
+        url.searchParams.delete('chartId');
+        window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+      }
+    },
+    [graphId]
+  );
 
   // Determine invertedColors based on prop or theme
   const invertedColors = invertedColorsProp ?? getInvertedColorsFromTheme(theme);
@@ -172,6 +197,21 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
     };
   }, []);
 
+  // Sync isOpen with URL changes (browser back/forward)
+  useEffect(() => {
+    const onUrlChange = () => {
+      const open = new URLSearchParams(window.location.search).get('chartId') === graphId;
+      setIsOpen(open);
+      if (open) {
+        document.getElementById('chart')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+    window.addEventListener('popstate', onUrlChange);
+    return () => {
+      window.removeEventListener('popstate', onUrlChange);
+    };
+  }, [graphId]);
+
   // Update calculator colors when theme changes
   useEffect(() => {
     if (!mainCalculatorRef.current) return;
@@ -255,7 +295,7 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
             variant="secondary"
             size="icon-sm"
             className="absolute top-0 right-4 z-50"
-            onClick={() => setIsOpen(true)}
+            onClick={() => handleOpenChange(true)}
             aria-label="Expand chart"
           >
             <Maximize2 />
@@ -263,7 +303,7 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
         )}
       </div>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={isOpen} onOpenChange={handleOpenChange}>
         <DialogContent
           showCloseButton={false}
           className="border-none rounded-none max-w-[95vw] sm:max-w-[95vw] max-h-[95vh] w-[95vw] h-[95vh] p-0 gap-0"
