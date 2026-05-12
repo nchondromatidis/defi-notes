@@ -106,6 +106,7 @@ Fixed-point numbers store a scaled integer, if the real value is $x$, the stored
 <div className="text-center">$X = x \cdot SCALE$</div>
 
 Common rules:
+
 - Add/subtract: both values must use the same `SCALE`
 - Multiply: `result = (a * b) / SCALE`
 - Divide: `result = (a * SCALE) / b`
@@ -121,6 +122,7 @@ Some expose plain helpers, while others add stronger typed wrappers; PRBMath, fo
 Signed fixed-point values depend on the representation of the underlying stored integer, not on whether the scale is decimal or binary.
 
 Common signed encodings include:
+
 - **Two’s complement:** the most significant bit participates in the sign encoding; this is the standard modern representation.
 - **One’s complement:** negative values are formed by inverting all bits of the positive value; it has both $+0$ and $-0$.
 - **Sign-magnitude:** the most significant bit is an explicit sign bit, and the remaining bits store the magnitude; it also has both $+0$ and $-0$.
@@ -130,12 +132,13 @@ For **Unsigned storage** there is no sign encoding, so negative values are not r
 ### Ranges
 
 If an $N$-bit stored integer
-  - signed, that use two’s complement,
-    - its integer range is $-2^{N-1}$ to $2^{N-1}-1$.
-    - its fixed points range is $\left[\frac{-2^{N-1}}{\text{scale}},\ \frac{2^{N-1}-1}{\text{scale}}\right]$
-  - unsinged
-    - its integer range is $0 \text{ to } 2^N - 1$
-    - its fixed points range is $0 \text{ to } \frac{2^N - 1}{scale}$
+
+- signed, that use two’s complement,
+  - its integer range is $-2^{N-1}$ to $2^{N-1}-1$.
+  - its fixed points range is $\left[\frac{-2^{N-1}}{\text{scale}},\ \frac{2^{N-1}-1}{\text{scale}}\right]$
+- unsinged
+  - its integer range is $0 \text{ to } 2^N - 1$
+  - its fixed points range is $0 \text{ to } \frac{2^N - 1}{scale}$
 
 ## Decimal fixed-point numbers
 
@@ -348,10 +351,10 @@ Q4.4
 
 | ◄──────── Integer ────────►| ◄─────── Fractional ──────► |
 
-| Bit    | b7 | b6 | b5 | b4 | b3  | b2   | b1    | b0     |
-|--------|----|----|----|----|-----|------|-------|--------|
-| Weight | -8 | 4  | 2  | 1  | 0.5 | 0.25 | 0.125 | 0.0625 |
-| Stored | 0  | 1  | 1  | 0  | 1   | 0    | 0     | 0      |
+| Bit    | b7  | b6  | b5  | b4  | b3  | b2   | b1    | b0     |
+| ------ | --- | --- | --- | --- | --- | ---- | ----- | ------ |
+| Weight | -8  | 4   | 2   | 1   | 0.5 | 0.25 | 0.125 | 0.0625 |
+| Stored | 0   | 1   | 1   | 0   | 1   | 0    | 0     | 0      |
 
 The value is: 4 + 2 + 0.5 = 6.5
 
@@ -359,11 +362,10 @@ The value is: 4 + 2 + 0.5 = 6.5
 
 | ◄──────── Integer ────────►| ◄─────── Fractional ──────► |
 
-| Bit    | b7 | b6 | b5 | b4 | b3  | b2   | b1    | b0     |
-|--------|----|----|----|----|-----|------|-------|--------|
-| Weight | -8 | 4  | 2  | 1  | 0.5 | 0.25 | 0.125 | 0.0625 |
-| Stored | 1  | 0  | 0  | 1  | 1   | 0    | 0     | 0      |
-
+| Bit    | b7  | b6  | b5  | b4  | b3  | b2   | b1    | b0     |
+| ------ | --- | --- | --- | --- | --- | ---- | ----- | ------ |
+| Weight | -8  | 4   | 2   | 1   | 0.5 | 0.25 | 0.125 | 0.0625 |
+| Stored | 1   | 0   | 0   | 1   | 1   | 0    | 0     | 0      |
 
 The value is: -8 + 1 + 0.5 = -6.5
 

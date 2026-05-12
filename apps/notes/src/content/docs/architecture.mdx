@@ -9,19 +9,20 @@ import Architecture from '../../assets/architecture.svg';
 Below you will find an architectural overview of Protocol Lens.
 
 ## About the function trace
+
 - Protocol is **deployed** in a test Ethereum node running **in-browser** using compilation artifacts
 - Workflow **tx is committed** in the test Ethereum node
 - **Tx opcodes** are then **decoded** to a function trace **in-browser** using **pre-built indexes**
 
 ## Main Packages
+
 | Package            | Description                                      |
-|--------------------|--------------------------------------------------|
+| ------------------ | ------------------------------------------------ |
 | `notes`            | DeFi protocol analysis app (astro/starlight)     |
 | `evm-lens-indexer` | Hardhat plugin for building trace indexes        |
 | `evm-lens`         | EVM transaction call tracer (browser-native)     |
 | `evm-lens-ui`      | React UI components for call trace visualization |
 
 ## Architecture
-<Architecture style="max-width: 100%; width: 1200px;"/>
 
-
+<Architecture style="max-width: 100%; width: 1200px;" />
