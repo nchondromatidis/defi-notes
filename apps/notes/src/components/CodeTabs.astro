@@ -1,0 +1,29 @@
+---
+import { Tabs, TabItem, Code } from '@astrojs/starlight/components';
+import { extractProtocolWorkflowCode } from '@protocol-lens/workflows/protocols/extract-code/protocol-workflow';
+
+interface Props {
+  entries: Array<[className: string, methodName: string]>;
+  lang?: string;
+}
+
+const { entries, lang = 'ts' } = Astro.props;
+---
+
+<Tabs>
+  {entries.map(([className, methodName]) => {
+    const code = extractProtocolWorkflowCode([[className, methodName]]) ?? `// Could not extract code for ${className}.${methodName}`;
+    const lineCount = code ? code.split('\n').length : 0;
+    const collapseProp = lineCount > 4 ? `5-${lineCount}` : undefined;
+    return (
+      <TabItem label={`${className}.${methodName}`}>
+        <Code
+          code={code}
+          frame="code"
+          lang={lang}
+          {...(collapseProp ? { collapse: collapseProp } : {})}
+        />
+      </TabItem>
+    );
+  })}
+</Tabs>

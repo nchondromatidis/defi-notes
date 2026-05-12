@@ -10,6 +10,7 @@ import { ProtocolWorkflowTrace } from '@protocol-lens/workflows/components/Proto
 import { extractProtocolWorkflowCode } from '@protocol-lens/workflows/protocols/extract-code/protocol-workflow';
 import { extractProtocolCodeSlice } from '@protocol-lens/workflows/protocols/extract-code/protocol-sources';
 import { Code } from '@astrojs/starlight/components';
+import CodeTabs from '../../../../../components/CodeTabs.astro';
 import { uniswapV2ChartId } from '@constants/charts';
 
 This page covers the necessary concepts for the reader to understand the **initial liquidity flow in Uniswap V2**.
@@ -167,11 +168,11 @@ In this example we will set the initial erc20 token deposits.
 
 This is the code that runs to produce the function trace
 
-<Code
-  code={extractProtocolWorkflowCode([
+<CodeTabs
+  entries={[
     ['UniswapV2Workflows', 'initialLiquidity'],
     ['UniswapV2Workflows', '_addLiquidity'],
-  ])}
+  ]}
   lang="ts"
 />
 
