@@ -111,12 +111,7 @@ export const ProtocolWorkflowTrace: React.FC<ProtocolActionProps<ProtocolWorkflo
         >
           <DialogTitle className="sr-only">Trace Viewer - {header}</DialogTitle>
           <DialogClose asChild>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="absolute top-4 right-4 z-50 bg-background/80 backdrop-blur-sm opacity-70 hover:opacity-100 transition-opacity"
-              aria-label="Close"
-            >
+            <Button variant="ghost" size="icon-sm" className="absolute top-4 right-4 z-50" aria-label="Close">
               <X className="size-4" />
             </Button>
           </DialogClose>

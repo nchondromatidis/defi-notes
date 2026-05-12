@@ -252,13 +252,13 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
         <div ref={mainContainerRef} className="overflow-hidden w-full h-full not-content" />
         {!isLoading && !error && (
           <Button
-            variant="ghost"
+            variant="secondary"
             size="icon-sm"
-            className="absolute top-0 right-4 bg-background/80 backdrop-blur-sm opacity-70 hover:opacity-100 transition-opacity"
+            className="absolute top-0 right-4 z-50"
             onClick={() => setIsOpen(true)}
             aria-label="Expand chart"
           >
-            <Maximize2 className="size-4" />
+            <Maximize2 />
           </Button>
         )}
       </div>
@@ -270,13 +270,8 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
         >
           <DialogTitle className="sr-only">Desmos Graph {graphId}</DialogTitle>
           <DialogClose asChild>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="absolute top-2 right-12 z-50 bg-background/80 backdrop-blur-sm opacity-70 hover:opacity-100 transition-opacity"
-              aria-label="Close"
-            >
-              <X className="size-4" />
+            <Button variant="secondary" size="icon-sm" className="absolute top-2 right-12 z-50" aria-label="Close">
+              <X />
             </Button>
           </DialogClose>
           <div ref={modalContainerRef} className="w-full h-full " />
