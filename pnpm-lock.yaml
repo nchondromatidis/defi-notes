@@ -151,6 +151,9 @@ importers:
       clsx:
         specifier: 'catalog:'
         version: 2.1.1
+      expressive-code-fullscreen:
+        specifier: ^1.1.0
+        version: 1.1.0(@astrojs/starlight@0.38.3(astro@6.1.6(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.60.2)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3)))(@expressive-code/core@0.42.0)
       katex:
         specifier: ^0.16.45
         version: 0.16.45
@@ -4271,6 +4274,13 @@ packages:
   express@5.2.1:
     resolution: {integrity: sha512-hIS4idWWai69NezIdRt2xFVofaF4j+6INOpJlVOLDO8zXGpUVEVzIYk12UUi2JzjEzWL3IOAxcTubgz9Po0yXw==}
     engines: {node: '>= 18'}
+
+  expressive-code-fullscreen@1.1.0:
+    resolution: {integrity: sha512-+HwKJ/TFo4xWjqjm1hWnVjgOPZkTcXE23ufEbBR7a2yXjFvZg9+2RJeIHKyFjxPHVfI2kUYfQFbTI5ugpyFn/w==}
+    engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.34'
+      '@expressive-code/core': ^0.41.3
 
   expressive-code@0.41.7:
     resolution: {integrity: sha512-2wZjC8OQ3TaVEMcBtYY4Va3lo6J+Ai9jf3d4dbhURMJcU4Pbqe6EcHe424MIZI0VHUA1bR6xdpoHYi3yxokWqA==}
@@ -10509,7 +10519,7 @@ snapshots:
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 24.12.2
+      '@types/node': 25.6.0
 
   '@types/set-cookie-parser@2.4.10':
     dependencies:
@@ -11999,6 +12009,11 @@ snapshots:
       vary: 1.1.2
     transitivePeerDependencies:
       - supports-color
+
+  expressive-code-fullscreen@1.1.0(@astrojs/starlight@0.38.3(astro@6.1.6(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.60.2)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3)))(@expressive-code/core@0.42.0):
+    dependencies:
+      '@astrojs/starlight': 0.38.3(astro@6.1.6(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.60.2)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3))
+      '@expressive-code/core': 0.42.0
 
   expressive-code@0.41.7:
     dependencies:

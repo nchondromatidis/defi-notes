@@ -23,6 +23,7 @@
     "@protocol-lens/workflows": "workspace:*",
     "astro": "6.1.6",
     "clsx": "catalog:",
+    "expressive-code-fullscreen": "^1.1.0",
     "katex": "^0.16.45",
     "react": "catalog:",
     "react-dom": "catalog:",
