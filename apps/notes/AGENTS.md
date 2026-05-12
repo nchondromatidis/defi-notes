@@ -18,7 +18,7 @@ Astro Starlight
 ## What to run after each change
 
 - Auto-fix lint and format: `pnpm run lint:fix`
-- Check ts types: `pnpm run checktypes`
+- Check ts types: `pnpm run check:types"`
 - Do NOT build the project
 
 ## Extra instructions

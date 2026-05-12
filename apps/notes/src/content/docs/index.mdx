@@ -7,23 +7,45 @@ template: splash
 import Logo from '../../components/logo.astro';
 import { Card, CardGrid, LinkCard, LinkButton } from '@astrojs/starlight/components';
 
-<Logo />
+<div className="flex flex-col items-center">
+  <Logo />
+  <h3>A semantic bridge between protocol theory and runtime execution.</h3>
+</div>
 
-Protocol Lens is a DeFi analysis tool that bridges static protocol docs with real-time transaction data.
+<br />
 
 <CardGrid>
-  <Card title="Classic Docs" icon="open-book">
-    Whitepaper concepts, math, source code analysis
+  <Card title="Protocol Theory" icon="open-book">
+    Whitepaper concepts, math, architecture, invariants, critical source code analysis
   </Card>
-  <Card title="Dynamic Docs" icon="magnifier">
-    Live function traces, source code navigation, interactive charts
+  <Card title="Runtime Execution" icon="magnifier">
+    Live function traces, opcode decoding, interactive charts per concept
   </Card>
 </CardGrid>
+
+## Why
+
+> Understanding a DeFi protocol requires piecing together information spread across whitepaper, docs, source code, tests and runtime execution.
+
+> Protocol Lens connects all that into a unified analysis flow.
 
 <LinkButton href="/protocol-lens/how-to-read/">How to read</LinkButton>
 <LinkButton href="/protocol-lens/architecture/" variant="secondary">
   Architecture
 </LinkButton>
+
+## Getting started
+
+<style>{`th { font-weight: 400 !important; }`}</style>
+
+<div className="[&_td]:text-center [&_td:first-child]:text-left [&_th]:text-center">
+
+|                               | Whitepaper Concepts & Math                                                                                                                    | Interactive Chart                                                                                                                          | Source & Function Trace                                                                                                                             |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UniswapV2 / Swap              | <a href="/protocol-lens/exchanges/uniswap-v2/trading/swap/#concepts" target="_blank" rel="noopener noreferrer">↗</a>                          | <a href="/protocol-lens/exchanges/uniswap-v2/trading/swap/#chart" target="_blank" rel="noopener noreferrer">↗</a>                          | <a href="/protocol-lens/exchanges/uniswap-v2/trading/swap/#function-trace" target="_blank" rel="noopener noreferrer">↗</a>                          |
+| UniswapV2 / Initial Liquidity | <a href="/protocol-lens/exchanges/uniswap-v2/liquidity-provision/initial-liquidity/#concepts" target="_blank" rel="noopener noreferrer">↗</a> | <a href="/protocol-lens/exchanges/uniswap-v2/liquidity-provision/initial-liquidity/#chart" target="_blank" rel="noopener noreferrer">↗</a> | <a href="/protocol-lens/exchanges/uniswap-v2/liquidity-provision/initial-liquidity/#function-trace" target="_blank" rel="noopener noreferrer">↗</a> |
+
+</div>
 
 ## Fundamentals
 
