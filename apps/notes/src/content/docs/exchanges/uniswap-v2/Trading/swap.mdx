@@ -7,8 +7,8 @@ sidebar:
 import { Code } from '@astrojs/starlight/components';
 import { DesmosChart } from '@protocol-lens/workflows/components/DesmosChart';
 import { ProtocolWorkflowTrace } from '@protocol-lens/workflows/components/ProtocolWorkflowTrace';
-import { extractProtocolWorkflowCode } from '@protocol-lens/workflows/protocols/extract-code/protocol-workflow';
 import { extractProtocolCodeSlice } from '@protocol-lens/workflows/protocols/extract-code/protocol-sources';
+import CodeTabs from '../../../../../components/CodeTabs.astro';
 import { uniswapV2ChartId } from '@constants/charts';
 
 This page covers the necessary concepts to understand token **swap flow in Uniswap V2**.
@@ -275,11 +275,11 @@ That means:
 
 ## Function trace
 
-<Code
-  code={extractProtocolWorkflowCode([
+<CodeTabs
+  entries={[
     ['UniswapV2Workflows', 'swap'],
     ['UniswapV2Workflows', '_swap'],
-  ])}
+  ]}
   lang="ts"
 />
 
