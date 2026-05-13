@@ -306,7 +306,7 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
       <Dialog open={isOpen} onOpenChange={handleOpenChange}>
         <DialogContent
           showCloseButton={false}
-          className="border-none rounded-none max-w-[95vw] sm:max-w-[95vw] max-h-[95vh] w-[95vw] h-[95vh] p-0 gap-0"
+          className="border-none rounded-none max-w-[95vw] sm:max-w-[95vw] max-h-[95dvh] w-[95vw] h-[95dvh] p-0 gap-0"
         >
           <DialogTitle className="sr-only">Desmos Graph {graphId}</DialogTitle>
           <DialogClose asChild>
