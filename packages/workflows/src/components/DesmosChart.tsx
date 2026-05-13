@@ -46,6 +46,19 @@ const fetchGraphState = async (graphId: string): Promise<unknown> => {
   return data.state;
 };
 
+const waitForElement = (ref: React.RefObject<HTMLDivElement | null>): Promise<HTMLDivElement> => {
+  return new Promise((resolve) => {
+    const check = () => {
+      if (ref.current) {
+        resolve(ref.current);
+      } else {
+        requestAnimationFrame(check);
+      }
+    };
+    check();
+  });
+};
+
 // Get current theme from document
 const getCurrentTheme = (): 'dark' | 'light' => {
   if (typeof document === 'undefined') return 'dark';
@@ -73,9 +86,11 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
     if (isOpen) {
       document.getElementById('chart')?.scrollIntoView({ behavior: 'smooth' });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [modalError, setModalError] = useState<string | null>(null);
   const [theme, setTheme] = useState<'dark' | 'light'>(getCurrentTheme);
 
   const mainContainerRef = useRef<HTMLDivElement>(null);
@@ -84,6 +99,14 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
   const modalCalculatorRef = useRef<DesmosCalculator | null>(null);
   const graphStateRef = useRef<unknown>(null);
   const observerRef = useRef<MutationObserver | null>(null);
+  const desmosScriptPromiseRef = useRef<Promise<void> | null>(null);
+
+  const ensureDesmosLoaded = useCallback(() => {
+    if (!desmosScriptPromiseRef.current) {
+      desmosScriptPromiseRef.current = loadDesmosScript();
+    }
+    return desmosScriptPromiseRef.current;
+  }, []);
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
@@ -132,8 +155,8 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
         setIsLoading(true);
         setError(null);
 
-        // Load Desmos API
-        await loadDesmosScript();
+        // Load Desmos API (shared promise avoids race conditions)
+        await ensureDesmosLoaded();
 
         if (!isMounted || !mainContainerRef.current) return;
 
@@ -142,11 +165,6 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
         graphStateRef.current = state;
 
         if (!isMounted || !mainContainerRef.current) return;
-
-        // @ts-expect-error - Desmos is loaded globally
-        if (!window.Desmos) {
-          throw new Error('Desmos API not available');
-        }
 
         // Create calculator
         const calculator = createCalculator(mainContainerRef.current, false);
@@ -173,7 +191,7 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
         mainCalculatorRef.current = null;
       }
     };
-  }, [graphId, createCalculator]);
+  }, [graphId, createCalculator, ensureDesmosLoaded]);
 
   // Watch for theme changes
   useEffect(() => {
@@ -233,12 +251,15 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
     let isMounted = true;
 
     const initModalCalculator = async () => {
-      // Wait for the DOM to be ready
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      if (!isMounted || !modalContainerRef.current) return;
+      setModalError(null);
 
       try {
+        // Wait for the Desmos script (shared promise) and DOM element
+        await ensureDesmosLoaded();
+        const container = await waitForElement(modalContainerRef);
+
+        if (!isMounted) return;
+
         // Fetch graph state if not cached
         let state = graphStateRef.current;
         if (!state) {
@@ -246,22 +267,20 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
           graphStateRef.current = state;
         }
 
-        if (!isMounted || !modalContainerRef.current) return;
-
-        // @ts-expect-error - Desmos is loaded globally
-        if (!window.Desmos) {
-          throw new Error('Desmos API not available');
-        }
+        if (!isMounted) return;
 
         // Create calculator for modal
-        const calculator = createCalculator(modalContainerRef.current, true);
+        const calculator = createCalculator(container, true);
 
         // Set the state
         calculator.setState(state);
 
         modalCalculatorRef.current = calculator;
       } catch (err) {
-        console.error('Failed to initialize modal calculator:', err);
+        if (isMounted) {
+          setModalError(err instanceof Error ? err.message : 'Failed to load graph');
+          console.error('Failed to initialize modal calculator:', err);
+        }
       }
     };
 
@@ -274,7 +293,7 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
         modalCalculatorRef.current = null;
       }
     };
-  }, [isOpen, graphId, createCalculator]);
+  }, [isOpen, graphId, createCalculator, ensureDesmosLoaded]);
 
   return (
     <>
@@ -314,6 +333,11 @@ export const DesmosChart: React.FC<DesmosChartProps> = ({
               <X />
             </Button>
           </DialogClose>
+          {modalError && (
+            <div className="absolute inset-0 flex items-center justify-center bg-muted/20">
+              <div className="text-destructive text-sm text-center px-4">{modalError}</div>
+            </div>
+          )}
           <div ref={modalContainerRef} className="w-full h-full " />
         </DialogContent>
       </Dialog>
