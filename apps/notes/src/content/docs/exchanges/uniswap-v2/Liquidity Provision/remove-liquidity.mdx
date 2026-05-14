@@ -120,13 +120,17 @@ You can verify that the burn formula uses actual token balances (not just reserv
 
 ## Chart
 
+This is an interactive chart. Expand it. On the left sidebar you can see a list of folders.
+
+Each folder is a concept you can interact to understand visually.
+
+By expanding the folder, you can also see the formulas used to create the graph on the right.
+
 <DesmosChart graphId={uniswapV2ChartId} height="500px" client:load />
 
-## Function Trace
+## Function trace
 
-In this example we will remove liquidity from a pool.
-
-This is the code that runs to produce the function trace:
+This code commits a **remove liquidity** transaction in an EVM node running in-browser.
 
 <CodeTabs
   entries={[
@@ -135,6 +139,10 @@ This is the code that runs to produce the function trace:
   ]}
   lang="ts"
 />
+
+The function tracer decodes the committed transaction in-browser and shows every function executed.
+
+Open the trace. In the bottom panel select any function from the trace to navigate to the corresponding source code.
 
 <ProtocolWorkflowTrace
   protocol="uniswapV2"
