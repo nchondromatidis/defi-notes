@@ -7,20 +7,22 @@ import { serializeBigInt } from './lib/serialize-bigint.ts';
 
 type TraceViewerClient2Props = Readonly<{
   trace: TraceResult;
+  workflowName: string;
 }>;
 
 function isTraceResultError(result: TraceResult): result is TraceResultError {
   return 'error' in result;
 }
 
-export function TraceViewerClient({ trace }: TraceViewerClient2Props) {
+export function TraceViewerClient({ trace, workflowName }: TraceViewerClient2Props) {
   const isError = isTraceResultError(trace);
 
   const {
     resourceLoader,
     trace: functionTrace,
     contractFqnList,
-  } = isError ? { resourceLoader: null, trace: null, contractFqnList: [] } : trace;
+    txHash,
+  } = isError ? { resourceLoader: null, trace: null, contractFqnList: [], txHash: '' } : trace;
 
   const projectFiles = isError ? null : contractFQNListToProjectFiles(contractFqnList);
   const safeTrace = useMemo(() => serializeBigInt(functionTrace), [functionTrace]);
@@ -41,6 +43,8 @@ export function TraceViewerClient({ trace }: TraceViewerClient2Props) {
   return (
     <TraceViewerLayout
       functionTrace={safeTrace!}
+      workflowName={workflowName}
+      txHash={txHash}
       projectFiles={projectFiles!.items}
       rootItemId={projectFiles!.rootItemId}
       initialExpandedItems={projectFiles!.firstLevelFolderNames}

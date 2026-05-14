@@ -34,13 +34,13 @@ describe('create-functions', () => {
   });
 
   test('deployContract', async () => {
-    const functionTrace = await lensClient.contract(callerContract, 'deployContract', []);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'deployContract', []);
+    expect(trace).toMatchSnapshot();
   });
 
   test('create2Contract', async () => {
     const hex32Pattern = ('0x' + '11'.repeat(32)) as Hex;
-    const functionTrace = await lensClient.contract(callerContract, 'create2Contract', [hex32Pattern]);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'create2Contract', [hex32Pattern]);
+    expect(trace).toMatchSnapshot();
   });
 });

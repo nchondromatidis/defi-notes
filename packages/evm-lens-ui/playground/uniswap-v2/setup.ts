@@ -20,6 +20,7 @@ export async function createPair(): Promise<TraceResult> {
       resourceLoader,
       trace: result.trace,
       contractFqnList,
+      txHash: result.txHash,
     };
   } catch (err) {
     return { error: err instanceof Error ? err.message : 'Unknown error' };

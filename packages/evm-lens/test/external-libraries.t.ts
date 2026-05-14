@@ -52,17 +52,17 @@ describe('external-libraries', () => {
   });
 
   test('testExternalLibCall1', async () => {
-    const functionTrace = await lensClient.contract(callerContract, 'testExternalLibCall1', []);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'testExternalLibCall1', []);
+    expect(trace).toMatchSnapshot();
   });
 
   test('testExternalLibCall2', async () => {
-    const functionTrace = await lensClient.contract(callerContract, 'testExternalLibCall2', []);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'testExternalLibCall2', []);
+    expect(trace).toMatchSnapshot();
   });
 
   test('testExternalLibCall3', async () => {
-    const functionTrace = await lensClient.contract(callerContract, 'testExternalLibCall3', []);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'testExternalLibCall3', []);
+    expect(trace).toMatchSnapshot();
   });
 });

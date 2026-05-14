@@ -5,6 +5,7 @@ export type TraceResultSuccess = {
   resourceLoader: IResourceLoader;
   trace: ReadOnlyFunctionCallEvent;
   contractFqnList: string[];
+  txHash: string;
 };
 export type TraceResultError = {
   error: string;

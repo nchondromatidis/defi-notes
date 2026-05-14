@@ -101,8 +101,8 @@ export const ProtocolWorkflowTrace: React.FC<ProtocolActionProps<ProtocolWorkflo
         setLoading(true);
         setError(null);
         const registry = await getProtocolWorkflowsRegistry(getResourcesBaseUrl(), 'contracts');
-        const { trace } = await runWorkflow(registry, protocol, workflow, args);
-        const result = await registry[protocol].toTraceResult(trace);
+        const { trace, txHash } = await runWorkflow(registry, protocol, workflow, args);
+        const result = await registry[protocol].toTraceResult(trace, txHash);
         setTraceResult(result ?? null);
       } catch (err) {
         console.error('[ProtocolWorkflowTrace] Error:', err);
@@ -128,7 +128,7 @@ export const ProtocolWorkflowTrace: React.FC<ProtocolActionProps<ProtocolWorkflo
       return <div>No trace result available</div>;
     }
 
-    return <TraceViewerClient trace={traceResult} />;
+    return <TraceViewerClient trace={traceResult} workflowName={header} />;
   };
 
   return (

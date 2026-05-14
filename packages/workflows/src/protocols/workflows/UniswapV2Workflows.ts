@@ -73,7 +73,7 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
 
     const erc20TokenB = await this.deployErc20(USER_0.address, 1_000_000n * _1e18);
 
-    const trace = await this._addLiquidity(
+    const { trace, txHash } = await this._addLiquidity(
       erc20TokenA,
       erc20TokenB,
       amountADesired,
@@ -85,7 +85,7 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
       traceTx
     );
 
-    return { trace, erc20TokenA, erc20TokenB };
+    return { trace, txHash, erc20TokenA, erc20TokenB };
   }
 
   async addLiquidity({
@@ -101,7 +101,7 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
       amountBDesired: 400n * _1e18,
     });
 
-    const trace = await this._addLiquidity(
+    const { trace, txHash } = await this._addLiquidity(
       erc20TokenA,
       erc20TokenB,
       amountADesired,
@@ -112,7 +112,7 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
       this.maxUint256()
     );
 
-    return { trace, ercTokenA: erc20TokenA, ercTokenB: erc20TokenB };
+    return { trace, txHash, ercTokenA: erc20TokenA, ercTokenB: erc20TokenB };
   }
 
   async swap({ user = USER_1.address, amountIn = 50n * _1e18, amountOutMin = 50n * _1e18 } = {}) {
@@ -130,9 +130,17 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
     );
 
     const path: Address[] = [erc20TokenA.address, erc20TokenB.address];
-    const trace = await this._swap(erc20TokenA, amountIn, amountOutMin, path, user, this.maxUint256(), user);
+    const { trace, txHash } = await this._swap(
+      erc20TokenA,
+      amountIn,
+      amountOutMin,
+      path,
+      user,
+      this.maxUint256(),
+      user
+    );
 
-    return { trace, erc20TokenA, erc20TokenB };
+    return { trace, txHash, erc20TokenA, erc20TokenB };
   }
 
   async removeLiquidity({
@@ -157,7 +165,7 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
     const path: Address[] = [erc20TokenA.address, erc20TokenB.address];
     await this._swap(erc20TokenA, 50n * _1e18, 50n * _1e18, path, user, this.maxUint256(), user, false);
 
-    const trace = await this._removeLiquidity(
+    const { trace, txHash } = await this._removeLiquidity(
       erc20TokenA,
       erc20TokenB,
       liquidityToRemove,
@@ -167,7 +175,7 @@ export class UniswapV2Workflows extends ProtocolWorkflowsBase<UniswapV2Artifacts
       this.maxUint256()
     );
 
-    return { trace, erc20TokenA, erc20TokenB };
+    return { trace, txHash, erc20TokenA, erc20TokenB };
   }
 
   private async _addLiquidity(

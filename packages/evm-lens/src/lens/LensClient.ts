@@ -83,7 +83,7 @@ export class LensClient<
     from?: Address,
     value?: bigint,
     traceTx = true
-  ): Promise<ReadOnlyFunctionCallEvent | undefined> {
+  ): Promise<{ trace?: ReadOnlyFunctionCallEvent; txHash: Hex }> {
     if (traceTx) this.functionTracePipeline.reset();
     debug('Contract called', { functionName, traceTx });
     const contractTxResult = await tevmContract(this.client, {
@@ -114,7 +114,10 @@ export class LensClient<
       logger.error('TX Reverted', { errors: contractTxResult.errors });
     }
 
-    return traceTx ? await this.functionTracePipeline.flush() : undefined;
+    const txHash = contractTxResult.txHash ?? (('0x' + '0'.repeat(64)) as Hex);
+
+    const trace = traceTx ? await this.functionTracePipeline.flush() : undefined;
+    return { trace, txHash };
   }
 
   // helper functions

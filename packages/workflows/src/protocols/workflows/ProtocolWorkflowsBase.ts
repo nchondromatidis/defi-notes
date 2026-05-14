@@ -30,9 +30,9 @@ export abstract class ProtocolWorkflowsBase<T extends object> {
     return this.protocolsFqnListCache;
   }
 
-  async toTraceResult(trace: ReadOnlyFunctionCallEvent | undefined): Promise<TraceResult | undefined> {
+  async toTraceResult(trace: ReadOnlyFunctionCallEvent | undefined, txHash: string): Promise<TraceResult | undefined> {
     if (!trace) return undefined;
-    return { resourceLoader: this.resourceLoader, trace, contractFqnList: await this.getProjectFiles() };
+    return { resourceLoader: this.resourceLoader, trace, contractFqnList: await this.getProjectFiles(), txHash };
   }
 
   maxUint256() {

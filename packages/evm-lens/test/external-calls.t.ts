@@ -40,38 +40,35 @@ describe('external-calls', () => {
   });
 
   test('external call to public function', async () => {
-    const functionTrace = await lensClient.contract(callerContract, 'callPublicFunction', []);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'callPublicFunction', []);
+    expect(trace).toMatchSnapshot();
   });
 
   test('external call to external function', async () => {
-    const functionTrace = await lensClient.contract(callerContract, 'callExternalFunction', [
-      [1n, 2n, 3n],
-      ZERO_ADDRESS,
-    ]);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'callExternalFunction', [[1n, 2n, 3n], ZERO_ADDRESS]);
+    expect(trace).toMatchSnapshot();
   });
 
   test('external static call to public function', async () => {
-    const functionTrace = await lensClient.contract(callerContract, 'callStaticCallViewFunction', []);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'callStaticCallViewFunction', []);
+    expect(trace).toMatchSnapshot();
   });
 
   test('external call with unmatched selector, args, value', async () => {
     await lensClient.fundAccount(TEST_ACCOUNT.address, ETHER_1 * 2n);
-    const functionTrace = await lensClient.contract(callerContract, 'callWithFallback', ['0x20'], undefined, ETHER_1);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'callWithFallback', ['0x20'], undefined, ETHER_1);
+    expect(trace).toMatchSnapshot();
   });
 
   test('external call with unmatched selector, no args, value', async () => {
     await lensClient.fundAccount(TEST_ACCOUNT.address, ETHER_1 * 2n);
-    const functionTrace = await lensClient.contract(callerContract, 'callReceiveFunction', [], undefined, ETHER_1);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'callReceiveFunction', [], undefined, ETHER_1);
+    expect(trace).toMatchSnapshot();
   });
 
   test('external call with revert', async () => {
-    const functionTrace = await lensClient.contract(callerContract, 'callRevert', []);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'callRevert', []);
+    expect(trace).toMatchSnapshot();
   });
 
   test('revert restores balances after state changes', async () => {

@@ -36,23 +36,23 @@ describe('internal-calls', () => {
   });
 
   test('publicFunction', async () => {
-    const functionTrace = await lensClient.contract(callerContract, 'publicFunction', [2n]);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'publicFunction', [2n]);
+    expect(trace).toMatchSnapshot();
   });
 
   test('mixedCall', async () => {
-    const functionTrace = await lensClient.contract(callerContract, 'mixedCall', [2n]);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'mixedCall', [2n]);
+    expect(trace).toMatchSnapshot();
   });
 
   test('callAnotherContract', async () => {
-    const functionTrace = await lensClient.contract(callerContract, 'callAnotherContract', []);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'callAnotherContract', []);
+    expect(trace).toMatchSnapshot();
   });
 
   test('test function fallback', async () => {
-    const functionTrace = await lensClient.contract(callerContract, 'callAnotherContractWithFallback', [1n]);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'callAnotherContractWithFallback', [1n]);
+    expect(trace).toMatchSnapshot();
   });
 
   test('richStackFunction - function with rich EVM stack', async () => {
@@ -62,13 +62,13 @@ describe('internal-calls', () => {
     ];
     const to = '0x0000000000000000000000000000000000000004';
 
-    const functionTrace = await lensClient.contract(callerContract, 'richStackFunction', [
+    const { trace } = await lensClient.contract(callerContract, 'richStackFunction', [
       100n, // amountIn
       90n, // amountOutMin
       path,
       to,
       9999999999n, // deadline
     ]);
-    expect(functionTrace).toMatchSnapshot();
+    expect(trace).toMatchSnapshot();
   });
 });

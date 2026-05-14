@@ -21,5 +21,5 @@ export function UniswapV2TraceClient() {
     );
   }
 
-  return <TraceViewerClient trace={trace} />;
+  return <TraceViewerClient trace={trace} workflowName="Create Pair" />;
 }

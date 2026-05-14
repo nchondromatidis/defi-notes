@@ -38,8 +38,8 @@ describe('delegate-calls', () => {
 
   test('callDelegateCall', async () => {
     const calldata = '0x01'; // Example calldata, adjust as needed
-    const functionTrace = await lensClient.contract(callerContract, 'callDelegateCall', [calldata]);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(callerContract, 'callDelegateCall', [calldata]);
+    expect(trace).toMatchSnapshot();
   });
 
   test.skip('callWithDelegateCallAndCall', async () => {});

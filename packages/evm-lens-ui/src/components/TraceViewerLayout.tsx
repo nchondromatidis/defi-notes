@@ -52,6 +52,8 @@ function getSavedLayout(key: string, defaultLayout: Layout): Layout {
 
 type TraceViewerLayout2Props = Readonly<{
   functionTrace: ReadOnlyFunctionCallEvent;
+  workflowName: string;
+  txHash: string;
   projectFiles: Record<string, ProjectFileItem>;
   rootItemId: string;
   initialExpandedItems: string[];
@@ -78,6 +80,8 @@ const DEFAULT_TOP_LAYOUT: Layout = { files: 25, source: 75 };
 
 export const TraceViewerLayout: React.FC<TraceViewerLayout2Props> = ({
   functionTrace,
+  workflowName,
+  txHash,
   projectFiles,
   rootItemId,
   initialExpandedItems,
@@ -158,6 +162,8 @@ export const TraceViewerLayout: React.FC<TraceViewerLayout2Props> = ({
           >
             <FunctionTracePanel
               functionTrace={functionTrace}
+              workflowName={workflowName}
+              txHash={txHash}
               onSelectTraceNode={onSelectFileFromTraceNode}
               collapsed={false}
               onToggleCollapse={() => onToggleMobilePanel('trace')}
@@ -238,6 +244,8 @@ export const TraceViewerLayout: React.FC<TraceViewerLayout2Props> = ({
               <Panel id="bottom" defaultSize={40} minSize={10}>
                 <FunctionTracePanel
                   functionTrace={functionTrace}
+                  workflowName={workflowName}
+                  txHash={txHash}
                   onSelectTraceNode={onSelectFileFromTraceNode}
                   collapsed={false}
                   onToggleCollapse={onToggleTracePanel}
@@ -251,6 +259,8 @@ export const TraceViewerLayout: React.FC<TraceViewerLayout2Props> = ({
       {tracePanelCollapsed && (
         <FunctionTracePanel
           functionTrace={functionTrace}
+          workflowName={workflowName}
+          txHash={txHash}
           onSelectTraceNode={onSelectFileFromTraceNode}
           collapsed={true}
           onToggleCollapse={onToggleTracePanel}

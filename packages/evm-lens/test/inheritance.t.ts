@@ -28,13 +28,13 @@ describe('inheritance', () => {
   });
 
   test('inheritance contract A', async () => {
-    const functionTrace = await lensClient.contract(aContract, 'ping', []);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(aContract, 'ping', []);
+    expect(trace).toMatchSnapshot();
   });
 
   test('inheritance contract A2', async () => {
-    const functionTrace = await lensClient.contract(a2Contract, 'ping', []);
-    expect(functionTrace).toMatchSnapshot();
+    const { trace } = await lensClient.contract(a2Contract, 'ping', []);
+    expect(trace).toMatchSnapshot();
   });
 });
 

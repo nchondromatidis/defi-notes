@@ -4,8 +4,15 @@ import { MaterialIcon } from './lib/MaterialIcon.tsx';
 import { TraceNode } from './TraceNode.tsx';
 import { getAllPaths } from './lib/trace-utils.ts';
 
+function truncateTxHash(hash: string): string {
+  if (hash.length <= 14) return hash;
+  return `${hash.slice(0, 6)}...${hash.slice(-6)}`;
+}
+
 type FunctionTracePanelProps = Readonly<{
   functionTrace: ReadOnlyFunctionCallEvent;
+  workflowName: string;
+  txHash: string;
   onSelectTraceNode?: (event: ReadOnlyFunctionCallEvent) => void;
   collapsed: boolean;
   onToggleCollapse: () => void;
@@ -13,6 +20,8 @@ type FunctionTracePanelProps = Readonly<{
 
 export const FunctionTracePanel: React.FC<FunctionTracePanelProps> = ({
   functionTrace,
+  workflowName,
+  txHash,
   onSelectTraceNode,
   collapsed,
   onToggleCollapse,
@@ -67,10 +76,18 @@ export const FunctionTracePanel: React.FC<FunctionTracePanelProps> = ({
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="h-10 px-4 flex items-center justify-between border-b border-border bg-card shrink-0">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <span className="font-sans text-[11px] font-bold text-muted-foreground tracking-widest uppercase">
             FUNCTION Trace
           </span>
+          <div className="hidden md:flex items-center gap-2">
+            <span className="font-sans text-[11px] font-bold text-white tracking-widest uppercase">
+              for {workflowName}
+            </span>
+            <span className="font-mono text-[11px] text-muted-foreground relative top-[2px]">
+              {truncateTxHash(txHash)}
+            </span>
+          </div>
         </div>
         <div className="flex gap-2">
           <button className="p-1 hover:bg-muted cursor-pointer" title="Filter Traces">
